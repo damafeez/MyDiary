@@ -23,4 +23,11 @@ let slideTo = (val) => {
 let navigateTo = (url) => {
   window.location.assign = url
 }
+let removeSettings = () => {
+  document.querySelector('footer .settings').classList.remove('active')
+}
+let initDropdown = () => {
+  document.querySelector('.drop-container .drop').addEventListener('click', (e) => e.stopPropagation())
+}
+
 initInput()

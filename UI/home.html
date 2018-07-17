@@ -8,7 +8,8 @@
   <title>myDiary</title>
 </head>
 <body class="logged-in">
-  <header>this will contain the header</header>
+  <header><h1><a href="/home.html">myDiary</a></h1>
+    <a href="/settings.html"><img class="bg" src="img/john.jpg" alt=""></a></header>
   <main>
     <div class="scroller">
       <section class="add-diary">
@@ -78,13 +79,14 @@
       </svg>
       <div class="drop">
         <div class="check">
-          <input type="checkbox" name="" id="show-notification">
+          <input type="checkbox" checked name="" id="show-notification">
           <label for="show-notification">Daily Reminder</label>
         </div>
-        33 Entries Added
+        <p>5 Entries Added</p>
+        <a href="#" class="btn round">Logout</a>
       </div>
     </button>
-    <button onclick="slideTo(0)" class="add drop-container">
+    <button onclick="slideTo(0)" class="add active drop-container">
       <svg class="icon">
         <use xlink:href="svg/icons.svg#icon-plus"></use>
       </svg>
@@ -105,7 +107,18 @@
   </footer>
   <script src="js/app.js"></script>
   <script>
-    window.addEventListener('load', () => slideTo())
+    window.addEventListener('DOMContentLoaded', () => {
+      slideTo()
+      initDropdown()
+      window.addEventListener('click', () => removeSettings())
+      document.querySelector('footer .settings').addEventListener('click', function (e) {
+        e.stopPropagation()
+        this.classList.toggle('active')
+      })
+      document.querySelector('footer .add').addEventListener('click', function (e) {
+        this.classList.remove('active')
+      })
+    })
   </script>
 </body>
 </html>
