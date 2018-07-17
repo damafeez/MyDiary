@@ -32,26 +32,27 @@ a {
 button {
   border: none;
   outline: none;
-  padding: .7rem 1rem;
+  padding: .8rem 1.5rem;
   border-radius: 3px;
   min-width: 6rem;
   cursor: pointer;
   background-color: rgb(60, 72, 88);
-  color: white;      transition: all .2s ease-in;
+  color: white;      
+  transition: all .2s ease-in;
   box-shadow: 0 2px 2px 0 rgba(153, 153, 153, 0.14),
   0 3px 1px -2px rgba(153, 153, 153, 0.2),
   0 1px 5px 0 rgba(153, 153, 153, 0.12);
-  float: right;
 }
-
-button.round {
-  border-radius: 150px;
+button::after {
+  clear: both;
 }
-
 button:hover {
   box-shadow: 0 16px 26px -10px rgb(60, 72, 88, 0.56),
   0 4px 25px 0px rgba(0, 0, 0, 0.12),
   0 8px 10px -5px rgb(60, 72, 88, 0.2);
+}
+button.round {
+  border-radius: 150px;
 }
 
 .input {
@@ -74,7 +75,7 @@ button:hover {
   border: none;
   outline: none;
   box-shadow: none;
-  padding-bottom: .7rem;
+  padding-bottom: .5rem;
   background-image: linear-gradient(var(--secondary-color), var(--secondary-color)), linear-gradient(#D2D2D2, #D2D2D2);
   background-size: 0% 2px, 100% 1px;
   background-repeat: no-repeat;
@@ -112,11 +113,12 @@ button:hover {
 .input.active > i {
   color: var(--secondary-color);
 }
+
 h1 {
   font-size: 2.5rem;
 }
 /* express styles */
-.body {
+body {
   font-family: 'Roboto', sans-serif;
   min-height: 100vh;
   background: #fcf8ef;
@@ -135,18 +137,34 @@ main {
                        "login";
   grid-template-columns: 1fr;
 }
-section.login {
+section.auth {
   grid-area: login;
   background: white;
+  min-height: 30rem;
   border-radius: 4px 0 0 4px;
   padding: 7rem 3rem;
 }
-section.login a {
+section.auth .login, section.auth .signup {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+section.auth span.link {
   color: #b7a193;
+  cursor: pointer;
+}
+section.auth p {
+  font-size: 1.4rem;
+}
+section.auth button{
+  margin-top: 1rem;
+  float: right;
 }
 section.intro {
   grid-area: intro;
-  padding: 7rem 8rem;
+  padding: 7rem 5rem;
   background: linear-gradient(rgba(0, 0, 0, .3), rgba(0, 0, 0, .3)), url(../img/bg-2.jpg);
   background-size: cover;
   text-align: center;

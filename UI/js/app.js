@@ -6,7 +6,7 @@ let initInput = () => {
       this.parentNode.classList.add('active')
     })
     inputField.addEventListener('blur', function () {
-      this.parentNode.classList.remove('active')
+      if (!this.value) this.parentNode.classList.remove('active')
     })
   }
 }
