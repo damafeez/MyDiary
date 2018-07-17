@@ -1,2 +1,111 @@
+/* font import */
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400');
+/* variables */
+:root {
+  --secondary-color: rgb(60, 72, 88);
+  --gray: #a2a2a2;
+  --primary-text-color: rgba(0, 0, 0, 0.8);
+  --darker-text-color: #3C4858;
+  --light-gray: #f8f8f8;
+}
+/* resets */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  font-size: 62.5%;
+  font-family: 'Roboto', sans-serif;
+}
 body {
+  font-weight: 400;
+  font-size: 1.6rem;
+}
+img {
+  max-width: 100%;
+}
+a {
+  text-decoration: none;
+}
+/* components */
+button {
+  border: none;
+  outline: none;
+  padding: .7rem 1rem;
+  border-radius: 3px;
+  min-width: 6rem;
+  cursor: pointer;
+  background-color: rgb(60, 72, 88);
+  color: white;      transition: all .2s ease-in;
+  box-shadow: 0 2px 2px 0 rgba(153, 153, 153, 0.14),
+  0 3px 1px -2px rgba(153, 153, 153, 0.2),
+  0 1px 5px 0 rgba(153, 153, 153, 0.12);
+  float: right;
+}
+
+button.round {
+  border-radius: 150px;
+}
+
+button:hover {
+  box-shadow: 0 16px 26px -10px rgb(60, 72, 88, 0.56),
+  0 4px 25px 0px rgba(0, 0, 0, 0.12),
+  0 8px 10px -5px rgb(60, 72, 88, 0.2);
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+/* express styles */
+.body {
+  font-family: 'Roboto', sans-serif;
+  min-height: 100vh;
+  background: #fcf8ef;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5rem 2rem;
+  color: var(--primary-text-color);
+}
+main {
+  min-height: 45rem;
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.25);
+  flex: 0 1 900px;
+  display: grid;
+  grid-template-areas: "intro"
+                       "login";
+  grid-template-columns: 1fr;
+}
+section.login {
+  grid-area: login;
+  background: white;
+  border-radius: 4px 0 0 4px;
+  padding: 7rem 3rem;
+}
+section.login a {
+  color: #b7a193;
+}
+section.intro {
+  grid-area: intro;
+  padding: 7rem 8rem;
+  background: linear-gradient(rgba(0, 0, 0, .3), rgba(0, 0, 0, .3)), url(../img/bg-2.jpg);
+  background-size: cover;
+  text-align: center;
+  color: white;
+  border-radius: 0 4px 4px 0;
+  letter-spacing: 1px;
+  line-height: 1.4;
+}
+section.intro p {
+  font-size: 2.2rem;
+  font-weight: 300;
+  margin-top: 15rem;
+}
+/* breakpoint */
+@media (min-width: 500px) {
+  main {
+    grid-template-areas: "login intro";
+    grid-template-columns: 3.5fr 6.5fr;
+  }
 }
