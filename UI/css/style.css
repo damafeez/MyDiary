@@ -54,6 +54,64 @@ button:hover {
   0 8px 10px -5px rgb(60, 72, 88, 0.2);
 }
 
+.input {
+  position: relative;
+  height: 4.5rem;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: flex-end;
+}
+.input > * {
+  flex: 1;
+}
+.input > i {
+  color: grey;
+  flex-basis: 2.5rem;
+  transition: color .2s ease-out;
+  flex-grow: 0;
+}
+.input input, .input input:focus {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding-bottom: .7rem;
+  background-image: linear-gradient(var(--secondary-color), var(--secondary-color)), linear-gradient(#D2D2D2, #D2D2D2);
+  background-size: 0% 2px, 100% 1px;
+  background-repeat: no-repeat;
+  background-position: 0% bottom, center calc(100% - 1px);
+  background-color: transparent;
+  transition: background .2s ease-out;
+  will-change: background;
+}
+.input input:-webkit-autofill {
+  border-bottom: 1.2px solid #D2D2D2;
+}
+.input input:-webkit-autofill:focus {
+  border-bottom-color: var(--secondary-color);
+}
+.input input {
+  color: inherit;
+  font-size: inherit;
+}
+.input input:focus {
+  background-size: 100% 2px, 100% 1px;
+}
+.input label {
+  position: absolute;
+  bottom: .7rem;
+  left: 2.5rem;
+  transition: all .2s ease-in;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: grey;
+}
+.input.active > label {
+  transform: translateY(-1.6rem);
+  font-size: .9rem;
+}
+.input.active > i {
+  color: var(--secondary-color);
+}
 h1 {
   font-size: 2.5rem;
 }
