@@ -7,6 +7,7 @@
   --primary-text-color: rgba(0, 0, 0, 0.8);
   --darker-text-color: #3C4858;
   --light-gray: #f8f8f8;
+  --outrageous-orange: #ff5925;
 }
 /* resets */
 *, *::before, *::after {
@@ -197,8 +198,10 @@ section.intro p {
   margin-top: 15rem;
 }
 body.logged-in {
-  /* background: #f8f8f8; */
   background: #fcf8ef;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 body.logged-in main {
   padding: 5rem 20rem;
@@ -206,6 +209,7 @@ body.logged-in main {
 }
 .scroller {
   display: flex;
+  align-items: center;
   transition: transform 1s ease-in-out;
 }
 section.add-diary {
@@ -215,10 +219,70 @@ section.add-diary {
 section.diaries {
   min-width: 25rem;
   min-height: 40rem;
-  background: white;
+  background: #fcfafa;
   margin-right: 15rem;
   box-shadow: 25px 0px 162px -68px rgba(0, 0, 0, 1);
   border-radius: 4px;
+}
+section.diaries .today {
+  height: 15rem;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(rgba(0, 0, 0, .3), rgba(0, 0, 0, .3)), url(../img/bg-4.jpg);
+  background-size: contain;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+section.diaries .today #date {
+  font-size: 4.5rem;
+}
+section.diaries .today #day {
+  font-size: 1.5rem;
+}
+section.diaries ul {
+  list-style: none;
+  padding: 2rem 1rem;
+  max-height: 30rem;
+  overflow: auto;
+}
+section.diaries ul li {
+  display: grid;
+  grid-template-areas: "pointer title date"
+                       "pointer desc date";
+  grid-template-columns: 2rem 1fr 4rem;
+  grid-gap: .5rem .7rem;
+  align-items: center;
+}
+section.diaries ul li:not(:last-child) {
+  margin-bottom: 2rem;
+}
+section.diaries ul li .pointer{
+  grid-area: pointer;
+  width: .9rem;
+  height: .9rem;
+  border-radius: 50%;
+  box-shadow: 3px 3px 16px rgba(0, 0, 0, .2);
+  background: #999895;
+}
+section.diaries ul li .title{
+  grid-area: title;
+  font-size: 1.2rem;
+}
+section.diaries ul li .desc{
+  grid-area: desc;
+  font-size: 1.3rem;
+  color: grey;
+}
+section.diaries ul li .date{
+  grid-area: date;
+  font-size: 1.2rem;
+  color: #9dc89f;
+  text-align: center;
+}
+section.diaries ul li.active .pointer{
+  background: var(--outrageous-orange);
 }
 section.diary {
   min-width: 25rem;

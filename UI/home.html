@@ -8,6 +8,7 @@
   <title>myDiary</title>
 </head>
 <body class="logged-in">
+  <header>this will contain the header</header>
   <main>
     <div class="scroller">
       <section class="add-diary">
@@ -32,13 +33,49 @@
         </form>
       </section>
       <section class="diaries">
-        this will contain a list of diaries
+        <div class="today">
+          <span id="date">15</span>
+          <span id="day">TUESDAY</span>
+        </div>
+        <ul>
+          <li>
+            <span class="pointer"></span>
+            <h4 class="title">My awesome diary</h4>
+            <p class="desc">lorem ispus is the thing...</p>
+            <span class="date">JUN<br />24</span>
+          </li>
+          <li>
+            <span class="pointer"></span>
+            <h4 class="title">My awesome diary</h4>
+            <p class="desc">lorem ispus is the thing...</p>
+            <span class="date">JUN<br />24</span>
+          </li>
+          <li>
+            <span class="pointer"></span>
+            <h4 class="title">My awesome diary</h4>
+            <p class="desc">lorem ispus is the thing...</p>
+            <span class="date">JUN<br />24</span>
+          </li>
+          <li class="active">
+            <span class="pointer"></span>
+            <h4 class="title">My awesome diary</h4>
+            <p class="desc">lorem ispus is the thing...</p>
+            <span class="date">JUN<br />24</span>
+          </li>
+          <li>
+            <span class="pointer"></span>
+            <h4 class="title">My awesome diary</h4>
+            <p class="desc">lorem ispus is the thing...</p>
+            <span class="date">JUN<br />24</span>
+          </li>
+        </ul>
       </section>
       <section class="diary">
         this will contain the currently viewed entry
       </section>
     </div>
   </main>
+  <footer>this will contain the footer</footer>
   <script src="js/app.js"></script>
 </body>
 </html>
