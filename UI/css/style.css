@@ -1,5 +1,5 @@
 /* font import */
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400');
+@import url('https://fonts.googleapis.com/css?family=Ubuntu:300,400');
 /* variables */
 :root {
   --secondary-color: rgb(60, 72, 88);
@@ -17,7 +17,7 @@
 }
 html {
   font-size: 62.5%;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Ubuntu', sans-serif;
 }
 body {
   font-weight: 400;
@@ -29,14 +29,41 @@ img {
 a {
   text-decoration: none;
 }
+/* animations */
+
+@keyframes pulse {
+  from {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+
+  50% {
+    -webkit-transform: scale3d(1.05, 1.05, 1.05);
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+
+  to {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
 /* components */
+svg.icon {
+  width: 1.9rem;
+  height: 1.9rem;
+}
 button {
   border: none;
   outline: none;
+  cursor: pointer;
+}
+.btn {
+  border: none;
+  outline: none;
+  cursor: pointer;
   padding: .8rem 1.5rem;
   border-radius: 3px;
   min-width: 6rem;
-  cursor: pointer;
   background-color: rgb(60, 72, 88);
   color: white;      
   transition: all .2s ease-in;
@@ -44,30 +71,38 @@ button {
   0 3px 1px -2px rgba(153, 153, 153, 0.2),
   0 1px 5px 0 rgba(153, 153, 153, 0.12);
 }
-button::after {
+.btn::after {
   clear: both;
 }
-button:hover {
+.btn:hover {
   box-shadow: 0 16px 26px -10px rgb(60, 72, 88, 0.56),
   0 4px 25px 0px rgba(0, 0, 0, 0.12),
   0 8px 10px -5px rgb(60, 72, 88, 0.2);
 }
-button.round {
+.btn.round {
   border-radius: 150px;
 }
 
-.input {
+.input, .textarea {
   position: relative;
   height: 4.5rem;
   margin-bottom: 1.2rem;
   display: flex;
   align-items: flex-end;
 }
-.input > * {
+.textarea {
+  height: auto;
+  min-height: 10rem;
+  padding-top: 1rem;
+}
+.input > *, .textarea * {
   flex: 1;
 }
-.input > i {
-  color: grey;
+.input > .icon, .textarea > .icon {
+  fill: grey;
+  width: 1.8rem;
+  height: 1.8rem;
+  order: 1;
   flex-basis: 2.5rem;
   transition: color .2s ease-out;
   flex-grow: 0;
@@ -95,13 +130,13 @@ button.round {
   color: inherit;
   font-size: inherit;
 }
-.input input:focus {
+.input input:focus, .textarea textarea:focus {
   background-size: 100% 2px, 100% 1px;
 }
-.input label {
+.input label, .textarea label {
   position: absolute;
   bottom: .7rem;
-  left: 2.5rem;
+  left: .1rem;
   transition: all .2s ease-in;
   font-size: 1.3rem;
   cursor: pointer;
@@ -111,10 +146,51 @@ button.round {
   transform: translateY(-1.6rem);
   font-size: .9rem;
 }
-.input.active > i {
-  color: var(--secondary-color);
+.input.active > .icon, .textarea.active > .icon {
+  fill: var(--secondary-color);
 }
-
+.textarea textarea {
+  resize: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background-image: linear-gradient(var(--secondary-color), var(--secondary-color)), linear-gradient(#D2D2D2, #D2D2D2);
+  background-size: 0% 2px, 100% 1px;
+  background-repeat: no-repeat;
+  background-position: 0% bottom, center calc(100% - 1px);
+  background-color: transparent;
+  transition: background .2s ease-out;
+  will-change: background;
+  align-self: stretch;
+}
+.textarea.active > label {
+  transform: translateY(-8.2rem);
+  font-size: .9rem;
+}
+.drop {
+  position: absolute;
+  width: 20rem;
+  padding: 1.5rem;
+  border-radius: 4px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+  bottom: calc(100% + 2rem);
+  left: 50%;
+  transform: translateX(-50%);
+}
+.drop-container {
+  position: relative;
+}
+.drop-container::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: 50%;
+  border: 1rem solid black;
+  box-shadow: -4px 4px 5px rgba(0, 0, 0, 0.2);
+  bottom: calc(100% + 1.3rem);
+  transform: translateX(-50%) rotate(-45deg);
+}
 h1 {
   font-size: 2.5rem;
 }
@@ -210,11 +286,23 @@ body.logged-in main {
 .scroller {
   display: flex;
   align-items: center;
+  transform: translate3d(0px, 0, 0);
   transition: transform 1s ease-in-out;
 }
 section.add-diary {
   min-width: 35rem;
   margin-right: 25rem;
+}
+section.add-diary form {
+  margin-top: 3.5rem;
+}
+section.add-diary .btn {
+  margin-top: 1rem;
+  float: right;
+}
+section.add-diary .reset {
+  background: var(--gray);
+  margin-right: 1rem;
 }
 section.diaries {
   min-width: 25rem;
@@ -286,7 +374,7 @@ section.diaries ul li.active .pointer{
   background: var(--outrageous-orange);
 }
 section.diary {
-  min-width: 30rem;
+  min-width: 45rem;
 }
 section.diary h2{
   font-weight: 300;
@@ -306,6 +394,55 @@ section.diary p.desc {
   letter-spacing: .3px;
   line-height: 1.4;
   color: var(--lighter-text-color);
+}
+footer {
+  display: flex;
+  align-items: center;
+  padding: 2rem 5rem;
+}
+footer button {
+  margin: 0 2rem;
+  background-color: transparent;
+  transition: transform .3s ease-in;
+}
+footer button:hover {
+  transform: translateY(-3px)
+}
+footer .settings .drop {
+  width: 15rem;
+  background: white;
+}
+footer .settings::after {
+  border-color: transparent transparent white white;
+}
+footer .add {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background-color: #43a047;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  fill: white;
+  box-shadow: 0 16px 26px -10px rgb(60, 72, 88, 0.56),
+  0 4px 25px 0px rgba(0, 0, 0, 0.12),
+  0 8px 10px -5px rgb(60, 72, 88, 0.2);
+  /* animation-name: pulse; */
+  animation-iteration-count: 10;
+  animation-duration: 2s;
+}
+footer .add .drop {
+  background: #43a047;
+  color: white;
+}
+footer .add::after {
+  border-color: transparent transparent #43a047 #43a047;
+}
+footer .edit {
+  margin-left: auto;
+}
+footer .delete {
+  fill: #ff5925;
 }
 /* breakpoint */
 @media (min-width: 500px) {
