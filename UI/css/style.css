@@ -154,6 +154,7 @@ button {
   border: none;
   outline: none;
   box-shadow: none;
+  font-family: inherit;
   background-image: linear-gradient(var(--secondary-color), var(--secondary-color)), linear-gradient(#D2D2D2, #D2D2D2);
   background-size: 0% 2px, 100% 1px;
   background-repeat: no-repeat;
@@ -187,9 +188,18 @@ button {
   height: 0;
   left: 50%;
   border: 1rem solid black;
-  box-shadow: -4px 4px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: -4px 4px 5px rgba(0, 0, 0, 0.1);
   bottom: calc(100% + 1.3rem);
   transform: translateX(-50%) rotate(-45deg);
+}
+.drop, .drop-container::after {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease-in;
+}
+.drop-container.active .drop, .drop-container.active::after {
+  opacity: 1;
+  pointer-events: visible;
 }
 h1 {
   font-size: 2.5rem;
@@ -199,13 +209,13 @@ body {
   font-family: 'Roboto', sans-serif;
   min-height: 100vh;
   color: var(--primary-text-color);
+  background: #fcf8ef;
 }
 body.before-login {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 5rem 2rem;
-  background: #fcf8ef;
 }
 body.before-login main {
   min-height: 45rem;
@@ -274,7 +284,6 @@ section.intro p {
   margin-top: 15rem;
 }
 body.logged-in {
-  background: #fcf8ef;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -369,6 +378,7 @@ section.diaries ul li .date{
   font-size: 1.2rem;
   color: #9dc89f;
   text-align: center;
+  text-transform: capitalize;
 }
 section.diaries ul li.active .pointer{
   background: var(--outrageous-orange);
@@ -388,6 +398,7 @@ section.diary p.date{
   margin-bottom: 2rem;
   border-bottom: 3px solid;
   display: inline-block;
+  text-transform: uppercase;
 }
 section.diary p.desc {
   font-size: 1.5rem;
@@ -395,25 +406,59 @@ section.diary p.desc {
   line-height: 1.4;
   color: var(--lighter-text-color);
 }
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 5rem;
+}
+header h1 {
+  font-weight: 300;
+}
+header h1 a {
+  color: var(--secondary-color)
+}
+header img.bg {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  box-shadow: 0 16px 26px -10px rgb(60, 72, 88, 0.56),
+  0 4px 25px 0px rgba(0, 0, 0, 0.12),
+  0 8px 10px -5px rgb(60, 72, 88, 0.2);
+  cursor: pointer;
+}
 footer {
   display: flex;
   align-items: center;
   padding: 2rem 5rem;
 }
-footer button {
+footer > button {
   margin: 0 2rem;
   background-color: transparent;
   transition: transform .3s ease-in;
 }
-footer button:hover {
+footer > button:hover {
   transform: translateY(-3px)
 }
 footer .settings .drop {
   width: 15rem;
-  background: white;
+  background: #fcfafa;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.5rem;
+}
+footer .settings .drop > * {
+  margin-bottom: 1rem;
+}
+footer .settings .drop > a {
+  margin: 2rem 0;
+}
+footer .settings {
+  z-index: 5;
 }
 footer .settings::after {
-  border-color: transparent transparent white white;
+  border-color: transparent transparent #fcfafa #fcfafa;
 }
 footer .add {
   width: 4rem;
@@ -443,6 +488,31 @@ footer .edit {
 }
 footer .delete {
   fill: #ff5925;
+}
+body.settings main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body.settings .info-settings {
+  flex: 0 1 80rem;
+  min-height: 40rem;
+  background: #fcfafa;
+  box-shadow: 25px 0px 162px -68px rgba(0, 0, 0, 1);
+  border-radius: 4px;
+}
+.info-settings .info {
+  height: 15rem;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(rgba(0, 0, 0, .3), rgba(0, 0, 0, .3)), url(../img/bg-4.jpg);
+  background-size: cover;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 /* breakpoint */
 @media (min-width: 500px) {
