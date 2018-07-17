@@ -121,14 +121,16 @@ h1 {
 body {
   font-family: 'Roboto', sans-serif;
   min-height: 100vh;
-  background: #fcf8ef;
+  color: var(--primary-text-color);
+}
+body.before-login {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 5rem 2rem;
-  color: var(--primary-text-color);
+  background: #fcf8ef;
 }
-main {
+body.before-login main {
   min-height: 45rem;
   box-shadow: 0 0 100px rgba(0, 0, 0, 0.25);
   flex: 0 1 900px;
@@ -194,9 +196,37 @@ section.intro p {
   font-weight: 300;
   margin-top: 15rem;
 }
+body.logged-in {
+  /* background: #f8f8f8; */
+  background: #fcf8ef;
+}
+body.logged-in main {
+  padding: 5rem 20rem;
+  overflow-x: hidden;
+}
+.scroller {
+  display: flex;
+  transition: transform 1s ease-in-out;
+}
+section.add-diary {
+  min-width: 35rem;
+  margin-right: 25rem;
+}
+section.diaries {
+  min-width: 25rem;
+  min-height: 40rem;
+  background: white;
+  margin-right: 15rem;
+  box-shadow: 25px 0px 162px -68px rgba(0, 0, 0, 1);
+  border-radius: 4px;
+}
+section.diary {
+  min-width: 25rem;
+  background: var(--secondary-color)
+}
 /* breakpoint */
 @media (min-width: 500px) {
-  main {
+  body.before-login main {
     grid-template-areas: "login intro";
     grid-template-columns: 3.5fr 6.5fr;
   }

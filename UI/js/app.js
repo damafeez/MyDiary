@@ -14,4 +14,16 @@ let toggleView = (view) => {
   let authContainer = document.querySelector('section.auth')
   authContainer.className = `auth ${view}-view`
 }
+let scroller = document.querySelector('div.scroller')
+let main = document.querySelector('.logged-in main')
+let diaries = document.querySelector('section.diaries')
+let setTransform = () => {
+  let mainStyle = main.currentStyle || window.getComputedStyle(main)
+  let offset = -(diaries.offsetLeft - mainStyle.paddingLeft.match(/\d+/g)[0])
+  console.log({offset})
+  scroller.style.transform = 'translate3d(' + (offset) + 'px,0,0)';
+}
+let navigateTo = (url) => {
+  window.location.assign = url
+}
 initInput()

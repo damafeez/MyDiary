@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="css/style.css">
   <title>myDiary</title>
 </head>
-<body>
+<body class="before-login">
   <main>
     <section class="auth login-view">
       <div class="login">
@@ -23,9 +23,9 @@
             <input id="login-password" type="password">
             <label for="login-password">Password</label>
           </div>
-          <button class="round">Login</button>
+          <button class="round" onclick="navigateTo('login.html')">Login</button>
         </form>
-        <p>New user? <span class="link" onclick="toggleView('signup')">Sign up here</span></p>
+        <p>New user? <span class="link" onclick="toggleView('signup')">SignUp here</span></p>
       </div>
       <div class="signup">
         <h2>SIGN UP</h2>
@@ -45,7 +45,7 @@
             <input id="signUp-password" type="password">
             <label for="signUp-password">Password</label>
           </div>
-          <button class="round">Sign up</button>
+          <button class="round">Signup</button>
         </form>
         <p>Existing user? <span class="link" onclick="toggleView('login')">Login here</span></p>
       </div>
