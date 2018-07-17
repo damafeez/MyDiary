@@ -5,7 +5,7 @@
   --secondary-color: rgb(60, 72, 88);
   --gray: #a2a2a2;
   --primary-text-color: rgba(0, 0, 0, 0.8);
-  --darker-text-color: #3C4858;
+  --lighter-text-color: #3C4858;
   --light-gray: #f8f8f8;
   --outrageous-orange: #ff5925;
 }
@@ -254,6 +254,7 @@ section.diaries ul li {
   grid-template-columns: 2rem 1fr 4rem;
   grid-gap: .5rem .7rem;
   align-items: center;
+  cursor: pointer;
 }
 section.diaries ul li:not(:last-child) {
   margin-bottom: 2rem;
@@ -285,8 +286,26 @@ section.diaries ul li.active .pointer{
   background: var(--outrageous-orange);
 }
 section.diary {
-  min-width: 25rem;
-  background: var(--secondary-color)
+  min-width: 30rem;
+}
+section.diary h2{
+  font-weight: 300;
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+}
+section.diary p.date{
+  font-weight: 300;
+  font-size: 1.4rem;
+  color: #9dc89f;
+  margin-bottom: 2rem;
+  border-bottom: 3px solid;
+  display: inline-block;
+}
+section.diary p.desc {
+  font-size: 1.5rem;
+  letter-spacing: .3px;
+  line-height: 1.4;
+  color: var(--lighter-text-color);
 }
 /* breakpoint */
 @media (min-width: 500px) {
