@@ -14,16 +14,20 @@
         <h2>LOGIN</h2>
         <form action="#" name="login">
           <div class="input">
-            <i class="icon">ic</i>
+              <svg class="icon">
+                <use xlink:href="svg/icons.svg#icon-user"></use>
+              </svg>
             <input id="login-username" type="text">
             <label for="login-username">Username</label>
           </div>
           <div class="input">
-            <i class="icon">ic</i>
+            <svg class="icon">
+              <use xlink:href="svg/icons.svg#icon-unlock"></use>
+            </svg>
             <input id="login-password" type="password">
             <label for="login-password">Password</label>
           </div>
-          <button class="round" onclick="navigateTo('login.html')">Login</button>
+          <button class="btn round" onclick="navigateTo('login.html')">Login</button>
         </form>
         <p>New user? <span class="link" onclick="toggleView('signup')">SignUp here</span></p>
       </div>
@@ -31,21 +35,27 @@
         <h2>SIGN UP</h2>
         <form action="#" name="login">
           <div class="input">
-            <i class="icon">ic</i>
+            <svg class="icon">
+              <use xlink:href="svg/icons.svg#icon-user"></use>
+            </svg>
             <input id="signUp-fullName" type="text">
             <label for="signUp-fullName">Full Name</label>
           </div>
           <div class="input">
-            <i class="icon">ic</i>
+            <svg class="icon">
+              <use xlink:href="svg/icons.svg#icon-user"></use>
+            </svg>
             <input id="signUp-username" type="text">
             <label for="signUp-username">Username</label>
           </div>
           <div class="input">
-            <i class="icon">ic</i>
+            <svg class="icon">
+              <use xlink:href="svg/icons.svg#icon-unlock"></use>
+            </svg>
             <input id="signUp-password" type="password">
             <label for="signUp-password">Password</label>
           </div>
-          <button class="round">Signup</button>
+          <button class="round btn">Signup</button>
         </form>
         <p>Existing user? <span class="link" onclick="toggleView('login')">Login here</span></p>
       </div>
