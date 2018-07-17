@@ -154,6 +154,7 @@ button {
   border: none;
   outline: none;
   box-shadow: none;
+  font-family: inherit;
   background-image: linear-gradient(var(--secondary-color), var(--secondary-color)), linear-gradient(#D2D2D2, #D2D2D2);
   background-size: 0% 2px, 100% 1px;
   background-repeat: no-repeat;
@@ -377,6 +378,7 @@ section.diaries ul li .date{
   font-size: 1.2rem;
   color: #9dc89f;
   text-align: center;
+  text-transform: capitalize;
 }
 section.diaries ul li.active .pointer{
   background: var(--outrageous-orange);
@@ -396,6 +398,7 @@ section.diary p.date{
   margin-bottom: 2rem;
   border-bottom: 3px solid;
   display: inline-block;
+  text-transform: uppercase;
 }
 section.diary p.desc {
   font-size: 1.5rem;

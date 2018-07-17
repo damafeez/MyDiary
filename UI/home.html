@@ -14,12 +14,12 @@
     <div class="scroller">
       <section class="add-diary">
         <h2>Add diary entry</h2>
-        <form action="#" name="login">
+        <form action="#" name="edit-entry">
           <div class="input">
               <svg class="icon">
                 <use xlink:href="svg/icons.svg#icon-edit-2"></use>
               </svg>
-            <input id="title" type="text">
+            <input id="title" name="title" type="text">
             <label for="title">Title</label>
           </div>
           <div class="textarea">
@@ -29,46 +29,16 @@
             <label for="event">Your awesome event</label>
             <textarea id="event" name="event" rows="4"></textarea>
           </div>
-          <button class="btn round">Add</button>
+          <input type="submit" name="update" value="Add" class="btn round">
           <input onclick="slideTo()" type="reset" class="btn round reset" value="Cancel">
         </form>
       </section>
       <section class="diaries">
-        <div class="today">
-          <span id="date">15</span>
-          <span id="day">TUESDAY</span>
-        </div>
-        <ul>
-          <li>
-            <span class="pointer"></span>
-            <h4 class="title">My awesome diary</h4>
-            <p class="desc">lorem ispus is the thing...</p>
-            <span class="date">JUN<br />24</span>
-          </li>
-          <li>
-            <span class="pointer"></span>
-            <h4 class="title">My awesome diary</h4>
-            <p class="desc">lorem ispus is the thing...</p>
-            <span class="date">JUN<br />24</span>
-          </li>
-          <li class="active">
-            <span class="pointer"></span>
-            <h4 class="title">My awesome diary</h4>
-            <p class="desc">lorem ispus is the thing...</p>
-            <span class="date">JUN<br />24</span>
-          </li>
-          <li>
-            <span class="pointer"></span>
-            <h4 class="title">My awesome diary</h4>
-            <p class="desc">lorem ispus is the thing...</p>
-            <span class="date">JUN<br />24</span>
-          </li>
-        </ul>
       </section>
       <section class="diary" onclick="slideTo()">
-        <h2>My awesome diary</h2>
-        <p class="date">JUN 24</p>
-        <p class="desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima totam quae obcaecati. Sapiente tenetur excepturi quam blanditiis placeat! Suscipit repellat perferendis exercitationem quos corrupti nihil molestias sequi incidunt distinctio idipsum dolor sit amet consectetur adipisicing elit. Impedit sed vitae cupiditate quidem, aliquam cumque dolore ea, pariatur, fugiat similique consequuntur necessitatibus architecto et quae! Mollitia porro illum velit modi!</p>
+        <h2></h2>
+        <p class="date"></p>
+        <p class="desc"></p>
       </section>
     </div>
   </main>
@@ -83,10 +53,10 @@
           <label for="show-notification">Daily Reminder</label>
         </div>
         <p>5 Entries Added</p>
-        <a href="#" class="btn round">Logout</a>
+        <a href="/login.html" class="btn round">Logout</a>
       </div>
     </button>
-    <button onclick="slideTo(0)" class="add active drop-container">
+    <button onclick="addDiary()" class="add active drop-container">
       <svg class="icon">
         <use xlink:href="svg/icons.svg#icon-plus"></use>
       </svg>
@@ -94,12 +64,12 @@
         <p>You haven't added an entry to your diary today. Please click here to get started.</p>
       </div>
     </button>
-    <button title="Edit Current Entry" class="edit">
+    <button title="Edit Current Entry" onclick="editDiary()" class="edit">
       <svg class="icon">
         <use xlink:href="svg/icons.svg#icon-edit-3"></use>
       </svg>
     </button>
-    <button title="Delete Entry" class="delete">
+    <button title="Delete Entry" onclick="deleteDiary(currentDiary)" class="delete">
       <svg class="icon">
         <use xlink:href="svg/icons.svg#icon-trash-2"></use>
       </svg>
@@ -108,6 +78,7 @@
   <script src="js/app.js"></script>
   <script>
     window.addEventListener('DOMContentLoaded', () => {
+      initDiaries()
       slideTo()
       initDropdown()
       window.addEventListener('click', () => removeSettings())
