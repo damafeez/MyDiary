@@ -149,6 +149,22 @@ section.auth .login, section.auth .signup {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  max-height: 0;
+  opacity: .1;
+	overflow-y: hidden;
+	transition-property: all;
+  transition-duration: .6s;
+	transition-timing-function: ease-in-out;
+}
+section.auth.login-view .login {
+  max-height: 500px;
+  opacity: 1;
+  transition-delay: .6s;
+}
+section.auth.signup-view .signup {
+  max-height: 500px;
+  opacity: 1;
+  transition-delay: .6s;
 }
 
 section.auth span.link {

@@ -10,4 +10,8 @@ let initInput = () => {
     })
   }
 }
+let toggleView = (view) => {
+  let authContainer = document.querySelector('section.auth')
+  authContainer.className = `auth ${view}-view`
+}
 initInput()
