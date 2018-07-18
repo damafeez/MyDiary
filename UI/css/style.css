@@ -154,6 +154,7 @@ button {
   border: none;
   outline: none;
   box-shadow: none;
+  font-family: inherit;
   background-image: linear-gradient(var(--secondary-color), var(--secondary-color)), linear-gradient(#D2D2D2, #D2D2D2);
   background-size: 0% 2px, 100% 1px;
   background-repeat: no-repeat;
@@ -274,9 +275,9 @@ a.btn {
 }
 section.intro {
   grid-area: intro;
-  padding: 7rem 5rem;
+  padding: 3rem 1rem;
   background: linear-gradient(rgba(0, 0, 0, .3), rgba(0, 0, 0, .3)), url(../img/bg-2.jpg);
-  background-size: cover;
+  background-size: auto 100%;
   text-align: center;
   color: white;
   border-radius: 0 4px 4px 0;
@@ -294,18 +295,19 @@ body.logged-in {
   justify-content: space-between;
 }
 body.logged-in main {
-  padding: 5rem 20rem;
-  overflow-x: hidden;
+  padding: 10rem 2rem;
 }
 .scroller {
   display: flex;
+  flex-direction: column;
   align-items: center;
   transform: translate3d(0px, 0, 0);
   transition: transform 1s ease-in-out;
 }
 section.add-diary {
-  min-width: 35rem;
-  margin-right: 25rem;
+  flex: 1 0 35rem;
+  align-self: stretch;
+  margin-bottom: 5rem;
 }
 section.add-diary form {
   margin-top: 3.5rem;
@@ -319,10 +321,12 @@ section.add-diary .reset {
   margin-right: 1rem;
 }
 section.diaries {
-  min-width: 25rem;
+  flex: 0 0 25rem;
+  min-width: 30rem;
   min-height: 40rem;
   background: #fcfafa;
-  margin-right: 15rem;
+  margin-right: 0;
+  margin-bottom: 5rem;
   box-shadow: 25px 0px 162px -68px rgba(0, 0, 0, 1);
   border-radius: 4px;
 }
@@ -330,7 +334,7 @@ section.diaries .today {
   height: 15rem;
   border-radius: 4px 4px 0 0;
   background: linear-gradient(rgba(0, 0, 0, .3), rgba(0, 0, 0, .3)), url(../img/bg-4.jpg);
-  background-size: contain;
+  background-size: 100% auto;
   color: white;
   display: flex;
   flex-direction: column;
@@ -384,12 +388,13 @@ section.diaries ul li .date{
   font-size: 1.2rem;
   color: #9dc89f;
   text-align: center;
+  text-transform: capitalize;
 }
 section.diaries ul li.active .pointer{
   background: var(--outrageous-orange);
 }
 section.diary {
-  min-width: 45rem;
+  flex: 1 0 25rem;
 }
 section.diary h2{
   font-weight: 300;
@@ -403,6 +408,7 @@ section.diary p.date{
   margin-bottom: 2rem;
   border-bottom: 3px solid;
   display: inline-block;
+  text-transform: uppercase;
 }
 section.diary p.desc {
   font-size: 1.5rem;
@@ -410,14 +416,22 @@ section.diary p.desc {
   line-height: 1.4;
   color: var(--lighter-text-color);
 }
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+header, footer {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  background: #f8f8f8;
+  z-index: 5000;
   padding: 2rem 5rem;
+  display: flex;
+  align-items: center;
+}
+header {
+  justify-content: space-between;
+  top: 0;
 }
 header h1 {
-  font-weight: 300;
+  font-weight: 500;
 }
 header h1 a {
   color: var(--secondary-color)
@@ -432,9 +446,7 @@ header img.bg {
   cursor: pointer;
 }
 footer {
-  display: flex;
-  align-items: center;
-  padding: 2rem 5rem;
+  bottom: 0;
 }
 footer > button {
   margin: 0 2rem;
@@ -498,6 +510,7 @@ body.settings main {
   justify-content: center;
   align-items: center;
   height: 100%;
+  padding: 9rem 2rem;
 }
 body.settings .info-settings {
   flex: 0 1 80rem;
@@ -529,15 +542,69 @@ body.settings .info-settings {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
+  padding: 2rem;
 }
 .info-settings .settings > * {
   margin: 3rem 0
 }
 
 /* breakpoint */
-@media (min-width: 500px) {
+
+@media (min-width: 550px) {
   body.before-login main {
     grid-template-areas: "login intro";
     grid-template-columns: 3.5fr 6.5fr;
+  }
+
+  body.logged-in main {
+    padding: 2rem 1rem;
+    overflow-x: hidden;
+  }
+  body.logged-in main .scroller {
+    flex-direction: row;
+  }
+  section.add-diary {
+    margin-bottom: 0;
+    margin-right: 15rem;
+  }
+  section.diaries {
+    min-width: 25rem;
+    margin-bottom: 0;
+    margin-right: 10rem;
+  }
+  section.diary {
+    flex: 1 0 30rem;
+  }
+  footer, header {
+    position: static;
+    background: transparent;
+  }
+}
+
+@media (min-width: 800px) {
+  body.logged-in main {
+    padding: 2rem 5rem;
+  }
+  section.intro {
+    padding: 7rem 5rem;
+  }
+  section.diary {
+    flex: 1 0 40rem;
+  }  
+}
+
+@media (min-width: 1100px) {
+  body.logged-in main {
+    padding: 5rem 20rem;
+  }
+  section.add-diary {
+    margin-right: 25rem;
+  }
+  section.diaries {
+    margin-right: 15rem;
+  }
+  section.diary {
+    flex: 1 0 45rem;
   }
 }

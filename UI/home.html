@@ -30,12 +30,12 @@
             <textarea id="event" name="event" rows="4"></textarea>
           </div>
           <input type="submit" name="update" value="Add" class="btn round">
-          <input onclick="slideTo()" type="reset" class="btn round reset" value="Cancel">
+          <input onclick="hideAdd()" type="reset" class="btn round reset" value="Cancel">
         </form>
       </section>
       <section class="diaries">
       </section>
-      <section class="diary" onclick="slideTo()">
+      <section class="diary" onclick="hideAdd()">
         <h2></h2>
         <p class="date"></p>
         <p class="desc"></p>
@@ -89,6 +89,9 @@
       document.querySelector('footer .add').addEventListener('click', function (e) {
         this.classList.remove('active')
       })
+    })
+    window.addEventListener('resize', (e) => {
+      slideTo()
     })
   </script>
 </body>

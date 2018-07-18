@@ -20,6 +20,7 @@ let fetchedDiaries = [
     desc: 'This is my super awesom diary because piente tenetur excepturi quam blanditiis placeat! Suscipit repellat perferendis exercitationem quos corrupti nihil molestias sequi incidunt distinctio idipsum dolor sit amet consectetur adipisicing elit. Impedit sed vitae cupiditate quidem, aliquam cumque dolore ea, pariatur, fugiat similique consequuntur necessitatibus architecto et quae! Mollitia porro illum velit modi!'
   }
 ]
+let showAddDiaryView = false
 let currentDiary
 let initInput = () => {
   let inputFields = document.querySelectorAll('.input > input, .textarea > textarea')
@@ -38,11 +39,44 @@ let toggleView = (view) => {
   let authContainer = document.querySelector('section.auth')
   authContainer.className = `auth ${view}-view`
 }
-let slideTo = (val) => {
+function scrollToItem(item) {
+  var diff=(item.offsetTop-window.scrollY)/8
+  if (Math.abs(diff)>1) {
+      window.scrollTo(0, (window.scrollY+diff))
+      clearTimeout(window._TO)
+      window._TO=setTimeout(scrollToItem, 30, item)
+  } else {
+      window.scrollTo(0, item.offsetTop)
+  }
+}
+let slideTo = () => {
   let scroller = document.querySelector('div.scroller')
+  let addDiary = document.querySelector('section.add-diary')
   let diaries = document.querySelector('section.diaries')
-  let transform = val === 0 ? val : -diaries.offsetLeft
-  scroller.style.transform = `translate3d(${transform}px, 0, 0)`;
+  console.log('resize')
+  if (showAddDiaryView) {
+    addDiary.style.display = 'initial'
+    scroller.style.transform = `translate3d(${0}px, 0, 0)`
+    if (window.innerWidth <= 550) {
+      scrollToItem(addDiary)
+    }
+  } else {
+    if (window.innerWidth > 550) {
+      addDiary.style.display = 'initial'
+      scroller.style.transform = `translate3d(${-diaries.offsetLeft}px, 0, 0)`;
+    } else {
+      scroller.style.transform = `translate3d(${0}px, 0, 0)`
+      addDiary.style.display = 'none'
+    }
+  }
+}
+let showAdd = () => {
+  showAddDiaryView = true
+  slideTo()
+}
+let hideAdd = () => {
+  showAddDiaryView = false
+  slideTo()
 }
 let navigateTo = (url) => {
   window.location.assign = url
@@ -107,14 +141,14 @@ let editDiary = (payload) => {
   editForm.addEventListener('submit', function (e) {
     e.preventDefault()
     this.reset()
-    slideTo()
+    hideAdd()
   })
   h2.textContent = dataToEdit.header || 'Edit diary entry'
   editForm['title'].value = dataToEdit.title
   editForm['event'].value = dataToEdit.desc
   editForm['update'].value = dataToEdit.update || 'Update'
   initInput()
-  slideTo(0)
+  showAdd()
 }
 let addDiary = () => editDiary({header: 'Add diary Entry', update: 'add', title: '', desc: ''})
 initInput()
