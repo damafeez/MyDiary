@@ -154,7 +154,6 @@ button {
   border: none;
   outline: none;
   box-shadow: none;
-  font-family: inherit;
   background-image: linear-gradient(var(--secondary-color), var(--secondary-color)), linear-gradient(#D2D2D2, #D2D2D2);
   background-size: 0% 2px, 100% 1px;
   background-repeat: no-repeat;
@@ -200,6 +199,9 @@ button {
 .drop-container.active .drop, .drop-container.active::after {
   opacity: 1;
   pointer-events: visible;
+}
+label, input {
+  cursor: pointer;
 }
 h1 {
   font-size: 2.5rem;
@@ -263,9 +265,12 @@ section.auth span.link {
 section.auth p {
   font-size: 1.4rem;
 }
-section.auth button{
+section.auth .btn{
   margin-top: 1rem;
   float: right;
+}
+a.btn {
+  font-size: 1.3rem;
 }
 section.intro {
   grid-area: intro;
@@ -334,6 +339,7 @@ section.diaries .today {
 }
 section.diaries .today #date {
   font-size: 4.5rem;
+  text-transform: uppercase;
 }
 section.diaries .today #day {
   font-size: 1.5rem;
@@ -378,7 +384,6 @@ section.diaries ul li .date{
   font-size: 1.2rem;
   color: #9dc89f;
   text-align: center;
-  text-transform: capitalize;
 }
 section.diaries ul li.active .pointer{
   background: var(--outrageous-orange);
@@ -398,7 +403,6 @@ section.diary p.date{
   margin-bottom: 2rem;
   border-bottom: 3px solid;
   display: inline-block;
-  text-transform: uppercase;
 }
 section.diary p.desc {
   font-size: 1.5rem;
@@ -493,6 +497,7 @@ body.settings main {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
 }
 body.settings .info-settings {
   flex: 0 1 80rem;
@@ -514,6 +519,21 @@ body.settings .info-settings {
   justify-content: center;
   align-items: center;
 }
+.info-settings .info #number {
+  font-size: 4.5rem;
+}
+.info-settings .info #title {
+  font-size: 1.5rem;
+}
+.info-settings .settings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.info-settings .settings > * {
+  margin: 3rem 0
+}
+
 /* breakpoint */
 @media (min-width: 500px) {
   body.before-login main {
