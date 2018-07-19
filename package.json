@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "start:watch": "nodemon server/index.js --exec babel-node",
-    "test": "mocha server/test/index.spec.js --require babel-core/register -t 5000 --exit",
+    "test": "mocha server/test/ --require babel-core/register -t 5000 --exit",
     "test:watch": "nodemon --exec 'npm test'",
     "build": "npm run clean && npm run build-babel",
     "build-babel": "babel -d ./dist ./server -s",
