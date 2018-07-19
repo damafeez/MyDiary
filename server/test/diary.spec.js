@@ -1,15 +1,12 @@
 import 'babel-polyfill';
 import { expect } from 'chai';
 
-// import Diary, { diaries } from '../model/Diary';
-const Diary = () => 'this should have been imported from ../model/Diary';
-const diaries = [];
-// will change
+import Diary, { diaries } from '../model/Diary';
 
 const diaryTemplate = { title: 'My awesome diary', body: 'This is the body of my awesome diary', author: 'johndoe' };
 
 export default function () {
-  describe('Diary', () => {
+  describe('Diary Schema', () => {
     describe('constructor', () => {
       const newDiary = new Diary(diaryTemplate);
       it('should create a diary from specified object', () => {
@@ -47,7 +44,7 @@ export default function () {
           await Diary.save(diaryTemplate);
           throw new Error('error not thrown');
         } catch (e) {
-          expect(e.message).to.equal(`${badDiary} is not of type Diary`);
+          expect(e.message).to.equal(`Error: ${badDiary} is not a diary`);
         }
       });
     });
