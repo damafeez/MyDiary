@@ -3,6 +3,7 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 
 import app from '../index';
+import diarySpec from './diary.spec';
 
 chai.use(chaiHttp);
 
@@ -14,3 +15,4 @@ describe('SERVER', () => {
     expect(res.type).to.equal('text/html');
   });
 });
+diarySpec();
