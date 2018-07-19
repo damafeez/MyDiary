@@ -18,7 +18,8 @@
   },
   "nyc": {
     "exclude": [
-      "UI/**.js"
+      "UI/**.js",
+      "**/**.spec.js"
     ]
   },
   "dependencies": {
