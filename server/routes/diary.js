@@ -25,4 +25,14 @@ router.get('/entries', async (req, res) => {
     res.status(404).send(error.message);
   }
 });
+router.get('/entries/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const entry = await Diary.findById(id);
+    res.send(entry);
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+});
+
 export default router;

@@ -144,9 +144,8 @@ export default function () {
       const route = '/entries';
       it('should return all entries', async () => {
         // save new entry to ensure that test returns value
-        const newDiary = new Diary(diaryTemplate);
-        const diary = await Diary.save(newDiary);
-        const { id } = diary;
+        const entry = await chai.request(app).post(`${rootUrl}/entries`).send(diaryTemplate);
+        const { id } = entry.body;
 
         const res = await chai.request(app).get(rootUrl + route);
         expect(res).to.have.status(200);
@@ -159,8 +158,8 @@ export default function () {
     describe('GET /entries/:id', () => {
       it('should return entry with the specified id', async () => {
         // add entry before test
-        const entry = await chai.request(app).post(diaryTemplate);
-        const { id } = entry;
+        const entry = await chai.request(app).post(`${rootUrl}/entries`).send(diaryTemplate);
+        const { id } = entry.body;
         const res = await chai.request(app).get(`${rootUrl}/entries/${id}`);
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object');
@@ -184,7 +183,7 @@ export default function () {
     describe('DELETE /entries/:id', () => {
       it('should delete entry and return its value', async () => {
         // add entry before test
-        const entry = await chai.request(app).post(diaryTemplate);
+        const entry = await chai.request(app).post(`${rootUrl}/entries`).send(diaryTemplate);
         const { id } = entry;
         const res = await chai.request(app).delete(`${rootUrl}/entries/${id}`);
         expect(res).to.have.status(200);
@@ -205,7 +204,7 @@ export default function () {
       });
     });
     describe('PUT /entries/:id', async () => {
-      const entry = await chai.request(app).post(diaryTemplate);
+      const entry = await chai.request(app).post(`${rootUrl}/entries`).send(diaryTemplate);
       const { id } = entry.body;
       const modification = {
         title: 'My very awesome title',
