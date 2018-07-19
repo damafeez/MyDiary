@@ -1,9 +1,14 @@
 import 'babel-polyfill';
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
+import chaiHttp from 'chai-http';
 
+import app from '../index';
 import Diary, { diaries } from '../model/Diary';
 
+chai.use(chaiHttp);
+
 const diaryTemplate = { title: 'My awesome diary', body: 'This is the body of my awesome diary', author: 'johndoe' };
+const rootUrl = '/api/v1';
 
 export default function () {
   describe('Diary Schema', () => {
@@ -109,6 +114,24 @@ export default function () {
         } catch (e) {
           expect(e.message).to.equal('entry not found');
         }
+      });
+    });
+  });
+  describe('routes', () => {
+    describe('GET /entries', () => {
+      const route = '/entries';
+      it('should return all entries', async () => {
+        // save new entry to ensure that test returns value
+        const newDiary = new Diary(diaryTemplate);
+        const diary = await Diary.save(newDiary);
+        const { id } = diary;
+
+        const res = await chai.request(app).get(rootUrl + route);
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('array');
+        expect(res.body.length).to.be.greaterThan(0);
+        // delete entry after test
+        await Diary.findByIdAndDelete(id);
       });
     });
   });
