@@ -47,5 +47,14 @@ router.put('/entries/:id', async (req, res) => {
     res.status(400).send(error.message);
   }
 });
+router.delete('/entries/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const diary = await Diary.findByIdAndDelete(id);
+    res.send(diary);
+  } catch (e) {
+    res.status(400).send(e.message);
+  }
+});
 
 export default router;

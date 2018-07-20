@@ -207,11 +207,17 @@ export default function () {
         const verifyIfSaved = await chai.request(app).get(`${rootUrl}/entries/${entryId}`);
         expect(testResult).to.have.status(200);
         expect(verifyIfSaved.body).to.include({
-          title: modification.title, body: modification.body, author: diaryTemplate.author, id: entryId,
+          title: modification.title,
+          body: modification.body,
+          author: diaryTemplate.author,
+          id: entryId,
         });
         expect(testResult.body).to.be.an('object');
         expect(testResult.body).to.include({
-          title: modification.title, body: modification.body, author: diaryTemplate.author, id: entryId,
+          title: modification.title,
+          body: modification.body,
+          author: diaryTemplate.author,
+          id: entryId,
         });
       });
       it('should not modify entries when invalid data is given', async () => {
@@ -236,28 +242,28 @@ export default function () {
         await Diary.findByIdAndDelete(entryId);
       });
     });
-    // describe('DELETE /entries/:id', () => {
-    //   it('should delete entry and return its value', async () => {
-    //     // add entry before test
-    //     const entry = await chai.request(app).post(`${rootUrl}/entries`).send(diaryTemplate);
-    //     const { id } = entry;
-    //     const res = await chai.request(app).delete(`${rootUrl}/entries/${id}`);
-    //     expect(res).to.have.status(200);
-    //     expect(res.body).to.be.an('object');
-    //     expect(res.body).to.include({
-    //       title: diaryTemplate.title,
-    //       body: diaryTemplate.body,
-    //       author: diaryTemplate.author,
-    //       id,
-    //     });
-    //   });
-    //   it('should return status code 404 if entry is not found', async () => {
-    //     const invalidId = '2444invalid';
-    //     const res = await chai.request(app).delete(`${rootUrl}/entries/${invalidId}`);
-    //     expect(res).to.have.status(404);
-    //     expect(res.body).to.eql({});
-    //     expect(res.error.text).to.equal('entry not found');
-    //   });
-    // });
+    describe('DELETE /entries/:id', () => {
+      it('should delete entry and return its value', async () => {
+        // add entry before test
+        const entry = await chai.request(app).post(`${rootUrl}/entries`).send(diaryTemplate);
+        const { id } = entry.body;
+        const res = await chai.request(app).delete(`${rootUrl}/entries/${id}`);
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.include({
+          title: diaryTemplate.title,
+          body: diaryTemplate.body,
+          author: diaryTemplate.author,
+          id,
+        });
+      });
+      it('should return status code 404 if entry is not found', async () => {
+        const invalidId = '2444invalid';
+        const res = await chai.request(app).delete(`${rootUrl}/entries/${invalidId}`);
+        expect(res).to.have.status(400);
+        expect(res.body).to.eql({});
+        expect(res.error.text).to.equal('entry not found');
+      });
+    });
   });
 }
