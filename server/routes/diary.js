@@ -34,5 +34,18 @@ router.get('/entries/:id', async (req, res) => {
     res.status(404).send(error.message);
   }
 });
+router.put('/entries/:id', async (req, res) => {
+  try {
+    const { title, body } = req.body;
+    if (title && body) {
+      const diary = await Diary.findByIdAndUpdate(req.params.id, { title, body });
+      res.send(diary);
+    } else {
+      throw new Error('all fields must be provided');
+    }
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
 
 export default router;
