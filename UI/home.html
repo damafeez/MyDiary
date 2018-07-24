@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="css/style.css">
+  <title>myDiary</title>
+</head>
+<body class="logged-in">
+  <header><h1><a href="home.html">myDiary</a></h1>
+    <a href="settings.html"><img class="bg" src="img/john.jpg" alt=""></a></header>
+  <main>
+    <div class="scroller">
+      <section class="add-diary">
+        <h2>Add diary entry</h2>
+        <form action="#" name="edit-entry">
+          <div class="input">
+              <svg class="icon">
+                <use xlink:href="svg/icons.svg#icon-edit-2"></use>
+              </svg>
+            <input id="title" name="title" type="text">
+            <label for="title">Title</label>
+          </div>
+          <div class="textarea">
+              <svg class="icon">
+                <use xlink:href="svg/icons.svg#icon-file-text"></use>
+              </svg>
+            <label for="event">Your awesome event</label>
+            <textarea id="event" name="event" rows="4"></textarea>
+          </div>
+          <input type="submit" name="update" value="Add" class="btn round">
+          <input onclick="hideAdd()" type="reset" class="btn round reset" value="Cancel">
+        </form>
+      </section>
+      <section class="diaries">
+      </section>
+      <section class="diary" onclick="hideAdd()">
+        <h2></h2>
+        <p class="date"></p>
+        <p class="desc"></p>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <button class="settings drop-container">
+      <svg class="icon">
+        <use xlink:href="svg/icons.svg#icon-settings"></use>
+      </svg>
+      <div class="drop">
+        <div class="check">
+          <input type="checkbox" checked name="" id="show-notification">
+          <label for="show-notification">Daily Reminder</label>
+        </div>
+        <p>5 Entries Added</p>
+        <a href="index.html" class="btn round">Logout</a>
+      </div>
+    </button>
+    <button onclick="addDiary()" class="add active drop-container">
+      <svg class="icon">
+        <use xlink:href="svg/icons.svg#icon-plus"></use>
+      </svg>
+      <div class="drop">
+        <p>You haven't added an entry to your diary today. Please click here to get started.</p>
+      </div>
+    </button>
+    <button title="Edit Current Entry" onclick="editDiary()" class="edit">
+      <svg class="icon">
+        <use xlink:href="svg/icons.svg#icon-edit-3"></use>
+      </svg>
+    </button>
+    <button title="Delete Entry" onclick="deleteDiary(currentDiary)" class="delete">
+      <svg class="icon">
+        <use xlink:href="svg/icons.svg#icon-trash-2"></use>
+      </svg>
+    </button>
+  </footer>
+  <script src="js/app.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      initDiaries()
+      slideTo()
+      initDropdown()
+      window.addEventListener('click', () => removeSettings())
+      document.querySelector('footer .settings').addEventListener('click', function (e) {
+        e.stopPropagation()
+        this.classList.toggle('active')
+      })
+      document.querySelector('footer .add').addEventListener('click', function (e) {
+        this.classList.remove('active')
+      })
+    })
+    window.addEventListener('resize', (e) => {
+      slideTo()
+    })
+  </script>
+</body>
+</html>
