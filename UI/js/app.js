@@ -101,7 +101,7 @@ let initDiaries = () => {
     let template =  `
     <span class="pointer"></span>
     <h4 class="title">${diary.title}</h4>
-    <p class="desc">${diary.desc.length > 22 ? diary.desc.substr(0, 22) + '...' : diary.desc}</p>
+    <p class="desc">${diary.desc}</p>
     <span class="date">${diary.date.split(' ')[0]}<br />${diary.date.split(' ')[1]}</span>
     `
     li.innerHTML = template
