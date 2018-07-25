@@ -14,7 +14,8 @@
     "clean": "rm -rf dist && mkdir dist",
     "lint": "eslint --ext .js server",
     "lint:watch": "nodemon --exec 'eslint --ext .js server'",
-    "lint:fix": "eslint --ext .js server --fix"
+    "lint:fix": "eslint --ext .js server --fix",
+    "postinstall": "npm run build"
   },
   "nyc": {
     "exclude": [
