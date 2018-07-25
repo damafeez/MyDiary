@@ -382,6 +382,9 @@ section.diaries ul li .desc{
   grid-area: desc;
   font-size: 1.3rem;
   color: grey;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 section.diaries ul li .date{
   grid-area: date;
