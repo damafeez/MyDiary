@@ -80,6 +80,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       initDiaries()
       slideTo()
+      setTimeout(() => document.querySelector('div.scroller').style.transitionDuration = '1s', 1000)
       initDropdown()
       window.addEventListener('click', () => removeSettings())
       document.querySelector('footer .settings').addEventListener('click', function (e) {

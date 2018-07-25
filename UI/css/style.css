@@ -302,7 +302,7 @@ body.logged-in main {
   flex-direction: column;
   align-items: center;
   transform: translate3d(0px, 0, 0);
-  transition: transform 1s ease-in-out;
+  transition: transform 0 ease-in-out;
 }
 section.add-diary {
   flex: 1 0 35rem;
