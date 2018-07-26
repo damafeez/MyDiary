@@ -1,26 +1,23 @@
 const users = `
-DROP TABLE IF EXISTS users cascade;
-CREATE TABLE users(
+CREATE TABLE IF NOT EXISTS users(
   userId SERIAL PRIMARY KEY,
   fullName VARCHAR(60) NOT NULL,
-  email VARCHAR(40) NOT NULL 
+  email TEXT NOT NULL 
 );`;
 
 const authentication = `
-DROP TABLE IF EXISTS authentication cascade;
-CREATE TABLE authentication(
+CREATE TABLE IF NOT EXISTS authentication(
   userId INT,
-  username VARCHAR(30) NOT NULL UNIQUE,
-  password VARCHAR(40) NOT NULL,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  password TEXT NOT NULL,
   FOREIGN KEY (userId) REFERENCES users(userId)
 );`;
 
 const entries = `
-DROP TABLE IF EXISTS entries cascade;
-CREATE TABLE entries(
+CREATE TABLE IF NOT EXISTS entries(
   entryId SERIAL PRIMARY KEY,
   userId INT,
-  title VARCHAR(40) NOT NULL,
+  title TEXT NOT NULL,
   body TEXT NOT NULL,
   created timestamp (0) without time zone default now(),
   edited timestamp (0) without time zone default now(),
@@ -28,8 +25,7 @@ CREATE TABLE entries(
 );`;
 
 const notificationStatus = `
-DROP TABLE IF EXISTS notificationStatus cascade;
-CREATE TABLE notificationStatus(
+CREATE TABLE IF NOT EXISTS notificationStatus(
   userId INT,
   value BOOLEAN DEFAULT false,
   FOREIGN KEY (userId) REFERENCES users(userId)
