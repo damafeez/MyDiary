@@ -1,9 +1,7 @@
 import express from 'express';
-import Diary from '../model/Diary';
+import Diary from '../models/Diary';
 
-const router = express.Router();
-
-router.post('/entries', async (req, res) => {
+export async function postEntry(req, res) {
   try {
     const { title, body, author } = req.body;
     if (title && body && author) {
@@ -16,16 +14,16 @@ router.post('/entries', async (req, res) => {
   } catch (error) {
     res.status(400).send(error.message);
   }
-});
-router.get('/entries', async (req, res) => {
+}
+export async function getEntries(req, res) {
   try {
     const entries = await Diary.find();
     res.send(entries);
   } catch (error) {
     res.status(404).send(error.message);
   }
-});
-router.get('/entries/:id', async (req, res) => {
+}
+export async function getEnry(req, res) {
   try {
     const { id } = req.params;
     const entry = await Diary.findById(id);
@@ -33,8 +31,8 @@ router.get('/entries/:id', async (req, res) => {
   } catch (error) {
     res.status(404).send(error.message);
   }
-});
-router.put('/entries/:id', async (req, res) => {
+}
+export async function editEntry(req, res) {
   try {
     const { title, body } = req.body;
     if (title && body) {
@@ -46,8 +44,8 @@ router.put('/entries/:id', async (req, res) => {
   } catch (error) {
     res.status(400).send(error.message);
   }
-});
-router.delete('/entries/:id', async (req, res) => {
+}
+export async function deleteEntry(req, res) {
   try {
     const { id } = req.params;
     const diary = await Diary.findByIdAndDelete(id);
@@ -55,6 +53,4 @@ router.delete('/entries/:id', async (req, res) => {
   } catch (e) {
     res.status(400).send(e.message);
   }
-});
-
-export default router;
+}
