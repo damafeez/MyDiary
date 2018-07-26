@@ -15,6 +15,7 @@
     "lint": "eslint --ext .js server",
     "lint:watch": "nodemon --exec 'eslint --ext .js server'",
     "lint:fix": "eslint --ext .js server --fix",
+    "dbSetup": "babel-node server/model/dbSetup",
     "postinstall": "npm run build"
   },
   "nyc": {
