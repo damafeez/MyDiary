@@ -2,7 +2,7 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 
 import app from '../index';
-import Diary, { diaries } from '../model/Diary';
+import Diary, { diaries } from '../models/Diary';
 
 chai.use(chaiHttp);
 
