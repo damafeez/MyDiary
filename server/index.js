@@ -2,6 +2,7 @@ import 'babel-polyfill';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import winston from 'winston';
 import api from './routes';
 
 const PORT = process.env.PORT || 3030;
@@ -15,6 +16,6 @@ app
 
 app.use('/api/v1', api);
 
-app.listen(PORT, () => console.log(`server is running on port ${PORT}`));
+app.listen(PORT, () => winston.log('server status', `server is running on port ${PORT}, NODE_ENV: ${process.env.NODE_ENV}`));
 
 export default app;

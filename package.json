@@ -15,6 +15,8 @@
     "lint": "eslint --ext .js server",
     "lint:watch": "nodemon --exec 'eslint --ext .js server'",
     "lint:fix": "eslint --ext .js server --fix",
+    "dbSetup": "babel-node server/migrations/dbSetup",
+    "dropTables": "babel-node server/migrations/dropTables",
     "postinstall": "npm run build"
   },
   "nyc": {
@@ -27,7 +29,10 @@
     "babel-polyfill": "^6.26.0",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
-    "express": "^4.16.3"
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "pg": "^7.4.3",
+    "winston": "^3.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
