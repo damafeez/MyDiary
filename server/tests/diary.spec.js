@@ -133,10 +133,10 @@ export default function () {
       const route = '/entries';
       it('should add entry to database', async () => {
         const res = await chai.request(app).post(rootUrl + route).send(diaryTemplate);
-        const { id } = res.body;
+        const { id } = res.body.body;
 
         expect(res).to.have.status(200);
-        expect(res.body).to.include({ title: diaryTemplate.title, body: diaryTemplate.body, author: diaryTemplate.author }).and.have.property('id');
+        expect(res.body.body).to.include({ title: diaryTemplate.title, body: diaryTemplate.body, author: diaryTemplate.author }).and.have.property('id');
         // verify that id was successfully added, then delete
         await Diary.findByIdAndDelete(id);
       });
@@ -148,7 +148,7 @@ export default function () {
         const res = await chai.request(app).post(rootUrl + route).send(badDetails);
 
         expect(res).to.have.status(400);
-        expect(res.error.text).to.equal('all fields must be provided');
+        expect(res.body.error).to.equal('field title is required');
       });
     });
     describe('GET /entries', () => {
@@ -156,12 +156,12 @@ export default function () {
       it('should return all entries', async () => {
         // save new entry to ensure that test returns value
         const entry = await chai.request(app).post(`${rootUrl}/entries`).send(diaryTemplate);
-        const { id } = entry.body;
+        const { id } = entry.body.body;
 
         const res = await chai.request(app).get(rootUrl + route);
         expect(res).to.have.status(200);
-        expect(res.body).to.be.an('array');
-        expect(res.body.length).to.be.greaterThan(0);
+        expect(res.body.body).to.be.an('array');
+        expect(res.body.body.length).to.be.greaterThan(0);
         // delete entry after test
         await Diary.findByIdAndDelete(id);
       });
@@ -170,11 +170,11 @@ export default function () {
       it('should return entry with the specified id', async () => {
         // add entry before test
         const entry = await chai.request(app).post(`${rootUrl}/entries`).send(diaryTemplate);
-        const { id } = entry.body;
+        const { id } = entry.body.body;
         const res = await chai.request(app).get(`${rootUrl}/entries/${id}`);
         expect(res).to.have.status(200);
-        expect(res.body).to.be.an('object');
-        expect(res.body).to.include({
+        expect(res.body.body).to.be.an('object');
+        expect(res.body.body).to.include({
           title: diaryTemplate.title,
           body: diaryTemplate.body,
           author: diaryTemplate.author,
@@ -187,8 +187,8 @@ export default function () {
         const invalidId = '2444invalid';
         const res = await chai.request(app).get(`${rootUrl}/entries/${invalidId}`);
         expect(res).to.have.status(404);
-        expect(res.body).to.eql({});
-        expect(res.error.text).to.equal('entry not found');
+        expect(res.body.body).to.eql({});
+        expect(res.body.error).to.equal('entry not found');
       });
     });
     describe('PUT /entries/:id', () => {
@@ -199,20 +199,20 @@ export default function () {
       let entryId;
       before('Add entry to db before test', async () => {
         const entry = await chai.request(app).post(`${rootUrl}/entries`).send(diaryTemplate);
-        entryId = entry.body.id;
+        entryId = entry.body.body.id;
       });
       it('should modify the specified entry and return an object containing it ', async () => {
         const testResult = await chai.request(app).put(`${rootUrl}/entries/${entryId}`).send(modification);
         const verifyIfSaved = await chai.request(app).get(`${rootUrl}/entries/${entryId}`);
         expect(testResult).to.have.status(200);
-        expect(verifyIfSaved.body).to.include({
+        expect(verifyIfSaved.body.body).to.include({
           title: modification.title,
           body: modification.body,
           author: diaryTemplate.author,
           id: entryId,
         });
-        expect(testResult.body).to.be.an('object');
-        expect(testResult.body).to.include({
+        expect(testResult.body.body).to.be.an('object');
+        expect(testResult.body.body).to.include({
           title: modification.title,
           body: modification.body,
           author: diaryTemplate.author,
@@ -226,16 +226,16 @@ export default function () {
         const res = await chai.request(app).put(`${rootUrl}/entries/${entryId}`).send(invalidData);
 
         expect(res).to.have.status(400);
-        expect(res.body).to.eql({});
-        expect(res.error.text).to.equal('all fields must be provided');
+        expect(res.body.body).to.eql({});
+        expect(res.body.error).to.equal('all fields must be provided');
       });
       it('should not modify an entry when id is invalid', async () => {
         const badId = 'verywrongid';
         const res = await chai.request(app).put(`${rootUrl}/entries/${badId}`).send(modification);
 
         expect(res).to.have.status(400);
-        expect(res.body).to.eql({});
-        expect(res.error.text).to.equal('entry not found');
+        expect(res.body.body).to.eql({});
+        expect(res.body.error).to.equal('entry not found');
       });
       after('delete added entry after tests', async () => {
         await Diary.findByIdAndDelete(entryId);
@@ -245,11 +245,11 @@ export default function () {
       it('should delete entry and return its value', async () => {
         // add entry before test
         const entry = await chai.request(app).post(`${rootUrl}/entries`).send(diaryTemplate);
-        const { id } = entry.body;
+        const { id } = entry.body.body;
         const res = await chai.request(app).delete(`${rootUrl}/entries/${id}`);
         expect(res).to.have.status(200);
-        expect(res.body).to.be.an('object');
-        expect(res.body).to.include({
+        expect(res.body.body).to.be.an('object');
+        expect(res.body.body).to.include({
           title: diaryTemplate.title,
           body: diaryTemplate.body,
           author: diaryTemplate.author,
@@ -260,8 +260,8 @@ export default function () {
         const invalidId = '2444invalid';
         const res = await chai.request(app).delete(`${rootUrl}/entries/${invalidId}`);
         expect(res).to.have.status(400);
-        expect(res.body).to.eql({});
-        expect(res.error.text).to.equal('entry not found');
+        expect(res.body.body).to.eql({});
+        expect(res.body.error).to.equal('entry not found');
       });
     });
   });
