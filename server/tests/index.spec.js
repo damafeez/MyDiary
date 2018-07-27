@@ -3,6 +3,7 @@ import chaiHttp from 'chai-http';
 
 import app from '../index';
 import diarySpec from './diary.spec';
+import signupSpec from './signup.spec';
 
 chai.use(chaiHttp);
 const rootUrl = '/api/v1';
@@ -16,3 +17,4 @@ describe('SERVER', () => {
   });
 });
 diarySpec();
+// signupSpec();

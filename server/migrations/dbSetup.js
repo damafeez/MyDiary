@@ -14,8 +14,8 @@ if (process.env.NODE_ENV === 'development' || 'test') {
 } else { config = prodParam; }
 
 const client = new Client(config);
-client.query(`${users}${authentication}${entries}${notificationStatus}`, (error) => {
-  winston.log('error', error);
+client.query(`${authentication}${users}${entries}${notificationStatus}`, (error) => {
+  console.log('error', error);
   client.end();
 });
 client.connect();
