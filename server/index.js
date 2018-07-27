@@ -14,6 +14,8 @@ app
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({ extended: true }));
 
+app.set('json spaces', 2);
+
 app.use('/api/v1', api);
 
 app.listen(PORT, () => winston.log('server status', `server is running on port ${PORT}, NODE_ENV: ${process.env.NODE_ENV}`));
