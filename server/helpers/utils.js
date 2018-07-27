@@ -4,8 +4,4 @@ const filterRequired = (requiredFields, body) => requiredFields
     return !acc ? `field ${curr} is required` : `${acc}, field ${curr} is required`;
   }, '');
 
-const test = () => {
-  console.log('test');
-};
-
-export { filterRequired, test };
+export { filterRequired };
