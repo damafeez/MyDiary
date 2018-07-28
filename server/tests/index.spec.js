@@ -17,4 +17,4 @@ describe('SERVER', () => {
   });
 });
 diarySpec();
-// signupSpec();
+signupSpec();
