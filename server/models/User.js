@@ -1,9 +1,29 @@
 import bcrypt from 'bcrypt';
 import connection from '../helpers/connection';
+import { required, minLength, dataType } from '../helpers/utils';
 
 const client = connection();
-const users = [];
-
+const rules = {
+  fullName: [
+    [required],
+    [minLength, 5],
+    [dataType, 'string'],
+  ],
+  username: [
+    [required],
+    [minLength, 7],
+    [dataType, 'string'],
+  ],
+  password: [
+    [required],
+    [minLength, 8],
+    [dataType, 'string'],
+  ],
+  email: [
+    [required],
+    [dataType, 'email'],
+  ],
+};
 export default class User {
   constructor({
     fullName,
@@ -33,3 +53,5 @@ export default class User {
     return noPassword;
   }
 }
+
+export { rules };
