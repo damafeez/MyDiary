@@ -19,7 +19,6 @@ export default function () {
       const route = '/auth/signup';
       it('should add user to database', async () => {
         const res = await chai.request(app).post(rootUrl + route).send(user);
-        console.log(res.body);
         expect(res).to.have.status(200);
         expect(res.body.data).to.include({ fullName: user.fullName, username: user.username });
       });
