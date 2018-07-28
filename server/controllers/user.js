@@ -1,19 +1,20 @@
-import connection from '../helpers/connection';
+import User from '../models/User';
 import { filterRequired } from '../helpers/utils';
 
-const client = connection();
-client.connect();
-
-export async function signup(req, res) {
-  const requiredFields = ['fullName', 'username', 'password'];
+export async function signup(request, response) {
+  const requiredFields = ['fullName', 'email', 'username', 'password'];
   try {
-    const { fullName, username, password } = req.body;
-    if (fullName && username && password) {
-      const authenticationQuery = `INSERT INTO authentication (username, password)
-      VALUES ('${username}','${password}') RETURNING *;`;
-      const authenticationResult = await client.query(authenticationQuery);
-      res.json({
-        body: authenticationResult.rows[0],
+    const {
+      fullName,
+      email,
+      username,
+      password,
+    } = request.body;
+    if (fullName && email && username && password) {
+      const newUser = new User({ ...request.body });
+      const user = await newUser.save();
+      response.json({
+        data: user,
         error: null,
       });
     } else {
@@ -21,13 +22,9 @@ export async function signup(req, res) {
       throw new Error(error);
     }
   } catch (error) {
-    res.status(400).json({
-      body: {},
+    response.status(400).json({
+      data: {},
       error: error.message,
     });
   }
-}
-
-export async function test() {
-  return 'test';
 }

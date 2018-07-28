@@ -1,14 +1,12 @@
 import dotenv from 'dotenv';
 import { Client } from 'pg';
-import { devParam, prodParam } from '../config';
+import setupTables from '../migrations/dbSetupQuery';
 
 dotenv.config();
-let config;
 
 export default function () {
-  if (process.env.NODE_ENV === 'development' || 'test') {
-    config = devParam;
-  } else { config = prodParam; }
-  const client = new Client(config);
+  const client = new Client();
+  client.query(setupTables);
+  client.connect();
   return client;
 }
