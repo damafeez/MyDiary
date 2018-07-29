@@ -13,15 +13,16 @@ export async function signup(request, response) {
     if (fullName && email && username && password) {
       const newUser = new User({ ...request.body });
       const user = await newUser.save();
-      response.json({
+      response.status(201).json({
         data: user,
         error: null,
       });
     } else {
-      const error = filterRequired(requiredFields);
+      const error = filterRequired(requiredFields, request.body);
       throw new Error(error);
     }
   } catch (error) {
+    console.log({ error });
     response.status(400).json({
       data: {},
       error: error.message,
