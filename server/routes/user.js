@@ -1,10 +1,10 @@
 import express from 'express';
-import {
-  signup,
-} from '../controllers/user';
+import { rules } from '../models/User';
+import { validator } from '../helpers/utils';
+import { signup } from '../controllers/user';
 
 const router = express.Router();
 
-router.post('/auth/signup', signup);
+router.post('/auth/signup', validator(rules), signup);
 
 export default router;

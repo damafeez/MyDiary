@@ -1,4 +1,35 @@
+import { required, minLength, dataType } from '../helpers/utils';
+
 const diaries = [];
+
+const postRules = {
+  title: [
+    [required],
+    [minLength, 5],
+    [dataType, 'string'],
+  ],
+  body: [
+    [required],
+    [minLength, 15],
+    [dataType, 'string'],
+  ],
+  author: [
+    [required],
+    [dataType, 'number'],
+  ],
+};
+const putRules = {
+  title: [
+    [required],
+    [minLength, 5],
+    [dataType, 'string'],
+  ],
+  body: [
+    [required],
+    [minLength, 15],
+    [dataType, 'string'],
+  ],
+};
 export default class Diary {
   constructor({ title, body, author }) {
     const now = new Date().getTime();
@@ -72,4 +103,4 @@ export default class Diary {
     return this;
   }
 }
-export { diaries };
+export { diaries, postRules, putRules };

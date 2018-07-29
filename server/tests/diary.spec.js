@@ -6,7 +6,7 @@ import Diary, { diaries } from '../models/Diary';
 
 chai.use(chaiHttp);
 
-const diaryTemplate = { title: 'My awesome diary', body: 'This is the body of my awesome diary', author: 'johndoe' };
+const diaryTemplate = { title: 'My awesome diary', body: 'This is the body of my awesome diary', author: 1 };
 const rootUrl = '/api/v1';
 
 export default function () {
@@ -77,7 +77,7 @@ export default function () {
       const diaryUpdate = {
         title: 'My Very Awesome Diary',
         body: 'As you can see, this is more awesome',
-        author: 'johndoe',
+        author: 1,
       };
       let saveResult;
       let testResult;
@@ -133,22 +133,25 @@ export default function () {
       const route = '/entries';
       it('should add entry to database', async () => {
         const res = await chai.request(app).post(rootUrl + route).send(diaryTemplate);
-        const { id } = res.body.body;
-
+        const { id } = res.body.data;
         expect(res).to.have.status(200);
-        expect(res.body.body).to.include({ title: diaryTemplate.title, body: diaryTemplate.body, author: diaryTemplate.author }).and.have.property('id');
+        expect(res.body.data).to.include({ title: diaryTemplate.title, body: diaryTemplate.body, author: diaryTemplate.author }).and.have.property('id');
         // verify that id was successfully added, then delete
         await Diary.findByIdAndDelete(id);
       });
       it('should not add entries with bad details', async () => {
         const badDetails = {
           body: 'This entry has bad details because it has no title',
-          author: 'johndoe',
+          author: 1,
         };
         const res = await chai.request(app).post(rootUrl + route).send(badDetails);
 
         expect(res).to.have.status(400);
-        expect(res.body.error).to.equal('field title is required');
+        expect(res.body.error).to.include.members([
+          'title is required',
+          'title should have minimum of 5 characters',
+          'title should be of type string',
+        ]);
       });
     });
     describe('GET /entries', () => {
@@ -156,12 +159,12 @@ export default function () {
       it('should return all entries', async () => {
         // save new entry to ensure that test returns value
         const entry = await chai.request(app).post(`${rootUrl}/entries`).send(diaryTemplate);
-        const { id } = entry.body.body;
+        const { id } = entry.body.data;
 
         const res = await chai.request(app).get(rootUrl + route);
         expect(res).to.have.status(200);
-        expect(res.body.body).to.be.an('array');
-        expect(res.body.body.length).to.be.greaterThan(0);
+        expect(res.body.data).to.be.an('array');
+        expect(res.body.data.length).to.be.greaterThan(0);
         // delete entry after test
         await Diary.findByIdAndDelete(id);
       });
@@ -170,11 +173,11 @@ export default function () {
       it('should return entry with the specified id', async () => {
         // add entry before test
         const entry = await chai.request(app).post(`${rootUrl}/entries`).send(diaryTemplate);
-        const { id } = entry.body.body;
+        const { id } = entry.body.data;
         const res = await chai.request(app).get(`${rootUrl}/entries/${id}`);
         expect(res).to.have.status(200);
-        expect(res.body.body).to.be.an('object');
-        expect(res.body.body).to.include({
+        expect(res.body.data).to.be.an('object');
+        expect(res.body.data).to.include({
           title: diaryTemplate.title,
           body: diaryTemplate.body,
           author: diaryTemplate.author,
@@ -187,7 +190,7 @@ export default function () {
         const invalidId = '2444invalid';
         const res = await chai.request(app).get(`${rootUrl}/entries/${invalidId}`);
         expect(res).to.have.status(404);
-        expect(res.body.body).to.eql({});
+        expect(res.body.data).to.eql({});
         expect(res.body.error).to.equal('entry not found');
       });
     });
@@ -199,20 +202,21 @@ export default function () {
       let entryId;
       before('Add entry to db before test', async () => {
         const entry = await chai.request(app).post(`${rootUrl}/entries`).send(diaryTemplate);
-        entryId = entry.body.body.id;
+        entryId = entry.body.data.id;
       });
       it('should modify the specified entry and return an object containing it ', async () => {
         const testResult = await chai.request(app).put(`${rootUrl}/entries/${entryId}`).send(modification);
         const verifyIfSaved = await chai.request(app).get(`${rootUrl}/entries/${entryId}`);
+
         expect(testResult).to.have.status(200);
-        expect(verifyIfSaved.body.body).to.include({
+        expect(verifyIfSaved.body.data).to.include({
           title: modification.title,
           body: modification.body,
           author: diaryTemplate.author,
           id: entryId,
         });
-        expect(testResult.body.body).to.be.an('object');
-        expect(testResult.body.body).to.include({
+        expect(testResult.body.data).to.be.an('object');
+        expect(testResult.body.data).to.include({
           title: modification.title,
           body: modification.body,
           author: diaryTemplate.author,
@@ -226,15 +230,19 @@ export default function () {
         const res = await chai.request(app).put(`${rootUrl}/entries/${entryId}`).send(invalidData);
 
         expect(res).to.have.status(400);
-        expect(res.body.body).to.eql({});
-        expect(res.body.error).to.equal('all fields must be provided');
+        expect(res.body.data).to.eql({});
+        expect(res.body.error).to.include.members([
+          'title is required',
+          'title should have minimum of 5 characters',
+          'title should be of type string',
+        ]);
       });
       it('should not modify an entry when id is invalid', async () => {
         const badId = 'verywrongid';
         const res = await chai.request(app).put(`${rootUrl}/entries/${badId}`).send(modification);
 
         expect(res).to.have.status(400);
-        expect(res.body.body).to.eql({});
+        expect(res.body.data).to.eql({});
         expect(res.body.error).to.equal('entry not found');
       });
       after('delete added entry after tests', async () => {
@@ -245,11 +253,11 @@ export default function () {
       it('should delete entry and return its value', async () => {
         // add entry before test
         const entry = await chai.request(app).post(`${rootUrl}/entries`).send(diaryTemplate);
-        const { id } = entry.body.body;
+        const { id } = entry.body.data;
         const res = await chai.request(app).delete(`${rootUrl}/entries/${id}`);
         expect(res).to.have.status(200);
-        expect(res.body.body).to.be.an('object');
-        expect(res.body.body).to.include({
+        expect(res.body.data).to.be.an('object');
+        expect(res.body.data).to.include({
           title: diaryTemplate.title,
           body: diaryTemplate.body,
           author: diaryTemplate.author,
@@ -260,7 +268,7 @@ export default function () {
         const invalidId = '2444invalid';
         const res = await chai.request(app).delete(`${rootUrl}/entries/${invalidId}`);
         expect(res).to.have.status(400);
-        expect(res.body.body).to.eql({});
+        expect(res.body.data).to.eql({});
         expect(res.body.error).to.equal('entry not found');
       });
     });

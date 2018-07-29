@@ -30,7 +30,13 @@ export default function () {
         const res = await chai.request(app).post(rootUrl + route).send(badUser);
 
         expect(res).to.have.status(400);
-        expect(res.body.error).to.equal('field email is required, field password is required');
+        expect(res.body.error).to.include.members([
+          'password is required',
+          'password should have minimum of 8 characters',
+          'password should be of type string',
+          'email is required',
+          'email should be of type email',
+        ]);
       });
       it('should not add existing user', async () => {
 
