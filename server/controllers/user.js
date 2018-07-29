@@ -30,7 +30,7 @@ export async function login(request, response) {
     } = request.body;
     const returningUser = new User({ username, password });
     const user = await returningUser.login();
-    response.status(200).json({
+    response.status(200).header('x-auth-token', user.token).json({
       data: user,
       error: null,
     });

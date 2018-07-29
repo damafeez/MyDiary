@@ -26,6 +26,7 @@ export default function () {
       const res = await chai.request(app).post(rootUrl + route)
         .send({ username: userDetails.username, password: userDetails.password });
       expect(res).to.have.status(200);
+      expect(res.header).to.have.property('x-auth-token');
       expect(res.body.data).to.have.property('id');
       expect(res.body.data).to.include({ fullName: userDetails.fullName, email: userDetails.email, username: userDetails.username }).but.not.have.property('password');
     });

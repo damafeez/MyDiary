@@ -1,6 +1,10 @@
+import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import client from '../helpers/connection';
 import { required, minLength, dataType } from '../helpers/utils';
+
+dotenv.config();
 
 const signupRules = {
   fullName: [
@@ -57,18 +61,18 @@ export default class User {
 
   async login() {
     try {
-      const authQuery = `SELECT * FROM authentication WHERE username = '${this.username}'`;
-      const getAuth = await client.query(authQuery);
-      if (getAuth.rows.length === 0) return new Error('user not found');
-      this.username = getAuth.rows[0].username;
-      this.authId = getAuth.rows[0].id;
-      const correctPassword = await bcrypt.compare(this.password, getAuth.rows[0].password);
+      const authQuery = `SELECT users.id, authentication.password, authentication.username, users."fullName", users.email FROM authentication INNER JOIN users 
+      ON users."authId" = authentication.id 
+      WHERE authentication.username = '${this.username}'`;
+      const getUser = await client.query(authQuery);
+      const user = getUser.rows[0];
+      if (!user) return new Error('user not found');
+      const correctPassword = await bcrypt.compare(this.password, getUser.rows[0].password);
       if (correctPassword) {
-        const userQuery = `SELECT * FROM users WHERE "authId"=${this.authId}`;
-        const getUser = await client.query(userQuery);
-        this.id = getUser.rows[0].id;
-        this.email = getUser.rows[0].email;
-        this.fullName = getUser.rows[0].fullName;
+        this.fullName = user.fullName;
+        this.email = user.email;
+        this.id = user.id;
+        this.token = await this.genToken();
         return Promise.resolve(this.strip());
       }
       throw new Error('user not found');
@@ -77,9 +81,19 @@ export default class User {
     }
   }
 
+  async genToken() {
+    jwt.sign({
+      exp: (Math.floor(Date.now() / 1000) + (60 * 60)) * 24 * 7,
+      data: this.strip(),
+    }, process.env.JWT_SECRET, (error, token) => {
+      if (error) return Promise.reject(error);
+      return Promise.resolve(token);
+    });
+  }
+
   strip() {
-    const { password, authId, ...noPasswordOrAuth } = this;
-    return noPasswordOrAuth;
+    const { password, ...noPassword } = this;
+    return noPassword;
   }
 }
 
