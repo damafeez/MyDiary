@@ -1,9 +1,8 @@
 import bcrypt from 'bcrypt';
-import connection from '../helpers/connection';
+import client from '../helpers/connection';
 import { required, minLength, dataType } from '../helpers/utils';
 
-const client = connection();
-const rules = {
+const signupRules = {
   fullName: [
     [required],
     [minLength, 5],
@@ -22,6 +21,14 @@ const rules = {
   email: [
     [required],
     [dataType, 'email'],
+  ],
+};
+const loginRules = {
+  username: [
+    [required],
+  ],
+  password: [
+    [required],
   ],
 };
 export default class User {
@@ -48,10 +55,32 @@ export default class User {
     return Promise.resolve(this.strip());
   }
 
+  async login() {
+    try {
+      const authQuery = `SELECT * FROM authentication WHERE username = '${this.username}'`;
+      const getAuth = await client.query(authQuery);
+      if (getAuth.rows.length === 0) return new Error('user not found');
+      this.username = getAuth.rows[0].username;
+      this.authId = getAuth.rows[0].id;
+      const correctPassword = await bcrypt.compare(this.password, getAuth.rows[0].password);
+      if (correctPassword) {
+        const userQuery = `SELECT * FROM users WHERE "authId"=${this.authId}`;
+        const getUser = await client.query(userQuery);
+        this.id = getUser.rows[0].id;
+        this.email = getUser.rows[0].email;
+        this.fullName = getUser.rows[0].fullName;
+        return Promise.resolve(this.strip());
+      }
+      throw new Error('user not found');
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
   strip() {
-    const { password, ...noPassword } = this;
-    return noPassword;
+    const { password, authId, ...noPasswordOrAuth } = this;
+    return noPasswordOrAuth;
   }
 }
 
-export { rules };
+export { signupRules, loginRules };

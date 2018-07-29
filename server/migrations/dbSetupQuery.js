@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users(
   email TEXT NOT NULL,
   "authId" INT,
   CONSTRAINT FK_Users_Authentication FOREIGN KEY ("authId") REFERENCES authentication(id)
+  ON DELETE CASCADE
 );`;
 
 const authentication = `

@@ -4,9 +4,8 @@ import setupTables from '../migrations/dbSetupQuery';
 
 dotenv.config();
 
-export default function () {
-  const client = new Client();
-  client.query(setupTables);
-  client.connect();
-  return client;
-}
+const client = new Client();
+client.query(setupTables);
+client.connect();
+
+export default client;
