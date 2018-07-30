@@ -82,13 +82,10 @@ export default class User {
   }
 
   async genToken() {
-    jwt.sign({
+    return jwt.sign({
       exp: (Math.floor(Date.now() / 1000) + (60 * 60)) * 24 * 7,
       data: this.strip(),
-    }, process.env.JWT_SECRET, (error, token) => {
-      if (error) return Promise.reject(error);
-      return Promise.resolve(token);
-    });
+    }, process.env.JWT_SECRET);
   }
 
   strip() {

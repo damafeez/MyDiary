@@ -20,10 +20,22 @@ const dataType = (v, field, type) => {
   }
   return typeof v === type || `${field} should be of type ${type}`;
 };
+const sendResponse = ({
+  data = {},
+  status = 200,
+  error = null,
+  response,
+}) => {
+  response.status(status).json({
+    data,
+    error,
+  });
+};
 
 export {
   validator,
   required,
   minLength,
   dataType,
+  sendResponse,
 };
