@@ -18,13 +18,13 @@ CREATE TABLE IF NOT EXISTS authentication(
 const entries = `
 CREATE TABLE IF NOT EXISTS entries(
   id SERIAL PRIMARY KEY,
-  "userId" INT,
+  "authorId" INT,
   title TEXT NOT NULL,
   body TEXT NOT NULL,
   created timestamp (0) without time zone default now(),
   edited timestamp (0) without time zone default now(),
-  CONSTRAINT FK_Entries_Users FOREIGN KEY ("userId") REFERENCES users(id)
-  
+  CONSTRAINT FK_Entries_Users FOREIGN KEY ("authorId") REFERENCES users(id)
+  ON DELETE CASCADE  
 );`;
 
 const notificationStatus = `
@@ -32,8 +32,16 @@ CREATE TABLE IF NOT EXISTS notificationStatus(
   id SERIAL PRIMARY KEY,
   "userId" INT,
   value BOOLEAN DEFAULT false,
-  CONSTRAINT FK_NotificationStatus_Users FOREIGN KEY ("userId") REFERENCES authentication(id)
+  CONSTRAINT FK_NotificationStatus_Users FOREIGN KEY ("userId") REFERENCES users(id)
+  ON DELETE CASCADE
   
 );`;
 
+const dropTables = `
+DROP TABLE IF EXISTS authentication cascade;
+DROP TABLE IF EXISTS users cascade;
+DROP TABLE IF EXISTS entries cascade;
+DROP TABLE IF EXISTS notificationStatus cascade;
+`;
 export default `${authentication}${users}${entries}${notificationStatus}`;
+export { dropTables };

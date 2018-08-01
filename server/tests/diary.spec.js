@@ -129,31 +129,6 @@ export default function () {
     });
   });
   describe('routes', () => {
-    describe('POST /entries', () => {
-      const route = '/entries';
-      it('should add entry to database', async () => {
-        const res = await chai.request(app).post(rootUrl + route).send(diaryTemplate);
-        const { id } = res.body.data;
-        expect(res).to.have.status(200);
-        expect(res.body.data).to.include({ title: diaryTemplate.title, body: diaryTemplate.body, author: diaryTemplate.author }).and.have.property('id');
-        // verify that id was successfully added, then delete
-        await Diary.findByIdAndDelete(id);
-      });
-      it('should not add entries with bad details', async () => {
-        const badDetails = {
-          body: 'This entry has bad details because it has no title',
-          author: 1,
-        };
-        const res = await chai.request(app).post(rootUrl + route).send(badDetails);
-
-        expect(res).to.have.status(400);
-        expect(res.body.error).to.include.members([
-          'title is required',
-          'title should have minimum of 5 characters',
-          'title should be of type string',
-        ]);
-      });
-    });
     describe('GET /entries', () => {
       const route = '/entries';
       it('should return all entries', async () => {

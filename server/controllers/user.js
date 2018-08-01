@@ -7,8 +7,6 @@ const signup = async (request, response) => {
     const user = await newUser.save();
     sendResponse({ response, data: user, status: 201 });
   } catch (error) {
-    console.log(request.body);
-    console.log(error.message);
     if (error.message === 'duplicate key value violates unique constraint "authentication_username_key"') error.message = 'username has been chosen';
     sendResponse({ response, error: [error.message], status: 400 });
   }

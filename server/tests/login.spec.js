@@ -2,7 +2,7 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 
 import app from '../index';
-import client from '../helpers/connection';
+import User from '../models/User';
 
 chai.use(chaiHttp);
 const userDetails = {
@@ -20,7 +20,9 @@ export default function () {
       await chai.request(app).post(`${rootUrl}/auth/signup`).send(userDetails);
     });
     after('remove user after test', async () => {
-      await client.query(`DELETE FROM authentication WHERE username='${userDetails.username}'`);
+      const response = await User.remove(userDetails.username);
+      expect(response.rowCount).to.equal(1);
+      expect(response.rows[0]).to.include({ username: userDetails.username });
     });
     it('should log user in', async () => {
       const res = await chai.request(app).post(rootUrl + route)

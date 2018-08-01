@@ -23,19 +23,18 @@ export default function () {
       expect(response.rows[0]).to.include({ username: user.username });
     });
     it('should add user to database', async () => {
-      const res = await chai.request(app).post(rootUrl + route).send(user);
-      expect(res).to.have.status(201);
-      expect(res.body.data).to.include({ fullName: user.fullName, username: user.username }).and.have.property('id').but.not.have.property('password');
+      const response = await chai.request(app).post(rootUrl + route).send(user);
+      expect(response).to.have.status(201);
+      expect(response.body.data).to.include({ fullName: user.fullName, username: user.username }).and.have.property('id').but.not.have.property('password');
     });
     it('should not add user with bad details', async () => {
       const badUser = {
         fullName: 'Bad User',
         username: 'johndoe',
       };
-      const res = await chai.request(app).post(rootUrl + route).send(badUser);
-
-      expect(res).to.have.status(400);
-      expect(res.body.error).to.include.members([
+      const response = await chai.request(app).post(rootUrl + route).send(badUser);
+      expect(response).to.have.status(400);
+      expect(response.body.error).to.include.members([
         'password is required',
         'password should have minimum of 8 characters',
         'password should be of type string',
@@ -44,11 +43,11 @@ export default function () {
       ]);
     });
     it('should not add existing username', async () => {
-      const res = await chai.request(app).post(rootUrl + route).send(user);
-      console.log(res.body);
-      expect(res).to.have.status(400);
-      expect(res.body.data).to.eql({});
-      expect(res.body.error).to.include.members(['username has been chosen']);
+      const response = await chai.request(app).post(rootUrl + route).send(user);
+      console.log(response.body);
+      expect(response).to.have.status(400);
+      expect(response.body.data).to.eql({});
+      expect(response.body.error).to.include.members(['username has been chosen']);
     });
     it('should not add existing email', async () => {
       const res = await chai.request(app).post(rootUrl + route).send({ ...user, username: 'anotherusername' });
