@@ -19,31 +19,40 @@ export default function () {
   const route = '/entries';
   describe('GET /entries', () => {
     let user;
+    let id;
     before('add user, log him in and add entry before test', async () => {
       await chai.request(app).post(`${rootUrl}/auth/signup`).send(userDetails);
       const login = await chai.request(app).post(`${rootUrl}/auth/login`)
         .send({ username: userDetails.username, password: userDetails.password });
       user = login.body.data;
-      await chai.request(app).post(`${rootUrl}/entries`)
+      const entry = await chai.request(app).post(`${rootUrl}/entries`)
         .set('x-auth-token', user.token).send(diaryTemplate);
+      id = entry.body.data.id;
     });
     after('delete user after test', async () => {
       after('remove user after test', async () => {
         await User.remove(user.username);
       });
     });
-    it('should return all entries', async () => {
-      const response = await chai.request(app).get(rootUrl + route)
+    it('should return specifified entry', async () => {
+      const response = await chai.request(app).get(`${rootUrl}/entries/${id}`)
         .set('x-auth-token', user.token);
       expect(response).to.have.status(200);
-      expect(response.body.data).to.be.an('array');
-      expect(response.body.data.length).to.be.greaterThan(0);
-      expect(response.body.data[0]).to.have.property('id');
-      expect(response.body.data[0]).to.have.property('title');
-      expect(response.body.data[0]).to.have.property('body');
-      expect(response.body.data[0]).to.have.property('authorId');
-      expect(response.body.data[0]).to.have.property('created');
-      expect(response.body.data[0]).to.have.property('edited');
+      expect(response.body.data).to.be.an('object');
+      expect(response.body.data).to.include({
+        title: diaryTemplate.title,
+        body: diaryTemplate.body,
+      });
+      expect(response.body.data).to.have.property('authorId');
+      expect(response.body.data).to.have.property('created');
+      expect(response.body.data).to.have.property('edited');
+    });
+    it('should return error if id is not found', async () => {
+      const response = await chai.request(app).get(`${rootUrl}/entries/${7.3}`)
+        .set('x-auth-token', user.token);
+      expect(response).to.have.status(404);
+      expect(response.body.data).to.eql({});
+      expect(response.body.error).to.include.members(['entry not found']);
     });
     it('should return error when token is compromised', async () => {
       const response = await chai.request(app).post(rootUrl + route)
