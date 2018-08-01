@@ -8,6 +8,7 @@ import diarySpec from './diary.spec';
 import signupSpec from './signup.spec';
 import loginSpec from './login.spec';
 import addEntrySpec from './addEntry.spec';
+import getEntriesSpec from './getEntries.spec';
 
 process.env.NODE_ENV = 'test';
 chai.use(chaiHttp);
@@ -28,3 +29,4 @@ describe('SERVER', () => {
 signupSpec();
 loginSpec();
 addEntrySpec();
+getEntriesSpec();
