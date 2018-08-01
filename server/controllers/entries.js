@@ -14,16 +14,10 @@ export async function postEntry(request, response) {
 }
 export async function getEntries(request, response) {
   try {
-    const entries = await Diary.find();
-    response.json({
-      data: entries,
-      error: null,
-    });
+    const entries = await Diary.find(request.user);
+    sendResponse({ response, data: entries, status: 200 });
   } catch (error) {
-    response.status(404).json({
-      data: {},
-      error: error.message,
-    });
+    sendResponse({ response, error: [error.message], status: 400 });
   }
 }
 export async function getEntry(request, response) {
