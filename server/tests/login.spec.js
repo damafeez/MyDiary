@@ -33,7 +33,7 @@ export default function () {
     it('should not log user with bad credentials in', async () => {
       const res = await chai.request(app).post(rootUrl + route).send({ username: userDetails.username, password: 'incorrect' });
       expect(res).to.have.status(401);
-      expect(res.body.error).to.equal('user not found');
+      expect(res.body.error).to.include.members(['user not found']);
     });
     it('should return custom error message if required fields are not supplied', async () => {
       const res = await chai.request(app).post(rootUrl + route)

@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users(
 const authentication = `
 CREATE TABLE IF NOT EXISTS authentication(
   id SERIAL PRIMARY KEY,
-  username VARCHAR(50) NOT NULL,
+  username VARCHAR(150) UNIQUE NOT NULL,
   password TEXT NOT NULL
 );`;
 
