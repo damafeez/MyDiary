@@ -2,20 +2,7 @@ import { required, minLength, dataType } from '../helpers/utils';
 import client from '../helpers/connection';
 
 const diaries = [];
-
 const postRules = {
-  title: [
-    [required],
-    [minLength, 5],
-    [dataType, 'string'],
-  ],
-  body: [
-    [required],
-    [minLength, 15],
-    [dataType, 'string'],
-  ],
-};
-const putRules = {
   title: [
     [required],
     [minLength, 5],
@@ -88,4 +75,4 @@ export default class Diary {
     return this;
   }
 }
-export { diaries, postRules, putRules };
+export { diaries, postRules };

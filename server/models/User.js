@@ -58,10 +58,18 @@ export default class User {
     const authQuery = 'INSERT INTO authentication(username, password) VALUES($1, $2) RETURNING id';
     const addUserQuery = 'INSERT INTO users("fullName", email, "authId") VALUES($1, $2, $3) RETURNING id';
     const addAuthentication = await client.query(authQuery, [this.username, this.password]);
-    this.authId = addAuthentication.rows[0].id;
-    const addUser = await client.query(addUserQuery, [this.fullName, this.email, this.authId]);
-    this.id = addUser.rows[0].id;
-    return Promise.resolve(this.strip());
+    try {
+      this.authId = addAuthentication.rows[0].id;
+      const addUser = await client.query(addUserQuery, [this.fullName, this.email, this.authId]);
+      this.id = addUser.rows[0].id;
+    } catch (error) {
+      if (error.message === 'duplicate key value violates unique constraint "users_email_key"') {
+        await User.remove(this.username);
+        throw new Error('email has been chosen');
+      }
+      return error;
+    }
+    return this.strip();
   }
 
   async login() {
@@ -76,13 +84,13 @@ export default class User {
       this.fullName = user.fullName;
       this.email = user.email;
       this.id = user.id;
-      this.token = await this.genToken();
+      this.token = await this.generateToken();
       return this.strip();
     }
     throw new Error('user not found');
   }
 
-  async genToken() {
+  async generateToken() {
     return jwt.sign({
       exp: (Math.floor(Date.now() / 1000) + (60 * 60)) * 24 * 7,
       data: this.strip(),

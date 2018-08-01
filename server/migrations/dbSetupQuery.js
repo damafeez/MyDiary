@@ -2,7 +2,7 @@ const users = `
 CREATE TABLE IF NOT EXISTS users(
   id SERIAL PRIMARY KEY,
   "fullName" VARCHAR(100) NOT NULL,
-  email TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
   "authId" INT,
   CONSTRAINT FK_Users_Authentication FOREIGN KEY ("authId") REFERENCES authentication(id)
   ON DELETE CASCADE
