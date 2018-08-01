@@ -4,6 +4,7 @@ import chaiHttp from 'chai-http';
 import app from '../index';
 import diarySpec from './diary.spec';
 import signupSpec from './signup.spec';
+import loginSpec from './login.spec';
 
 chai.use(chaiHttp);
 const rootUrl = '/api/v1';
@@ -18,3 +19,4 @@ describe('SERVER', () => {
 });
 diarySpec();
 signupSpec();
+loginSpec();

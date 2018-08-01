@@ -1,9 +1,12 @@
+import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
-import connection from '../helpers/connection';
+import jwt from 'jsonwebtoken';
+import client from '../helpers/connection';
 import { required, minLength, dataType } from '../helpers/utils';
 
-const client = connection();
-const rules = {
+dotenv.config();
+
+const signupRules = {
   fullName: [
     [required],
     [minLength, 5],
@@ -22,6 +25,14 @@ const rules = {
   email: [
     [required],
     [dataType, 'email'],
+  ],
+};
+const loginRules = {
+  username: [
+    [required],
+  ],
+  password: [
+    [required],
   ],
 };
 export default class User {
@@ -48,10 +59,39 @@ export default class User {
     return Promise.resolve(this.strip());
   }
 
+  async login() {
+    try {
+      const authQuery = `SELECT users.id, authentication.password, authentication.username, users."fullName", users.email FROM authentication INNER JOIN users 
+      ON users."authId" = authentication.id 
+      WHERE authentication.username = '${this.username}'`;
+      const getUser = await client.query(authQuery);
+      const user = getUser.rows[0];
+      if (!user) return new Error('user not found');
+      const isCorrectPassword = await bcrypt.compare(this.password, getUser.rows[0].password);
+      if (isCorrectPassword) {
+        this.fullName = user.fullName;
+        this.email = user.email;
+        this.id = user.id;
+        this.token = await this.genToken();
+        return Promise.resolve(this.strip());
+      }
+      throw new Error('user not found');
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  async genToken() {
+    return jwt.sign({
+      exp: (Math.floor(Date.now() / 1000) + (60 * 60)) * 24 * 7,
+      data: this.strip(),
+    }, process.env.JWT_SECRET);
+  }
+
   strip() {
     const { password, ...noPassword } = this;
     return noPassword;
   }
 }
 
-export { rules };
+export { signupRules, loginRules };
