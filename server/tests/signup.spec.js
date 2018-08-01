@@ -44,7 +44,6 @@ export default function () {
     });
     it('should not add existing username', async () => {
       const response = await chai.request(app).post(rootUrl + route).send(user);
-      console.log(response.body);
       expect(response).to.have.status(400);
       expect(response.body.data).to.eql({});
       expect(response.body.error).to.include.members(['username has been chosen']);
