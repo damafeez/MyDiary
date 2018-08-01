@@ -2,7 +2,7 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 
 import app from '../index';
-import client from '../helpers/connection';
+import User from '../models/User';
 
 chai.use(chaiHttp);
 const userDetails = {
@@ -20,7 +20,9 @@ export default function () {
       await chai.request(app).post(`${rootUrl}/auth/signup`).send(userDetails);
     });
     after('remove user after test', async () => {
-      await client.query(`DELETE FROM authentication WHERE username='${userDetails.username}'`);
+      const response = await User.remove(userDetails.username);
+      expect(response.rowCount).to.equal(1);
+      expect(response.rows[0]).to.include({ username: userDetails.username });
     });
     it('should log user in', async () => {
       const res = await chai.request(app).post(rootUrl + route)
@@ -33,7 +35,7 @@ export default function () {
     it('should not log user with bad credentials in', async () => {
       const res = await chai.request(app).post(rootUrl + route).send({ username: userDetails.username, password: 'incorrect' });
       expect(res).to.have.status(401);
-      expect(res.body.error).to.equal('user not found');
+      expect(res.body.error).to.include.members(['user not found']);
     });
     it('should return custom error message if required fields are not supplied', async () => {
       const res = await chai.request(app).post(rootUrl + route)

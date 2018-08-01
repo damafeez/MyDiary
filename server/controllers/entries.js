@@ -1,76 +1,71 @@
 import Diary from '../models/Diary';
+import { sendResponse } from '../helpers/utils';
 
-export async function postEntry(request, result) {
-  const requiredFields = ['title', 'body', 'author'];
+export async function postEntry(request, response) {
   try {
-    const { title, body, author } = request.body;
+    const { title, body } = request.body;
+    const author = request.user;
     const newDiary = new Diary({ title, body, author });
-    const diary = await Diary.save(newDiary);
-    result.json({
-      data: diary,
-      error: null,
-    });
+    const diary = await newDiary.save();
+    sendResponse({ response, data: diary, status: 201 });
   } catch (error) {
-    result.status(400).json({
-      data: {},
-      error: error.message,
-    });
+    sendResponse({ response, error: [error.message], status: 400 });
   }
 }
-export async function getEntries(request, result) {
+export async function getEntries(request, response) {
   try {
     const entries = await Diary.find();
-    result.json({
+    response.json({
       data: entries,
       error: null,
     });
   } catch (error) {
-    result.status(404).json({
+    response.status(404).json({
       data: {},
       error: error.message,
     });
   }
 }
-export async function getEntry(request, result) {
+export async function getEntry(request, response) {
   try {
     const { id } = request.params;
     const entry = await Diary.findById(id);
-    result.json({
+    response.json({
       data: entry,
       error: null,
     });
   } catch (error) {
-    result.status(404).json({
+    response.status(404).json({
       data: {},
       error: error.message,
     });
   }
 }
-export async function editEntry(request, result) {
+export async function editEntry(request, response) {
   try {
     const { title, body } = request.body;
     const diary = await Diary.findByIdAndUpdate(request.params.id, { title, body });
-    result.json({
+    response.json({
       data: diary,
       error: null,
     });
   } catch (error) {
-    result.status(400).json({
+    response.status(400).json({
       data: {},
       error: error.message,
     });
   }
 }
-export async function deleteEntry(request, result) {
+export async function deleteEntry(request, response) {
   try {
     const { id } = request.params;
     const diary = await Diary.findByIdAndDelete(id);
-    result.json({
+    response.json({
       data: diary,
       error: null,
     });
   } catch (error) {
-    result.status(400).json({
+    response.status(400).json({
       data: {},
       error: error.message,
     });

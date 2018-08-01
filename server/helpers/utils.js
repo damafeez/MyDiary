@@ -1,3 +1,22 @@
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const authenticate = async (request, response, next) => {
+  try {
+    const token = request.headers['x-auth-token'];
+    if (!token) throw new Error('token is required');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    request.user = decoded.data;
+    next();
+  } catch (error) {
+    response.status(401).json({
+      data: {},
+      error: [error.message],
+    });
+  }
+};
 const validator = (rules) => {
   return (request, response, next) => {
     const error = Object.keys(rules).map((field) => {
@@ -33,6 +52,7 @@ const sendResponse = ({
 };
 
 export {
+  authenticate,
   validator,
   required,
   minLength,
