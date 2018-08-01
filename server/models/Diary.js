@@ -62,11 +62,10 @@ export default class Diary {
     });
   }
 
-  static find(condition = true) {
-    return new Promise((resolve) => {
-      const entries = diaries.filter(entry => condition);
-      resolve(entries);
-    });
+  static async find(author) {
+    const fetchDiaryQuery = `SELECT * FROM entries WHERE "authorId" = ${author.id}`;
+    const fetchDiary = await client.query(fetchDiaryQuery);
+    return fetchDiary.rows;
   }
 
   modify({ title, body }) {

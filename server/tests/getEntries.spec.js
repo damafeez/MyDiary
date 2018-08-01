@@ -38,16 +38,10 @@ export default function () {
       expect(response).to.have.status(200);
       expect(response.body.data).to.be.an('array');
       expect(response.body.data.length).to.be.greaterThan(0);
-      expect(response.body.data[0]).to.include({
-        title: diaryTemplate.title,
-        body: diaryTemplate.body,
-      });
-      expect(response.body.data[0].author).to.include({
-        fullName: userDetails.fullName,
-        username: userDetails.username,
-        email: userDetails.email,
-      }).but.not.have.property('password');
       expect(response.body.data[0]).to.have.property('id');
+      expect(response.body.data[0]).to.have.property('title');
+      expect(response.body.data[0]).to.have.property('body');
+      expect(response.body.data[0]).to.have.property('authorId');
       expect(response.body.data[0]).to.have.property('created');
       expect(response.body.data[0]).to.have.property('edited');
     });
