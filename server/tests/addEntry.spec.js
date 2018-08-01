@@ -62,7 +62,7 @@ export default function () {
       expect(response.body.data).to.eql({});
       expect(response.body.error).to.include.members(['token is required']);
     });
-    it('should not add entries with bad details', async () => {
+    it('should not add entries if data excludes required field(s)', async () => {
       const badDetails = {
         body: 'This entry has bad details because it has no title',
       };

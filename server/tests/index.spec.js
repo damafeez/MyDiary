@@ -9,6 +9,8 @@ import signupSpec from './signup.spec';
 import loginSpec from './login.spec';
 import addEntrySpec from './addEntry.spec';
 import getEntriesSpec from './getEntries.spec';
+import getEntrySpec from './getEntry.spec';
+import modifyEntrySpec from './modifyEntry.spec';
 
 process.env.NODE_ENV = 'test';
 chai.use(chaiHttp);
@@ -30,3 +32,5 @@ signupSpec();
 loginSpec();
 addEntrySpec();
 getEntriesSpec();
+getEntrySpec();
+modifyEntrySpec();
