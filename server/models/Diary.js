@@ -27,15 +27,10 @@ export default class Diary {
     return { ...addDiary.rows[0], author: this.author };
   }
 
-  static findById(id) {
-    return new Promise((resolve, reject) => {
-      const diary = diaries.find(entry => entry.id === Number(id));
-      if (diary) {
-        resolve(diary);
-      } else {
-        reject(new Error('entry not found'));
-      }
-    });
+  static async findById(id) {
+    const fetchDiary = await client.query(`SELECT * FROM entries WHERE "id" = ${id}`);
+    if (fetchDiary.rowCount === 0) throw new Error('entry not found');
+    return fetchDiary.rows[0];
   }
 
   static findByIdAndUpdate(id, update) {
@@ -63,9 +58,8 @@ export default class Diary {
   }
 
   static async find(author) {
-    const fetchDiaryQuery = `SELECT * FROM entries WHERE "authorId" = ${author.id}`;
-    const fetchDiary = await client.query(fetchDiaryQuery);
-    return fetchDiary.rows;
+    const fetchDiaries = await client.query(`SELECT * FROM entries WHERE "authorId" = ${author.id}`);
+    return fetchDiaries.rows;
   }
 
   modify({ title, body }) {
