@@ -43,11 +43,18 @@ export default function () {
         'email should be of type email',
       ]);
     });
-    it('should not add existing user', async () => {
+    it('should not add existing username', async () => {
       const res = await chai.request(app).post(rootUrl + route).send(user);
+      console.log(res.body);
       expect(res).to.have.status(400);
       expect(res.body.data).to.eql({});
       expect(res.body.error).to.include.members(['username has been chosen']);
+    });
+    it('should not add existing email', async () => {
+      const res = await chai.request(app).post(rootUrl + route).send({ ...user, username: 'anotherusername' });
+      expect(res).to.have.status(400);
+      expect(res.body.data).to.eql({});
+      expect(res.body.error).to.include.members(['email has been chosen']);
     });
   });
 }

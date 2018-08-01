@@ -1,5 +1,5 @@
 import express from 'express';
-import { postRules, putRules } from '../models/Diary';
+import { postRules } from '../models/Diary';
 import { validator } from '../helpers/utils';
 import {
   postEntry,
@@ -14,7 +14,7 @@ const router = express.Router();
 router.post('/entries', validator(postRules), postEntry);
 router.get('/entries', getEntries);
 router.get('/entries/:id', getEntry);
-router.put('/entries/:id', validator(putRules), editEntry);
+router.put('/entries/:id', validator(postRules), editEntry);
 router.delete('/entries/:id', deleteEntry);
 
 export default router;
