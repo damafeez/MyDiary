@@ -67,8 +67,8 @@ export default class User {
       const getUser = await client.query(authQuery);
       const user = getUser.rows[0];
       if (!user) return new Error('user not found');
-      const correctPassword = await bcrypt.compare(this.password, getUser.rows[0].password);
-      if (correctPassword) {
+      const isCorrectPassword = await bcrypt.compare(this.password, getUser.rows[0].password);
+      if (isCorrectPassword) {
         this.fullName = user.fullName;
         this.email = user.email;
         this.id = user.id;
