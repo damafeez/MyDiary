@@ -27,6 +27,7 @@ export default class Diary {
     return { ...addDiary.rows[0], author: this.author };
   }
 
+  
   static async findById(id, author) {
     const fetchDiary = await client.query(`SELECT * FROM entries WHERE "id" = ${id} AND "authorId" = ${author.id}`);
     if (fetchDiary.rowCount === 0) throw new Error('entry not found');

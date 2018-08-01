@@ -56,12 +56,14 @@ export default function () {
     it('should return error when token is compromised', async () => {
       const response = await chai.request(app).get(`${rootUrl}/entries/${id}`)
         .set('x-auth-token', 'thisisacompromisedtoken22i349fuq3j990fw');
+      
       expect(response).to.have.status(401);
       expect(response.body.data).to.eql({});
       expect(response.body.error).to.include.members(['jwt malformed']);
     });
     it('should return error when token is not given', async () => {
       const response = await chai.request(app).get(`${rootUrl}/entries/${id}`);
+
       expect(response).to.have.status(401);
       expect(response.body.data).to.eql({});
       expect(response.body.error).to.include.members(['token is required']);
