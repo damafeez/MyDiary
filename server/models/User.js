@@ -48,6 +48,11 @@ export default class User {
     this.password = password;
   }
 
+  static async remove(username) {
+    const removeUser = await client.query(`DELETE FROM authentication WHERE username='${username}' RETURNING id, username`);
+    return removeUser;
+  }
+
   async save() {
     this.password = await bcrypt.hash(this.password, 5);
     const authQuery = 'INSERT INTO authentication(username, password) VALUES($1, $2) RETURNING id';
@@ -60,25 +65,21 @@ export default class User {
   }
 
   async login() {
-    try {
-      const authQuery = `SELECT users.id, authentication.password, authentication.username, users."fullName", users.email FROM authentication INNER JOIN users 
-      ON users."authId" = authentication.id 
-      WHERE authentication.username = '${this.username}'`;
-      const getUser = await client.query(authQuery);
-      const user = getUser.rows[0];
-      if (!user) return new Error('user not found');
-      const isCorrectPassword = await bcrypt.compare(this.password, getUser.rows[0].password);
-      if (isCorrectPassword) {
-        this.fullName = user.fullName;
-        this.email = user.email;
-        this.id = user.id;
-        this.token = await this.genToken();
-        return Promise.resolve(this.strip());
-      }
-      throw new Error('user not found');
-    } catch (error) {
-      return Promise.reject(error);
+    const authQuery = `SELECT users.id, authentication.password, authentication.username, users."fullName", users.email FROM authentication INNER JOIN users 
+    ON users."authId" = authentication.id 
+    WHERE authentication.username = '${this.username}'`;
+    const getUser = await client.query(authQuery);
+    const user = getUser.rows[0];
+    if (!user) return new Error('user not found');
+    const isCorrectPassword = await bcrypt.compare(this.password, getUser.rows[0].password);
+    if (isCorrectPassword) {
+      this.fullName = user.fullName;
+      this.email = user.email;
+      this.id = user.id;
+      this.token = await this.genToken();
+      return this.strip();
     }
+    throw new Error('user not found');
   }
 
   async genToken() {

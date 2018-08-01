@@ -1,6 +1,6 @@
 import express from 'express';
 import { postRules, putRules } from '../models/Diary';
-import { validator } from '../helpers/utils';
+import { validator, authenticate } from '../helpers/utils';
 import {
   postEntry,
   getEntries,
@@ -10,7 +10,7 @@ import {
 } from '../controllers/entries';
 
 const router = express.Router();
-
+router.use(authenticate);
 router.post('/entries', validator(postRules), postEntry);
 router.get('/entries', getEntries);
 router.get('/entries/:id', getEntry);

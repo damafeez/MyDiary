@@ -1,4 +1,5 @@
 import { required, minLength, dataType } from '../helpers/utils';
+import client from '../helpers/connection';
 
 const diaries = [];
 
@@ -12,10 +13,6 @@ const postRules = {
     [required],
     [minLength, 15],
     [dataType, 'string'],
-  ],
-  author: [
-    [required],
-    [dataType, 'number'],
   ],
 };
 const putRules = {
@@ -32,27 +29,15 @@ const putRules = {
 };
 export default class Diary {
   constructor({ title, body, author }) {
-    const now = new Date().getTime();
-    const random = Math.floor(Math.random() * 1000);
     this.title = title;
     this.body = body;
     this.author = author;
-    this.id = Number(now.toString().concat(random));
   }
 
-  static save(diary) {
-    return new Promise((resolve, reject) => {
-      try {
-        if (diary instanceof this) {
-          diaries.push(diary);
-          resolve(diary);
-        } else {
-          throw new Error(`${diary} is not a diary`);
-        }
-      } catch (e) {
-        reject(new Error(e));
-      }
-    });
+  async save() {
+    const addDiaryQuery = 'INSERT INTO entries("title", body, "authorId") VALUES($1, $2, $3) RETURNING id, title, body, created, edited';
+    const addDiary = await client.query(addDiaryQuery, [this.title, this.body, this.author.id]);
+    return { ...addDiary.rows[0], author: this.author };
   }
 
   static findById(id) {
