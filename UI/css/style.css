@@ -234,7 +234,7 @@ section.auth {
   background: white;
   min-height: 30rem;
   border-radius: 4px 0 0 4px;
-  padding: 7rem 3rem;
+  padding: 7rem 3rem 6rem;
 }
 section.auth .login, section.auth .signup {
   display: flex;

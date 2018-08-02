@@ -5,10 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="css/style.css">
-  <title>myDiary</title>
+  <title>MyDiary</title>
+  <script>
+    const user = JSON.parse(localStorage.getItem('user'));
+    if(!user) window.location.assign('/UI/index.html');
+  </script>
 </head>
 <body class="settings">
-  <header><h1><a href="home.html">myDiary</a></h1>
+  <header><h1><a href="home.html">MyDiary</a></h1>
     <a href="settings.html"><img class="bg" src="img/john.jpg" alt=""></a>
   </header>
   <main>
@@ -22,7 +26,7 @@
           <input type="checkbox" checked name="" id="show-notification">
           <label for="show-notification">Remind me about adding an entry to my diary on a daily basis</label>
         </div>
-        <a href="index.html" class="btn round">Logout</a>
+        <button onclick="logout()" class="btn round">Logout</button>
       </div>
     </section>
   </main>
