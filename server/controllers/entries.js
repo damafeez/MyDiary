@@ -40,11 +40,10 @@ const editEntry = async (request, response) => {
 };
 const deleteEntry = async (request, response) => {
   try {
-    const { id } = request.params;
-    const diary = await Diary.findByIdAndDelete(id);
+    const diary = await Diary.findByIdAndDelete(request.params.id, request.user);
     sendResponse({ response, data: diary });
   } catch (error) {
-    sendResponse({ response, error: [error.message], status: 404 });
+    sendResponse({ response, error: [error.message], status: error.message === 'entry not found' ? 404 : 400 });
   }
 };
 

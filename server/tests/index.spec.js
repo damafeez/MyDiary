@@ -11,6 +11,7 @@ import addEntrySpec from './addEntry.spec';
 import getEntriesSpec from './getEntries.spec';
 import getEntrySpec from './getEntry.spec';
 import modifyEntrySpec from './modifyEntry.spec';
+import deleteEntrySpec from './deleteEntry.spec';
 
 process.env.NODE_ENV = 'test';
 chai.use(chaiHttp);
@@ -34,3 +35,4 @@ addEntrySpec();
 getEntriesSpec();
 getEntrySpec();
 modifyEntrySpec();
+deleteEntrySpec();

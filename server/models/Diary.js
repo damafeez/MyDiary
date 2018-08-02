@@ -26,7 +26,6 @@ export default class Diary {
     const addDiary = await client.query(addDiaryQuery, [this.title, this.body, this.author.id]);
     return { ...addDiary.rows[0], author: this.author };
   }
-
   
   static async findById(id, author) {
     const fetchDiary = await client.query(`SELECT * FROM entries WHERE "id" = ${id} AND "authorId" = ${author.id}`);
@@ -40,17 +39,10 @@ export default class Diary {
     return updateDiary.rows[0];
   }
 
-  static findByIdAndDelete(id) {
-    return new Promise((resolve, reject) => {
-      const index = diaries.findIndex(entry => entry.id === Number(id));
-      const diary = diaries.find(entry => entry.id === Number(id));
-      if (index >= 0) {
-        diaries.splice(index, 1);
-        resolve(diary);
-      } else {
-        reject(new Error('entry not found'));
-      }
-    });
+  static async findByIdAndDelete(id, author) {
+    const deleteDiary = await client.query(`DELETE FROM entries WHERE id=${id} AND "authorId" = ${author.id} RETURNING *`);
+    if (deleteDiary.rowCount === 0) throw new Error('entry not found');
+    return deleteDiary.rows[0];
   }
 
   static async find(author) {
