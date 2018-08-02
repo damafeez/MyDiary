@@ -12,7 +12,7 @@ const userDetails = {
   password: 'mypassword',
   email: 'johndoe@gmail.com',
 };
-const diaryTemplate = { title: 'My awesome diary', body: 'This is the body of my awesome diary' };
+const diaryTemplate = { title: 'My awesome diary', body: 'This is the body of my awesome diaryThis is the body of my awesome diary' };
 const rootUrl = '/api/v1';
 
 export default function () {
@@ -40,11 +40,7 @@ export default function () {
         title: diaryTemplate.title,
         body: diaryTemplate.body,
       });
-      expect(response.body.data.author).to.include({
-        fullName: userDetails.fullName,
-        username: userDetails.username,
-        email: userDetails.email,
-      }).but.not.have.property('password');
+      expect(response.body.data).to.have.property('authorId');
       expect(response.body.data).to.have.property('id');
       expect(response.body.data).to.have.property('created');
       expect(response.body.data).to.have.property('edited');
@@ -64,14 +60,14 @@ export default function () {
     });
     it('should not add entries if data excludes required field(s)', async () => {
       const badDetails = {
-        body: 'This entry has bad details because it has no title',
+        body: 'This entry has bad details because it has no titleThis entry has bad details because it has no title',
       };
       const response = await chai.request(app).post(rootUrl + route).set('x-auth-token', user.token).send(badDetails);
 
       expect(response).to.have.status(400);
       expect(response.body.error).to.include.members([
         'title is required',
-        'title should have minimum of 5 characters',
+        'title should have minimum of 15 characters',
         'title should be of type string',
       ]);
     });

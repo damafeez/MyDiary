@@ -12,7 +12,7 @@ const userDetails = {
   password: 'mypassword',
   email: 'johndoe@gmail.com',
 };
-const diaryTemplate = { title: 'My third awesome diary', body: 'This is the body of my third awesome diary' };
+const diaryTemplate = { title: 'My third awesome diary', body: 'This is the body of my third awesome diaryThis is the body of my third awesome diary' };
 const rootUrl = '/api/v1';
 
 export default function () {
