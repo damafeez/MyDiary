@@ -27,46 +27,27 @@ export default class Diary {
     return { ...addDiary.rows[0], author: this.author };
   }
 
-  static findById(id) {
-    return new Promise((resolve, reject) => {
-      const diary = diaries.find(entry => entry.id === Number(id));
-      if (diary) {
-        resolve(diary);
-      } else {
-        reject(new Error('entry not found'));
-      }
-    });
+  static async findById(id, author) {
+    const fetchDiary = await client.query(`SELECT * FROM entries WHERE "id" = ${id} AND "authorId" = ${author.id}`);
+    if (fetchDiary.rowCount === 0) throw new Error('entry not found');
+    return fetchDiary.rows[0];
   }
 
-  static findByIdAndUpdate(id, update) {
-    return new Promise((resolve, reject) => {
-      const index = diaries.findIndex(entry => entry.id === Number(id));
-      if (index >= 0) {
-        resolve(diaries[index].modify(update));
-      } else {
-        reject(new Error('entry not found'));
-      }
-    });
+  static async findByIdAndUpdate(id, author, update) {
+    const updateDiary = await client.query(`UPDATE entries SET title='${update.title}', body='${update.body}', edited=CURRENT_TIMESTAMP WHERE id=${id} AND "authorId" = ${author.id} RETURNING *`);
+    if (updateDiary.rowCount === 0) throw new Error('entry not found');
+    return updateDiary.rows[0];
   }
 
-  static findByIdAndDelete(id) {
-    return new Promise((resolve, reject) => {
-      const index = diaries.findIndex(entry => entry.id === Number(id));
-      const diary = diaries.find(entry => entry.id === Number(id));
-      if (index >= 0) {
-        diaries.splice(index, 1);
-        resolve(diary);
-      } else {
-        reject(new Error('entry not found'));
-      }
-    });
+  static async findByIdAndDelete(id, author) {
+    const deleteDiary = await client.query(`DELETE FROM entries WHERE id=${id} AND "authorId" = ${author.id} RETURNING *`);
+    if (deleteDiary.rowCount === 0) throw new Error('entry not found');
+    return deleteDiary.rows[0];
   }
 
-  static find(condition = true) {
-    return new Promise((resolve) => {
-      const entries = diaries.filter(entry => condition);
-      resolve(entries);
-    });
+  static async find(author) {
+    const fetchDiaries = await client.query(`SELECT * FROM entries WHERE "authorId" = ${author.id}`);
+    return fetchDiaries.rows;
   }
 
   modify({ title, body }) {

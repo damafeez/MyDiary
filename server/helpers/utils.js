@@ -19,11 +19,15 @@ const authenticate = async (request, response, next) => {
 };
 const validator = (rules) => {
   return (request, response, next) => {
+    request.body = Object.keys(request.body).reduce((accumulator, current) => {
+      accumulator[current] = typeof request.body[current] === 'string' ? request.body[current].trim() : request.body[current];
+      return accumulator;
+    }, {});
     const error = Object.keys(rules).map((field) => {
       return rules[field].map(rule => rule[0](
         request.body[field],
         field,
-        typeof rule[1] === 'string' ? rule[1].trim() : rule[1],
+        rule[1],
       ));
     })
       .reduce((accumulator, current) => [...accumulator, ...current], [])
