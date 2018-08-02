@@ -78,7 +78,7 @@ export default class User {
     WHERE authentication.username = '${this.username}'`;
     const getUser = await client.query(authQuery);
     const user = getUser.rows[0];
-    if (!user) return new Error('user not found');
+    if (!user) throw new Error('incorrect password and/or username');
     const isCorrectPassword = await bcrypt.compare(this.password, getUser.rows[0].password);
     if (isCorrectPassword) {
       this.fullName = user.fullName;
@@ -87,7 +87,7 @@ export default class User {
       this.token = await this.generateToken();
       return this.strip();
     }
-    throw new Error('user not found');
+    throw new Error('incorrect password and/or username');
   }
 
   async generateToken() {

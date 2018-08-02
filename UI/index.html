@@ -12,47 +12,54 @@
     <section class="auth login-view">
       <div class="login">
         <h2>LOGIN</h2>
-        <form action="#" name="login">
+        <form name="loginForm" onsubmit="login(event)">
           <div class="input">
               <svg class="icon">
                 <use xlink:href="svg/icons.svg#icon-user"></use>
               </svg>
-            <input id="login-username" type="text">
+            <input required name="username" id="login-username" type="text">
             <label for="login-username">Username</label>
           </div>
           <div class="input">
             <svg class="icon">
               <use xlink:href="svg/icons.svg#icon-unlock"></use>
             </svg>
-            <input id="login-password" type="password">
+            <input required name="password" id="login-password" type="password">
             <label for="login-password">Password</label>
           </div>
-          <a href="home.html" class="btn round">Login</a>
+          <button class="round btn">Login</button>
         </form>
         <p>New user? <span class="link" onclick="toggleView('signup')">Sign up here</span></p>
       </div>
       <div class="signup">
         <h2>SIGN UP</h2>
-        <form action="#" name="signup">
+        <form onsubmit="signup(event)" name="signupForm">
           <div class="input">
             <svg class="icon">
               <use xlink:href="svg/icons.svg#icon-user"></use>
             </svg>
-            <input id="signUp-fullName" type="text">
+            <input required name="fullName" id="signUp-fullName" type="text">
             <label for="signUp-fullName">Full Name</label>
           </div>
           <div class="input">
             <svg class="icon">
               <use xlink:href="svg/icons.svg#icon-user"></use>
             </svg>
-            <input id="signUp-username" type="text">
+            <input required name="username" id="signUp-username" type="text">
             <label for="signUp-username">Username</label>
+          </div>
+          <div class="input">
+            <svg class="icon">
+              <use xlink:href="svg/icons.svg#icon-user"></use>
+            </svg>
+            <input required name="email" id="signUp-email" type="email">
+            <label for="signUp-email">Email</label>
           </div>
           <div class="input">
             <svg class="icon">
               <use xlink:href="svg/icons.svg#icon-unlock"></use>
             </svg>
-            <input id="signUp-password" type="password">
+            <input required name="password" id="signUp-password" type="password">
             <label for="signUp-password">Password</label>
           </div>
           <button class="round btn">Sign up</button>
