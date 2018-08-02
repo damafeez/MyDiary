@@ -5,10 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="css/style.css">
-  <title>myDiary</title>
+  <title>MyDiary</title>
+  <script>
+    const user = JSON.parse(localStorage.getItem('user'));
+    if(!user) window.location.assign('/UI/index.html');
+  </script>
 </head>
 <body class="logged-in">
-  <header><h1><a href="home.html">myDiary</a></h1>
+  <header><h1><a href="home.html">MyDiary</a></h1>
     <a href="settings.html"><img class="bg" src="img/john.jpg" alt=""></a></header>
   <main>
     <div class="scroller">
@@ -53,10 +57,9 @@
           <label for="show-notification">Daily Reminder</label>
         </div>
         <p>5 Entries Added</p>
-        <a href="index.html" class="btn round">Logout</a>
       </div>
     </button>
-    <button onclick="addDiary()" class="add active drop-container">
+    <button onclick="addDiary()" class="add drop-container">
       <svg class="icon">
         <use xlink:href="svg/icons.svg#icon-plus"></use>
       </svg>

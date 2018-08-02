@@ -203,15 +203,31 @@ const login = async (event) => {
     if (response.ok) {
       form.reset();
       setTimeout(initInput, 500);
-      console.log({response})
-      console.log({jsonResponse})
-      alert('You are logged in');
+      localStorage.setItem('user', JSON.stringify(jsonResponse.data));
+      window.location.assign('/UI/home.html');
     } else if (jsonResponse.error) {
       const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
         .join('');
       throw new Error(error);
     }
   } catch (error) {
+    console.log(error.message);
     alert(error.message);
   }
 };
+const logout = () => {
+  localStorage.clear();
+  window.location.assign('/UI/index.html');
+}
+// const authenticate = ({
+//   security = 'protected',
+//   redirect = true,
+//   url = '/UI/index.html',
+// }) => {
+//   const user = JSON.parse(localStorage.getItem('user'));
+//   if (security === 'protected' && !user.token) {
+//     window.location.assign(url);
+//   } else if (security !== 'protected' && redirect) {
+//     window.location.assign('/UI/home.html');
+//   }
+// };
