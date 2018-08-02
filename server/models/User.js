@@ -62,6 +62,7 @@ export default class User {
       this.authId = addAuthentication.rows[0].id;
       const addUser = await client.query(addUserQuery, [this.fullName, this.email, this.authId]);
       this.id = addUser.rows[0].id;
+      client.query('INSERT INTO "notificationStatus"("userId") VALUES($1)', [this.id]);
     } catch (error) {
       if (error.message === 'duplicate key value violates unique constraint "users_email_key"') {
         await User.remove(this.username);
@@ -95,6 +96,13 @@ export default class User {
       exp: (Math.floor(Date.now() / 1000) + (60 * 60)) * 24 * 7,
       data: this.strip(),
     }, process.env.JWT_SECRET);
+  }
+
+  static async setNotification(status, userId) {
+    console.log(status, userId);
+    const updateNotification = await client.query(`UPDATE "notificationStatus" SET nstatus=${status} WHERE "userId"=${userId} RETURNING *`);
+    if (updateNotification.rowCount === 0) throw new Error('entry not found');
+    return updateNotification.rows[0];
   }
 
   strip() {
