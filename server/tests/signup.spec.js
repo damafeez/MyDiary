@@ -10,7 +10,7 @@ const user = {
   username: 'johndoe',
   fullName: 'John Doe',
   password: 'mypassword',
-  email: 'johndoe@gmail.com',
+  email: '    johndoe@gmail.com',
 };
 const rootUrl = '/api/v1';
 
@@ -25,9 +25,9 @@ export default function () {
     it('should add user to database', async () => {
       const response = await chai.request(app).post(rootUrl + route).send(user);
       expect(response).to.have.status(201);
-      expect(response.body.data).to.include({ fullName: user.fullName, username: user.username }).and.have.property('id').but.not.have.property('password');
+      expect(response.body.data).to.include({ fullName: user.fullName, username: user.username, email: user.email.trim() }).and.have.property('id').but.not.have.property('password');
     });
-    it('should not add user with bad details', async () => {
+    it('should not add user if data excludes required field(s)', async () => {
       const badUser = {
         fullName: 'Bad User',
         username: 'johndoe',
