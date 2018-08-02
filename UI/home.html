@@ -73,7 +73,7 @@
         <use xlink:href="svg/icons.svg#icon-edit-3"></use>
       </svg>
     </button>
-    <button title="Delete Entry" onclick="deleteDiary(currentDiary)" class="delete">
+    <button title="Delete Entry" onclick="deleteEntry()" class="delete">
       <svg class="icon">
         <use xlink:href="svg/icons.svg#icon-trash-2"></use>
       </svg>
@@ -81,9 +81,8 @@
   </footer>
   <script src="js/app.js"></script>
   <script>
-    getEntries().then((response) => localStorage.setItem('entries', JSON.stringify(response)));
     window.addEventListener('DOMContentLoaded', () => {
-      initDiaries()
+      getEntries()
       slideTo()
       setTimeout(() => document.querySelector('div.scroller').style.transitionDuration = '1s', 1000)
       initDropdown()

@@ -46,7 +46,7 @@ export default class Diary {
   }
 
   static async find(author) {
-    const fetchDiaries = await client.query(`SELECT * FROM entries WHERE "authorId" = ${author.id}`);
+    const fetchDiaries = await client.query(`SELECT * FROM entries WHERE "authorId" = ${author.id} ORDER BY created DESC`);
     return fetchDiaries.rows;
   }
 

@@ -1,9 +1,9 @@
-// const apiRoot = 'http://localhost:3030/api/v1';
-const apiRoot = 'https://api-mydiary.herokuapp.com/api/v1';
+const apiRoot = 'http://localhost:3030/api/v1';
+// const apiRoot = 'https://api-mydiary.herokuapp.com/api/v1';
 const days = ['SUNDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
 const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const now = new Date();
-let entries = [];
+let entries = JSON.parse(localStorage.getItem('entries')) || [];
 let editMode = false;
 let showAddDiaryView = false;
 let currentDiary;
@@ -109,10 +109,6 @@ let readDiary = (i = 0) => {
   diaryList[currentDiary].classList.add('active');
   hideAdd();
 };
-const deleteDiary = (i) => {
-  entries.splice(i, 1);
-  initDiaries();
-};
 const changeAddView = () => {
   const h2 = document.querySelector('section.add-diary h2');
   const editForm = document.forms['edit-entry'];
@@ -217,8 +213,9 @@ const addEntry = async (event) => {
       if (editMode) {
         entries[currentDiary] = jsonResponse.data;
       } else {
-        entries.push(jsonResponse.data);
+        entries.unshift(jsonResponse.data);
       }
+      localStorage.setItem('entries', JSON.stringify(entries));
       initDiaries();
     } else if (jsonResponse.error) {
       const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
@@ -227,6 +224,29 @@ const addEntry = async (event) => {
     }
   } catch (error) {
     alert(error.message);
+  }
+};
+const deleteEntry = async () => {
+  if (!confirm('Are you sure to delete?')) return;
+  try {
+    const response = await fetch(`${apiRoot}/entries/${entries[currentDiary].id}`, {
+      mode: 'cors',
+      method: 'DELETE',
+      headers: {
+        'x-auth-token': JSON.parse(localStorage.getItem('user')).token,
+      },
+    });
+    const jsonResponse = await response.json();
+    if (response.ok) {
+      entries.splice(currentDiary, 1);
+      currentDiary = currentDiary === entries.length - 1 ? currentDiary - 3 : currentDiary;
+      initDiaries();
+      localStorage.setItem('entries', JSON.stringify(entries));
+    } else {
+      throw new Error(jsonResponse.error);
+    }
+  } catch (error) {
+    // alert(error.message);
   }
 };
 const getEntries = async () => {
@@ -241,10 +261,12 @@ const getEntries = async () => {
     if (response.ok) {
       entries = jsonResponse.data;
       initDiaries();
-      return jsonResponse.data;
+      localStorage.setItem('entries', JSON.stringify(entries));
+    } else {
+      throw new Error(jsonResponse.error);
     }
-    throw new Error(jsonResponse.error);
   } catch (error) {
+    alert(error.message);
   }
 };
 const logout = () => {
