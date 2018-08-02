@@ -25,7 +25,7 @@ const validator = (rules) => {
     }, {});
     const error = Object.keys(rules).map((field) => {
       return rules[field].map(rule => rule[0](
-        request.body[field],
+        typeof request.body[field] === 'string' ? request.body[field].trim() : request.body[field],
         field,
         rule[1],
       ));
