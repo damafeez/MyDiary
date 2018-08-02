@@ -12,7 +12,7 @@ const userDetails = {
   password: 'mypassword',
   email: 'johndoe@gmail.com',
 };
-const diaryTemplate = { title: 'My third awesome diary', body: 'This is the body of my third awesome diary' };
+const diaryTemplate = { title: 'My third awesome diary', body: 'This is the body of my third awesome diaryThis is the body of my third awesome diary' };
 const rootUrl = '/api/v1';
 
 export default function () {
@@ -60,7 +60,7 @@ export default function () {
       expect(response.body.data).to.eql({});
       expect(response.body.error).to.include.members([
         'title is required',
-        'title should have minimum of 5 characters',
+        'title should have minimum of 15 characters',
         'title should be of type string',
       ]);
     });

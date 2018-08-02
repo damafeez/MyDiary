@@ -357,7 +357,7 @@ section.diaries ul {
 section.diaries ul li {
   display: grid;
   grid-template-areas: "pointer title date"
-                       "pointer desc date";
+                       "pointer body date";
   grid-template-columns: 2rem 1fr 4rem;
   grid-gap: .5rem .7rem;
   align-items: center;
@@ -378,8 +378,8 @@ section.diaries ul li .title{
   grid-area: title;
   font-size: 1.2rem;
 }
-section.diaries ul li .desc{
-  grid-area: desc;
+section.diaries ul li .body{
+  grid-area: body;
   font-size: 1.3rem;
   color: grey;
   text-overflow: ellipsis;
@@ -413,7 +413,7 @@ section.diary p.date{
   display: inline-block;
   text-transform: uppercase;
 }
-section.diary p.desc {
+section.diary p.body {
   font-size: 1.5rem;
   letter-spacing: .3px;
   line-height: 1.4;
@@ -431,6 +431,7 @@ header, footer {
 }
 header {
   justify-content: space-between;
+  padding: 2rem;
   top: 0;
 }
 header h1 {
@@ -581,6 +582,7 @@ body.settings .info-settings {
   }
   footer, header {
     position: static;
+    padding: 2rem 5rem;
     background: transparent;
   }
 }

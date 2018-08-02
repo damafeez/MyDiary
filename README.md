@@ -27,4 +27,4 @@ api-mydiary.herokuapp.com/api/v1
 | POST          | api/v1/auth/signup        | User signup                        |
 
 # Author
-Afeez Awoyemi @damafeez
+Afeez Awoyemi [@damafeez](http://github.com/damafeez)
