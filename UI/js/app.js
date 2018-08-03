@@ -1,5 +1,5 @@
-const apiRoot = 'http://localhost:3030/api/v1';
-// const apiRoot = 'https://api-mydiary.herokuapp.com/api/v1';
+// const apiRoot = 'http://localhost:3030/api/v1';
+const apiRoot = 'https://api-mydiary.herokuapp.com/api/v1';
 const days = ['SUNDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
 const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const now = new Date();
@@ -190,6 +190,30 @@ const login = async (event) => {
     alert(error.message);
   }
 };
+const setNotification = async (status) => {
+  console.log({status})
+  try {
+    const response = await fetch(`${apiRoot}/notification`, {
+      method: 'PUT',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'x-auth-token': JSON.parse(localStorage.getItem('user')).token,
+      },
+      body: JSON.stringify({ status }),
+    });
+    const jsonResponse = await response.json();
+    if (response.ok) {
+      console.log(jsonResponse);
+    } else if (jsonResponse.error) {
+      const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
+        .join('');
+      throw new Error(error);
+    }
+  } catch (error) {
+    alert(error.message);
+  }
+};
 const addEntry = async (event) => {
   event.preventDefault();
   const form = event.target;
@@ -271,5 +295,5 @@ const getEntries = async () => {
 };
 const logout = () => {
   localStorage.clear();
-  window.location.assign('/UI/index.html');
+  window.location.assign('index.html');
 };
