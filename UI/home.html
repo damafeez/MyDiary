@@ -8,7 +8,7 @@
   <title>MyDiary</title>
   <script>
     const user = JSON.parse(localStorage.getItem('user'));
-    if(!user) window.location.assign('/UI/index.html');
+    if(!user) window.location.assign('index.html');
   </script>
 </head>
 <body class="logged-in">
@@ -23,7 +23,7 @@
               <svg class="icon">
                 <use xlink:href="svg/icons.svg#icon-edit-2"></use>
               </svg>
-            <input name="title" id="title" name="title" type="text">
+            <input required name="title" id="title" name="title" type="text">
             <label for="title">Title</label>
           </div>
           <div class="textarea">
@@ -31,7 +31,7 @@
                 <use xlink:href="svg/icons.svg#icon-file-text"></use>
               </svg>
             <label for="entry">Your awesome Entry</label>
-            <textarea id="entry" name="body" rows="4"></textarea>
+            <textarea required id="entry" name="body" rows="4"></textarea>
           </div>
           <input type="submit" name="update" value="Add" class="btn round">
           <input onclick="hideAdd()" type="reset" class="btn round reset" value="Cancel">
@@ -73,7 +73,7 @@
         <use xlink:href="svg/icons.svg#icon-edit-3"></use>
       </svg>
     </button>
-    <button title="Delete Entry" onclick="deleteDiary(currentDiary)" class="delete">
+    <button title="Delete Entry" onclick="deleteEntry()" class="delete">
       <svg class="icon">
         <use xlink:href="svg/icons.svg#icon-trash-2"></use>
       </svg>
@@ -81,19 +81,15 @@
   </footer>
   <script src="js/app.js"></script>
   <script>
-    getEntries().then((response) => localStorage.setItem('entries', JSON.stringify(response)));
     window.addEventListener('DOMContentLoaded', () => {
-      initDiaries()
+      getEntries()
       slideTo()
       setTimeout(() => document.querySelector('div.scroller').style.transitionDuration = '1s', 1000)
       initDropdown()
-      window.addEventListener('click', () => removeSettings())
+      window.addEventListener('click', () => document.querySelector('footer .settings').classList.remove('active'))
       document.querySelector('footer .settings').addEventListener('click', function (e) {
         e.stopPropagation()
         this.classList.toggle('active')
-      })
-      document.querySelector('footer .add').addEventListener('click', function (e) {
-        this.classList.remove('active')
       })
     })
     window.addEventListener('resize', (e) => {

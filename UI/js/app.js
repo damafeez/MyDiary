@@ -1,6 +1,6 @@
 // const apiRoot = 'http://localhost:3030/api/v1';
 const apiRoot = 'https://api-mydiary.herokuapp.com/api/v1';
-const days = ['SUNDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
 const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const now = new Date();
 let entries = [];
@@ -57,9 +57,6 @@ const hideAdd = () => {
   showAddDiaryView = false;
   slideTo();
 };
-const removeSettings = () => {
-  document.querySelector('footer .settings').classList.remove('active');
-};
 const initDropdown = () => {
   document.querySelector('.drop-container .drop').addEventListener('click', e => e.stopPropagation());
 };
@@ -108,10 +105,6 @@ let readDiary = (i = 0) => {
   }
   diaryList[currentDiary].classList.add('active');
   hideAdd();
-};
-const deleteDiary = (i) => {
-  entries.splice(i, 1);
-  initDiaries();
 };
 const changeAddView = () => {
   const h2 = document.querySelector('section.add-diary h2');
@@ -184,7 +177,30 @@ const login = async (event) => {
       form.reset();
       initInput();
       localStorage.setItem('user', JSON.stringify(jsonResponse.data));
-      window.location.assign('/UI/home.html');
+      window.location.assign('home.html');
+    } else if (jsonResponse.error) {
+      const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
+        .join('');
+      throw new Error(error);
+    }
+  } catch (error) {
+    alert(error.message);
+  }
+};
+const setNotification = async (status) => {
+  try {
+    const response = await fetch(`${apiRoot}/notification`, {
+      method: 'PUT',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'x-auth-token': JSON.parse(localStorage.getItem('user')).token,
+      },
+      body: JSON.stringify({ status }),
+    });
+    const jsonResponse = await response.json();
+    if (response.ok) {
+      console.log(jsonResponse);
     } else if (jsonResponse.error) {
       const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
         .join('');
@@ -217,8 +233,30 @@ const addEntry = async (event) => {
       if (editMode) {
         entries[currentDiary] = jsonResponse.data;
       } else {
-        entries.push(jsonResponse.data);
+        entries.unshift(jsonResponse.data);
       }
+      initDiaries();
+    } else if (jsonResponse.error) {
+      const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
+        .join('');
+      throw new Error(error);
+    }
+  } catch (error) {
+    alert(error.message);
+  }
+};
+const deleteEntry = async (event) => {
+  try {
+    const response = await fetch(`${apiRoot}/entries/${entries[currentDiary].id}`, {
+      method: 'DELETE',
+      mode: 'cors',
+      headers: {
+        'x-auth-token': JSON.parse(localStorage.getItem('user')).token,
+      },
+    });
+    const jsonResponse = await response.json();
+    if (response.ok) {
+      entries.splice(currentDiary, 1);
       initDiaries();
     } else if (jsonResponse.error) {
       const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
@@ -245,9 +283,10 @@ const getEntries = async () => {
     }
     throw new Error(jsonResponse.error);
   } catch (error) {
+    console.log(error);
   }
 };
 const logout = () => {
   localStorage.clear();
-  window.location.assign('/UI/index.html');
+  window.location.assign('index.html');
 };

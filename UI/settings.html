@@ -8,7 +8,7 @@
   <title>MyDiary</title>
   <script>
     const user = JSON.parse(localStorage.getItem('user'));
-    if(!user) window.location.assign('/UI/index.html');
+    if(!user) window.location.assign('index.html');
   </script>
 </head>
 <body class="settings">
@@ -18,12 +18,10 @@
   <main>
     <section class="info-settings">
       <div class="info">
-        <span id="number">4</span>
-        <span id="title">DIARIES ADDED</span>
       </div>
       <div class="settings">
         <div class="check">
-          <input type="checkbox" checked name="" id="show-notification">
+          <input type="checkbox" checked name="reminder" id="show-notification">
           <label for="show-notification">Remind me about adding an entry to my diary on a daily basis</label>
         </div>
         <button onclick="logout()" class="btn round">Logout</button>
@@ -31,5 +29,14 @@
     </section>
   </main>
   <script src="js/app.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelector('.info').innerHTML = `
+      <span id="number">${entries.length}</span>
+      <span id="title">${entries.length > 1 ? 'DIARIES' : 'DIARY'} ADDED</span>`
+      document.querySelector('#show-notification').addEventListener('change', function () {
+        setNotification(this.checked)})
+    });
+  </script>
 </body>
 </html>

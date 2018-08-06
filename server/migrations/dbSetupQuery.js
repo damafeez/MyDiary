@@ -28,10 +28,10 @@ CREATE TABLE IF NOT EXISTS entries(
 );`;
 
 const notificationStatus = `
-CREATE TABLE IF NOT EXISTS notificationStatus(
+CREATE TABLE IF NOT EXISTS "notificationStatus"(
   id SERIAL PRIMARY KEY,
   "userId" INT,
-  value BOOLEAN DEFAULT false,
+  nstatus BOOLEAN DEFAULT false,
   CONSTRAINT FK_NotificationStatus_Users FOREIGN KEY ("userId") REFERENCES users(id)
   ON DELETE CASCADE
   

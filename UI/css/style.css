@@ -19,6 +19,25 @@ html {
   font-size: 62.5%;
   font-family: 'Ubuntu', sans-serif;
 }
+
+/* Track */
+::-webkit-scrollbar {
+  width: 7px;
+  cursor: pointer;
+}
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    transition: all .3s ease-in-out;
+}
+::-webkit-scrollbar-track:hover {
+  background: var(--cute-pink);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--primary-text-color); 
+  border-radius: 10px;
+}
 body {
   font-weight: 400;
   font-size: 1.6rem;
@@ -351,7 +370,7 @@ section.diaries .today #day {
 section.diaries ul {
   list-style: none;
   padding: 2rem 1rem;
-  max-height: 30rem;
+  max-height: 25rem;
   overflow: auto;
 }
 section.diaries ul li {
@@ -377,6 +396,9 @@ section.diaries ul li .pointer{
 section.diaries ul li .title{
   grid-area: title;
   font-size: 1.2rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 section.diaries ul li .body{
   grid-area: body;
