@@ -1,6 +1,6 @@
 // const apiRoot = 'http://localhost:3030/api/v1';
 const apiRoot = 'https://api-mydiary.herokuapp.com/api/v1';
-const days = ['SUNDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
 const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const now = new Date();
 let entries = [];
@@ -57,9 +57,6 @@ const hideAdd = () => {
   showAddDiaryView = false;
   slideTo();
 };
-const removeSettings = () => {
-  document.querySelector('footer .settings').classList.remove('active');
-};
 const initDropdown = () => {
   document.querySelector('.drop-container .drop').addEventListener('click', e => e.stopPropagation());
 };
@@ -68,7 +65,7 @@ const initDiaries = () => {
   diaries.innerHTML = `
   <div class="today">
     <span id="date">${now.getDate()}</span>
-    <span id="day">${days[now.getDay() - 1]}</span>
+    <span id="day">${days[now.getDay()]}</span>
   </div>
   `;
   const ul = document.createElement('ul');
@@ -108,10 +105,6 @@ let readDiary = (i = 0) => {
   }
   diaryList[currentDiary].classList.add('active');
   hideAdd();
-};
-const deleteDiary = (i) => {
-  entries.splice(i, 1);
-  initDiaries();
 };
 const changeAddView = () => {
   const h2 = document.querySelector('section.add-diary h2');
@@ -195,7 +188,6 @@ const login = async (event) => {
   }
 };
 const setNotification = async (status) => {
-  console.log({status})
   try {
     const response = await fetch(`${apiRoot}/notification`, {
       method: 'PUT',
@@ -241,8 +233,30 @@ const addEntry = async (event) => {
       if (editMode) {
         entries[currentDiary] = jsonResponse.data;
       } else {
-        entries.push(jsonResponse.data);
+        entries.unshift(jsonResponse.data);
       }
+      initDiaries();
+    } else if (jsonResponse.error) {
+      const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
+        .join('');
+      throw new Error(error);
+    }
+  } catch (error) {
+    alert(error.message);
+  }
+};
+const deleteEntry = async (event) => {
+  try {
+    const response = await fetch(`${apiRoot}/entries/${entries[currentDiary].id}`, {
+      method: 'DELETE',
+      mode: 'cors',
+      headers: {
+        'x-auth-token': JSON.parse(localStorage.getItem('user')).token,
+      },
+    });
+    const jsonResponse = await response.json();
+    if (response.ok) {
+      entries.splice(currentDiary, 1);
       initDiaries();
     } else if (jsonResponse.error) {
       const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
@@ -269,7 +283,7 @@ const getEntries = async () => {
     }
     throw new Error(jsonResponse.error);
   } catch (error) {
-    alert(error);
+    console.log(error);
   }
 };
 const logout = () => {

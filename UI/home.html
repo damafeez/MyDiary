@@ -23,7 +23,7 @@
               <svg class="icon">
                 <use xlink:href="svg/icons.svg#icon-edit-2"></use>
               </svg>
-            <input name="title" id="title" name="title" type="text">
+            <input required name="title" id="title" name="title" type="text">
             <label for="title">Title</label>
           </div>
           <div class="textarea">
@@ -31,7 +31,7 @@
                 <use xlink:href="svg/icons.svg#icon-file-text"></use>
               </svg>
             <label for="entry">Your awesome Entry</label>
-            <textarea id="entry" name="body" rows="4"></textarea>
+            <textarea required id="entry" name="body" rows="4"></textarea>
           </div>
           <input type="submit" name="update" value="Add" class="btn round">
           <input onclick="hideAdd()" type="reset" class="btn round reset" value="Cancel">
@@ -86,13 +86,10 @@
       slideTo()
       setTimeout(() => document.querySelector('div.scroller').style.transitionDuration = '1s', 1000)
       initDropdown()
-      window.addEventListener('click', () => removeSettings())
+      window.addEventListener('click', () => document.querySelector('footer .settings').classList.remove('active'))
       document.querySelector('footer .settings').addEventListener('click', function (e) {
         e.stopPropagation()
         this.classList.toggle('active')
-      })
-      document.querySelector('footer .add').addEventListener('click', function (e) {
-        this.classList.remove('active')
       })
     })
     window.addEventListener('resize', (e) => {
