@@ -88,6 +88,19 @@ const initDiaries = () => {
   readDiary(currentDiary);
   localStorage.setItem('entries', JSON.stringify(entries));
 };
+const notification = document.createElement('div');
+notification.className = 'notification-dialog';
+document.body.appendChild(notification);
+const showNotification = ({
+  message = 'test',
+  timeout = 5000,
+  status = 'success',
+}) => {
+  notification.innerHTML = message;
+  notification.classList.add(status);
+  notification.classList.add('active');
+  setTimeout(() => notification.classList.remove('active'), timeout);
+};
 let readDiary = (i = 0) => {
   let diary = entries[i];
   if (!diary) {
@@ -154,14 +167,20 @@ const signup = async (event) => {
     if (response.ok) {
       form.reset();
       initInput();
-      alert('Your account has been created');
+      showNotification({
+        message: 'Your account has been created',
+      });
     } else if (jsonResponse.error) {
       const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
         .join('');
       throw new Error(error);
     }
   } catch (error) {
-    alert(error.message);
+    showNotification({
+      message: error.message,
+      status: 'error',
+      timeout: 7000,
+    });
   }
 };
 const login = async (event) => {
@@ -184,14 +203,21 @@ const login = async (event) => {
       form.reset();
       initInput();
       localStorage.setItem('user', JSON.stringify(jsonResponse.data));
-      window.location.assign('home.html');
+      showNotification({
+        message: 'Login successful',
+      });
+      setTimeout(() => window.location.assign('home.html'), 1000);
     } else if (jsonResponse.error) {
       const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
         .join('');
       throw new Error(error);
     }
   } catch (error) {
-    alert(error.message);
+    showNotification({
+      message: error.message,
+      status: 'error',
+      timeout: 7000,
+    });
   }
 };
 const setNotification = async (status) => {
@@ -214,7 +240,11 @@ const setNotification = async (status) => {
       throw new Error(error);
     }
   } catch (error) {
-    alert(error.message);
+    showNotification({
+      message: error.message,
+      status: 'error',
+      timeout: 7000,
+    })
   }
 };
 const addEntry = async (event) => {
@@ -249,7 +279,11 @@ const addEntry = async (event) => {
       throw new Error(error);
     }
   } catch (error) {
-    alert(error.message);
+    showNotification({
+      message: error.message,
+      status: 'error',
+      timeout: 7000,
+    });
   }
 };
 const deleteEntry = async () => {
@@ -274,7 +308,11 @@ const deleteEntry = async () => {
       throw new Error(error);
     }
   } catch (error) {
-    alert(error.message);
+    showNotification({
+      message: error.message,
+      status: 'error',
+      timeout: 7000,
+    });
   }
 };
 const getEntries = async () => {
@@ -294,7 +332,11 @@ const getEntries = async () => {
     }
     throw new Error(jsonResponse.error);
   } catch (error) {
-    console.log(error);
+    showNotification({
+      message: error.message,
+      status: 'error',
+      timeout: 7000,
+    });
   }
 };
 const logout = () => {

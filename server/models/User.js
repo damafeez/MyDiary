@@ -79,7 +79,7 @@ export default class User {
     WHERE authentication.username = '${this.username}'`;
     const getUser = await client.query(authQuery);
     const user = getUser.rows[0];
-    if (!user) throw new Error('incorrect password and/or username');
+    if (!user) throw new Error('invalid credentials');
     const isCorrectPassword = await bcrypt.compare(this.password, getUser.rows[0].password);
     if (isCorrectPassword) {
       this.fullName = user.fullName;
@@ -88,7 +88,7 @@ export default class User {
       this.token = await this.generateToken();
       return this.strip();
     }
-    throw new Error('incorrect password and/or username');
+    throw new Error('invalid credentials');
   }
 
   async generateToken() {
@@ -99,7 +99,6 @@ export default class User {
   }
 
   static async setNotification(status, userId) {
-    console.log(status, userId);
     const updateNotification = await client.query(`UPDATE "notificationStatus" SET nstatus=${status} WHERE "userId"=${userId} RETURNING *`);
     if (updateNotification.rowCount === 0) throw new Error('entry not found');
     return updateNotification.rows[0];

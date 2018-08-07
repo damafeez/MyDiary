@@ -225,6 +225,34 @@ label, input {
 h1 {
   font-size: 2.5rem;
 }
+.notification-dialog {
+  position: fixed;
+  top: -10rem;
+  right: 50%;
+  transform: translateX(50%);
+  background: white;
+  border-radius: 3px;
+  width: 25rem;
+  padding: 1rem 1.5rem;
+  box-shadow: 2px 2px 20px rgba(0, 0, 0, .1);
+  transition: top .8s ease-in-out;
+  font-size: 1.3rem;
+  z-index: 10000;
+}
+.notification-dialog p:not(:last-child) {
+  padding-bottom: .5rem;
+  margin-bottom: .5rem;
+  border-bottom: 1px solid #f1f1f1;
+}
+.notification-dialog.active {
+  top: 3rem;
+}
+.notification-dialog.error {
+  color: var(--outrageous-orange);
+}
+.notification-dialog.success {
+  color: #43a047;
+}
 /* express styles */
 body {
   font-family: 'Roboto', sans-serif;
@@ -605,6 +633,10 @@ body.settings .info-settings {
     position: static;
     padding: 2rem 5rem;
     background: transparent;
+  }
+  .notification-dialog {
+    right: 3rem;
+    transform: translateX(0);
   }
 }
 
