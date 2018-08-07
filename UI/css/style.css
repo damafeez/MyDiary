@@ -228,7 +228,8 @@ h1 {
 .notification-dialog {
   position: fixed;
   top: -10rem;
-  right: 3rem;
+  right: 50%;
+  transform: translateX(50%);
   background: white;
   border-radius: 3px;
   width: 25rem;
@@ -632,6 +633,10 @@ body.settings .info-settings {
     position: static;
     padding: 2rem 5rem;
     background: transparent;
+  }
+  .notification-dialog {
+    right: 3rem;
+    transform: translateX(0);
   }
 }
 

@@ -99,7 +99,6 @@ export default class User {
   }
 
   static async setNotification(status, userId) {
-    console.log(status, userId);
     const updateNotification = await client.query(`UPDATE "notificationStatus" SET nstatus=${status} WHERE "userId"=${userId} RETURNING *`);
     if (updateNotification.rowCount === 0) throw new Error('entry not found');
     return updateNotification.rows[0];
