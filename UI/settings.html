@@ -33,7 +33,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       document.querySelector('.info').innerHTML = `
       <span id="number">${entries.length}</span>
-      <span id="title">${entries.length > 1 ? 'DIARIES' : 'DIARY'} ADDED</span>`
+      <span id="title">${entries.length > 1 ? 'ENTRIES' : 'ENTRY'} ADDED</span>`
       document.querySelector('#show-notification').addEventListener('change', function () {
         setNotification(this.checked)})
     });

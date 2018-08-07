@@ -3,7 +3,7 @@ const apiRoot = 'https://api-mydiary.herokuapp.com/api/v1';
 const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
 const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const now = new Date();
-let entries = [];
+let entries = JSON.parse(localStorage.getItem('entries')) || [];
 let editMode = false;
 let showAddDiaryView = false;
 let currentDiary;
@@ -62,6 +62,7 @@ const initDropdown = () => {
 };
 const initDiaries = () => {
   const diaries = document.querySelector('section.diaries');
+  const numberOfDiaries = document.querySelector('#info');
   diaries.innerHTML = `
   <div class="today">
     <span id="date">${now.getDate()}</span>
@@ -82,8 +83,10 @@ const initDiaries = () => {
     li.addEventListener('click', () => readDiary(i));
     ul.appendChild(li);
   }
+  numberOfDiaries.innerHTML = `${entries.length} ${entries.length > 1 ? 'entries' : 'entry'} added`;
   diaries.appendChild(ul);
   readDiary(currentDiary);
+  localStorage.setItem('entries', JSON.stringify(entries));
 };
 let readDiary = (i = 0) => {
   let diary = entries[i];
@@ -110,18 +113,22 @@ const changeAddView = () => {
   const h2 = document.querySelector('section.add-diary h2');
   const editForm = document.forms['edit-entry'];
   h2.textContent = editMode && entries[currentDiary] ? 'Edit diary entry' : 'Add new entry';
-  editForm.title.value = editMode && entries[currentDiary] ? entries[currentDiary].title : '';
-  editForm.body.value = editMode && entries[currentDiary] ? entries[currentDiary].body : '';
   editForm.update.value = editMode && entries[currentDiary] ? 'Update' : 'Add';
+  if (editMode && entries[currentDiary]) {
+    editForm.title.value = entries[currentDiary].title;
+    editForm.body.value = entries[currentDiary].body;
+  }
   initInput();
   showAddDiaryView = true;
   slideTo();
 };
 const editDiary = () => {
+  if (!entries[currentDiary]) return;
   editMode = true;
   changeAddView();
 };
 const addDiary = () => {
+  if (editMode) document.forms['edit-entry'].reset();
   editMode = false;
   changeAddView();
 };
@@ -245,7 +252,8 @@ const addEntry = async (event) => {
     alert(error.message);
   }
 };
-const deleteEntry = async (event) => {
+const deleteEntry = async () => {
+  if (!entries[currentDiary]) return;
   try {
     const response = await fetch(`${apiRoot}/entries/${entries[currentDiary].id}`, {
       method: 'DELETE',
@@ -257,6 +265,8 @@ const deleteEntry = async (event) => {
     const jsonResponse = await response.json();
     if (response.ok) {
       entries.splice(currentDiary, 1);
+      if (!entries[currentDiary]) currentDiary -= 1;
+      if (currentDiary < 0) currentDiary = 0;
       initDiaries();
     } else if (jsonResponse.error) {
       const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
@@ -268,6 +278,7 @@ const deleteEntry = async (event) => {
   }
 };
 const getEntries = async () => {
+  initDiaries();
   try {
     const response = await fetch(`${apiRoot}/entries`, {
       mode: 'cors',

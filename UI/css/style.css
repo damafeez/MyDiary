@@ -122,9 +122,8 @@ button {
   width: 1.8rem;
   height: 1.8rem;
   order: 1;
-  flex-basis: 2.5rem;
+  flex: 0 1 2.5rem;
   transition: color .2s ease-out;
-  flex-grow: 0;
 }
 .input input, .input input:focus {
   border: none;

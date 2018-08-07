@@ -47,7 +47,7 @@
     </div>
   </main>
   <footer>
-    <button class="settings drop-container">
+    <button title="Settings" class="settings drop-container">
       <svg class="icon">
         <use xlink:href="svg/icons.svg#icon-settings"></use>
       </svg>
@@ -56,19 +56,16 @@
           <input type="checkbox" checked name="" id="show-notification">
           <label for="show-notification">Daily Reminder</label>
         </div>
-        <p>5 Entries Added</p>
+        <p id="info"></p>
         <p onclick="logout()" class="btn round">Logout</p>
       </div>
     </button>
-    <button onclick="addDiary()" class="add drop-container">
+    <button title="New entry" onclick="addDiary()" class="add">
       <svg class="icon">
         <use xlink:href="svg/icons.svg#icon-plus"></use>
       </svg>
-      <div class="drop">
-        <p>You haven't added an entry to your diary today. Please click here to get started.</p>
-      </div>
     </button>
-    <button title="Edit Current Entry" onclick="editDiary()" class="edit">
+    <button title="Edit Entry" onclick="editDiary()" class="edit">
       <svg class="icon">
         <use xlink:href="svg/icons.svg#icon-edit-3"></use>
       </svg>
@@ -91,6 +88,8 @@
         e.stopPropagation()
         this.classList.toggle('active')
       })
+      document.querySelector('#show-notification').addEventListener('change', function () {
+        setNotification(this.checked)})
     })
     window.addEventListener('resize', (e) => {
       slideTo()
