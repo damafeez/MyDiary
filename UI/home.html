@@ -34,7 +34,7 @@
             <textarea required id="entry" name="body" rows="4"></textarea>
           </div>
           <input type="submit" name="update" value="Add" class="btn round">
-          <input onclick="hideAdd()" type="reset" class="btn round reset" value="Cancel">
+          <input onclick="hideAdd()" type="reset" class="btn round cancel" value="Cancel">
         </form>
       </section>
       <section class="diaries">
@@ -70,7 +70,7 @@
         <use xlink:href="svg/icons.svg#icon-edit-3"></use>
       </svg>
     </button>
-    <button title="Delete Entry" onclick="deleteEntry()" class="delete">
+    <button title="Delete Entry" onclick="confirmAction('Are you sure you want to delete?', deleteEntry)" class="delete">
       <svg class="icon">
         <use xlink:href="svg/icons.svg#icon-trash-2"></use>
       </svg>

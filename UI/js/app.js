@@ -91,6 +91,9 @@ const initDiaries = () => {
 const notification = document.createElement('div');
 notification.className = 'notification-dialog';
 document.body.appendChild(notification);
+const confirmDialog = document.createElement('div');
+confirmDialog.className = 'notification-dialog confirm-dialog';
+document.body.appendChild(confirmDialog);
 const showNotification = ({
   message = 'test',
   timeout = 5000,
@@ -100,6 +103,21 @@ const showNotification = ({
   notification.classList.add(status);
   notification.classList.add('active');
   setTimeout(() => notification.classList.remove('active'), timeout);
+};
+const confirmAction = (message, callback) => {
+  confirmDialog.innerHTML = `
+  <p>${message}</p>
+  <button id='cancel' class="btn round cancel">Cancel</button>
+  <button id='proceed' class="btn round">Confirm</button>  
+  `;
+  confirmDialog.classList.add('active');
+  confirmDialog.querySelector('#proceed').addEventListener('click', () => {
+    confirmDialog.classList.remove('active');
+    callback();
+  });
+  confirmDialog.querySelector('#cancel').addEventListener('click', () => {
+    confirmDialog.classList.remove('active');
+  });
 };
 let readDiary = (i = 0) => {
   let diary = entries[i];
