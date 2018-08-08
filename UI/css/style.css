@@ -253,6 +253,13 @@ h1 {
 .notification-dialog.success {
   color: #43a047;
 }
+.confirm-dialog {
+  text-align: center;
+}
+.confirm-dialog p:not(:last-child) {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+}
 /* express styles */
 body {
   font-family: 'Roboto', sans-serif;
@@ -362,7 +369,7 @@ section.add-diary .btn {
   margin-top: 1rem;
   float: right;
 }
-section.add-diary .reset {
+.cancel {
   background: var(--gray);
   margin-right: 1rem;
 }
