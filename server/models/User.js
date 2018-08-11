@@ -98,8 +98,8 @@ export default class User {
     }, process.env.JWT_SECRET);
   }
 
-  static async setNotification(status, userId) {
-    const updateNotification = await client.query(`UPDATE "notificationStatus" SET nstatus=${status} WHERE "userId"=${userId} RETURNING *`);
+  static async setNotification({ status, userId, subscription }) {
+    const updateNotification = await client.query(`UPDATE "notificationStatus" SET status=${status}, subscription='${subscription}' WHERE "userId"=${userId} RETURNING *`);
     if (updateNotification.rowCount === 0) throw new Error('entry not found');
     return updateNotification.rows[0];
   }

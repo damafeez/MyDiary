@@ -2,10 +2,14 @@ import 'babel-polyfill';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import winston from 'winston';
+import dotenv from 'dotenv';
+import webPush from 'web-push';
 import swaggerUi from 'swagger-ui-express';
+import { dailyReminder } from './helpers/utils';
 import api from './routes';
 import documentation from '../swagger';
+
+dotenv.config();
 
 const PORT = process.env.PORT || 3030;
 
@@ -18,14 +22,16 @@ app
 
 app.set('json spaces', 2);
 
+webPush.setVapidDetails(
+  'mailto:damafeez@gmail.com',
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY,
+);
+dailyReminder();
 app.use('/api/v1', api);
 
-const swaggerOption = {
-  customCss: '.swagger-ui .topbar { display: none }',
-};
- 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(documentation, swaggerOption));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(documentation, { customCss: '.swagger-ui .topbar { display: none }' }));
 
-app.listen(PORT, () => winston.log('server status', `server is running on port ${PORT}, NODE_ENV: ${process.env.NODE_ENV}`));
+app.listen(PORT, () => console.log('server status', `server is running on port ${PORT}, NODE_ENV: ${process.env.NODE_ENV}`));
 
 export default app;

@@ -26,13 +26,4 @@ const login = async (request, response) => {
   }
 };
 
-const setNotification = async (request, response) => {
-  try {
-    const user = await User.setNotification(request.body.status, request.user.id);
-    sendResponse({ response, data: user });
-  } catch (error) {
-    sendResponse({ response, error: [error.message], status: 401 });
-  }
-};
-
-export { signup, login, setNotification };
+export { signup, login };

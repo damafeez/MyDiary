@@ -10,11 +10,10 @@ import {
 } from '../controllers/entries';
 
 const router = express.Router();
-router.use(authenticate);
-router.post('/entries', validator(postRules), postEntry);
-router.get('/entries', getEntries);
-router.get('/entries/:id', getEntry);
-router.put('/entries/:id', validator(postRules), editEntry);
-router.delete('/entries/:id', deleteEntry);
+router.post('/entries', validator(postRules), authenticate, postEntry);
+router.get('/entries', authenticate, getEntries);
+router.get('/entries/:id', authenticate, getEntry);
+router.put('/entries/:id', validator(postRules), authenticate, editEntry);
+router.delete('/entries/:id', authenticate, deleteEntry);
 
 export default router;

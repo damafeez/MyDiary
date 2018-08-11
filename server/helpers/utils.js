@@ -1,5 +1,8 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import webPush from 'web-push';
+import { CronJob } from 'cron';
+import client from './connection';
 
 dotenv.config();
 
@@ -61,6 +64,25 @@ const sendResponse = ({
   });
 };
 
+const reminderPayload = JSON.stringify({
+  title: 'Daily Reminder',
+  body: 'You have not added an entry to your diary today',
+  icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTapZwG9027EDdfaV4lweInb3Kcjlq4vAPDpyPtZ5LyJue_IS44',
+});
+
+const dailyReminder = () => new CronJob('* 15 * * * *', async () => {
+  console.log('i ran');
+  const subscriptions = await client.query('SELECT * FROM "notificationStatus" WHERE status=true');
+  subscriptions.rows.filter(async (subscribed) => {
+    const todaysPost = await client.query(`SELECT * FROM entries WHERE "authorId" = ${subscribed.userId} AND created >= now()::date`);
+    console.log('today', todaysPost.rows);
+    return todaysPost.rows === 0;
+  }).map((sub) => {
+    console.log('sending', sub.rows);
+    return webPush.sendNotification(sub.subscription, reminderPayload).catch(error => error.stack);
+  });
+}, null, true);
+
 export {
   authenticate,
   validator,
@@ -68,4 +90,5 @@ export {
   minLength,
   dataType,
   sendResponse,
+  dailyReminder,
 };
