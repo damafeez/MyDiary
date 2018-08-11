@@ -2,23 +2,15 @@ import Diary from '../models/Diary';
 import { sendResponse } from '../helpers/utils';
 
 const postEntry = async (request, response) => {
-  try {
-    const { title, body } = request.body;
-    const author = request.user;
-    const newDiary = new Diary({ title, body, author });
-    const diary = await newDiary.save();
-    sendResponse({ response, data: diary, status: 201 });
-  } catch (error) {
-    sendResponse({ response, error: [error.message], status: 400 });
-  }
+  const { title, body } = request.body;
+  const author = request.user;
+  const newDiary = new Diary({ title, body, author });
+  const diary = await newDiary.save();
+  sendResponse({ response, data: diary, status: 201 });
 };
 const getEntries = async (request, response) => {
-  try {
-    const entries = await Diary.find(request.user);
-    sendResponse({ response, data: entries });
-  } catch (error) {
-    sendResponse({ response, error: [error.message], status: 400 });
-  }
+  const entries = await Diary.find(request.user);
+  sendResponse({ response, data: entries });
 };
 const getEntry = async (request, response) => {
   try {

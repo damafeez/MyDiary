@@ -12,11 +12,18 @@ const userDetails = {
   password: 'mypassword',
   email: 'johndoe@gmail.com',
 };
-const diaryTemplate = { title: 'My third awesome diary', body: 'This is the body of my third awesome diaryThis is the body of my third awesome diary' };
 const rootUrl = '/api/v1';
 
 export default function () {
-  describe('DELETE /entries/:id', () => {
+  describe('GET /push/publicKey', () => {
+    const route = '/push/publicKey';
+    it('should return push publicKey', async () => {
+      const response = await chai.request(app).get(`${rootUrl}${route}`);
+      expect(response.text).to.equal(process.env.VAPID_PUBLIC_KEY);
+    });
+  });
+  describe('PUT /push/subscribe', () => {
+    const route = '/push/subscribe';
     let user;
     let id;
     before('add user, log him in before test', async () => {
@@ -25,47 +32,37 @@ export default function () {
         .send({ username: userDetails.username, password: userDetails.password });
       user = login.body.data;
     });
-    beforeEach('add entry to db before each test', async () => {
-      const entry = await chai.request(app).post(`${rootUrl}/entries`)
-        .set('x-auth-token', user.token).send(diaryTemplate);
-      id = entry.body.data.id;
-    });
     after('delete user after test', async () => {
       after('remove user after test', async () => {
         await User.remove(user.username);
       });
     });
-    it('should delete specified entry and return it', async () => {
-      const response = await chai.request(app).delete(`${rootUrl}/entries/${id}`)
-        .set('x-auth-token', user.token);
+    it('should modify subscription and return status 200', async () => {
+      const response = await chai.request(app).put(`${rootUrl}${route}`)
+        .set('x-auth-token', user.token).send({ status: false, subscription: {} });
       expect(response).to.have.status(200);
       expect(response.body.data).to.be.an('object');
-      expect(response.body.data).to.include({
-        title: diaryTemplate.title,
-        body: diaryTemplate.body,
-      });
-      expect(response.body.data).to.have.property('authorId');
-      expect(response.body.data).to.have.property('created');
-      expect(response.body.data).to.have.property('edited');
     });
-    it('should return error if specified id is not found', async () => {
-      const response = await chai.request(app).delete(`${rootUrl}/entries/${7.3}`)
-        .set('x-auth-token', user.token);
-      expect(response).to.have.status(404);
+    it('should return error if modification excludes required field(s)', async () => {
+      const response = await chai.request(app).put(`${rootUrl}${route}`)
+        .set('x-auth-token', user.token).send({ status: false });
+      expect(response).to.have.status(400);
       expect(response.body.data).to.eql({});
-      expect(response.body.error).to.include.members(['entry not found']);
+      expect(response.body.error).to.include.members([
+        'subscription is required',
+        'subscription should be of type object',
+      ]);
     });
     it('should return error if token is compromised', async () => {
-      const response = await chai.request(app).delete(`${rootUrl}/entries/${id}`)
-        .set('x-auth-token', 'thisisacompromisedtoken22i349fuq3j990fw');
-
+      const response = await chai.request(app).put(`${rootUrl}${route}`)
+        .set('x-auth-token', 'thisisacompromisedtoken22i349fuq3j990fw').send({ status: false, subscription: {} });
       expect(response).to.have.status(401);
       expect(response.body.data).to.eql({});
       expect(response.body.error).to.include.members(['jwt malformed']);
     });
     it('should return error if token is not given', async () => {
-      const response = await chai.request(app).delete(`${rootUrl}/entries/${id}`);
-
+      const response = await chai.request(app).put(`${rootUrl}${route}`)
+        .send({ status: false, subscription: {} });
       expect(response).to.have.status(401);
       expect(response.body.data).to.eql({});
       expect(response.body.error).to.include.members(['token is required']);

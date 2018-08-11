@@ -35,6 +35,15 @@ const loginRules = {
     [required],
   ],
 };
+const subscribeRules = {
+  status: [
+    [dataType, 'boolean'],
+  ],
+  subscription: [
+    [required],
+    [dataType, 'object'],
+  ],
+};
 export default class User {
   constructor({
     fullName,
@@ -98,8 +107,8 @@ export default class User {
     }, process.env.JWT_SECRET);
   }
 
-  static async setNotification(status, userId) {
-    const updateNotification = await client.query(`UPDATE "notificationStatus" SET nstatus=${status} WHERE "userId"=${userId} RETURNING *`);
+  static async setNotification({ status, userId, subscription }) {
+    const updateNotification = await client.query(`UPDATE "notificationStatus" SET status=${status}, subscription='${subscription}' WHERE "userId"=${userId} RETURNING *`);
     if (updateNotification.rowCount === 0) throw new Error('entry not found');
     return updateNotification.rows[0];
   }
@@ -110,4 +119,4 @@ export default class User {
   }
 }
 
-export { signupRules, loginRules };
+export { signupRules, loginRules, subscribeRules };
