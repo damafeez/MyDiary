@@ -288,7 +288,9 @@ const setNotification = async (status) => {
     });
     const jsonResponse = await response.json();
     if (response.ok) {
-      console.log(jsonResponse);
+      const user = JSON.parse(localStorage.getItem('user'));
+      user.notificationStatus = jsonResponse.data.status;
+      localStorage.setItem('user', JSON.stringify(user));
     } else if (jsonResponse.error) {
       const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
         .join('');

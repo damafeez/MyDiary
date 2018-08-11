@@ -64,7 +64,7 @@ const sendResponse = ({
   });
 };
 
-const dailyReminder = () => new CronJob('0 0 22 * * *', async () => {
+const dailyReminder = () => new CronJob('0 0 15 * * *', async () => {
   console.log('i ran', Date());
   const subscriptions = await client.query('SELECT * FROM "notificationStatus" WHERE status=true');
   subscriptions.rows.filter(async (subscribed) => {
