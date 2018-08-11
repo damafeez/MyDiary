@@ -1,5 +1,5 @@
-const apiRoot = 'http://localhost:3030/api/v1';
-// const apiRoot = 'https://api-mydiary.herokuapp.com/api/v1';
+// const apiRoot = 'http://localhost:3030/api/v1';
+const apiRoot = 'https://api-mydiary.herokuapp.com/api/v1';
 const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
 const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const now = new Date();
@@ -8,7 +8,7 @@ let editMode = false;
 let showAddDiaryView = false;
 let currentDiary;
 
-function urlBase64ToUint8Array(base64String) {
+const urlBase64ToUint8Array = (base64String) => {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
   const base64 = (base64String + padding)
     .replace(/\-/g, '+')
@@ -21,7 +21,7 @@ function urlBase64ToUint8Array(base64String) {
     outputArray[i] = rawData.charCodeAt(i);
   }
   return outputArray;
-}
+};
 let pushSubscription;
 const registerWorker = async () => {
   const registration = await navigator.serviceWorker.register('/UI/js/worker.js');

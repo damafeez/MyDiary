@@ -1,10 +1,11 @@
 import express from 'express';
 import { publicKey, subscribe } from '../controllers/push';
-import { authenticate } from '../helpers/utils';
+import { authenticate, validator } from '../helpers/utils';
+import { subscribeRules } from '../models/User';
 
 const router = express.Router();
 
 router.get('/publicKey', publicKey);
-router.put('/subscribe', authenticate, subscribe);
+router.put('/subscribe', validator(subscribeRules), authenticate, subscribe);
 
 export default router;

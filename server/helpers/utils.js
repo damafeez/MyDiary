@@ -64,24 +64,22 @@ const sendResponse = ({
   });
 };
 
-const reminderPayload = JSON.stringify({
-  title: 'Daily Reminder',
-  body: 'You have not added an entry to your diary today',
-  icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTapZwG9027EDdfaV4lweInb3Kcjlq4vAPDpyPtZ5LyJue_IS44',
-});
-
-const dailyReminder = () => new CronJob('* 15 * * * *', async () => {
-  console.log('i ran');
+const dailyReminder = () => new CronJob('0 0 22 * * *', async () => {
+  console.log('i ran', Date());
   const subscriptions = await client.query('SELECT * FROM "notificationStatus" WHERE status=true');
   subscriptions.rows.filter(async (subscribed) => {
     const todaysPost = await client.query(`SELECT * FROM entries WHERE "authorId" = ${subscribed.userId} AND created >= now()::date`);
-    console.log('today', todaysPost.rows);
-    return todaysPost.rows === 0;
+    console.log('today', todaysPost.rowCount);
+    return todaysPost.rowCount === 0;
   }).map((sub) => {
-    console.log('sending', sub.rows);
-    return webPush.sendNotification(sub.subscription, reminderPayload).catch(error => error.stack);
+    console.log('sending', sub);
+    return webPush.sendNotification(sub.subscription, JSON.stringify({
+      title: 'Daily Reminder',
+      body: 'You have not added an entry to your diary today',
+      icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTapZwG9027EDdfaV4lweInb3Kcjlq4vAPDpyPtZ5LyJue_IS44',
+    })).catch(error => error.stack);
   });
-}, null, true);
+}, null, true, 'Africa/Lagos');
 
 export {
   authenticate,

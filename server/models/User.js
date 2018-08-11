@@ -35,6 +35,15 @@ const loginRules = {
     [required],
   ],
 };
+const subscribeRules = {
+  status: [
+    [dataType, 'boolean'],
+  ],
+  subscription: [
+    [required],
+    [dataType, 'object'],
+  ],
+};
 export default class User {
   constructor({
     fullName,
@@ -110,4 +119,4 @@ export default class User {
   }
 }
 
-export { signupRules, loginRules };
+export { signupRules, loginRules, subscribeRules };

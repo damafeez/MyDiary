@@ -12,7 +12,7 @@ const subscribe = async (request, response) => {
     subscription: JSON.stringify(subscription),
     userId: request.user.id,
   });
-  sendResponse({ response, status: 201, data: user });
+  sendResponse({ response, data: user });
 };
 
 export {

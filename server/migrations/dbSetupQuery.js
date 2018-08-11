@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS users(
   id SERIAL PRIMARY KEY,
   "fullName" VARCHAR(100) NOT NULL,
   email TEXT UNIQUE NOT NULL,
-  "authId" SERIAL,
+  "authId" SERIAL UNIQUE ,
   CONSTRAINT FK_Users_Authentication FOREIGN KEY ("authId") REFERENCES authentication(id)
   ON DELETE CASCADE
 );`;
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS entries(
 const notificationStatus = `
 CREATE TABLE IF NOT EXISTS "notificationStatus"(
   id SERIAL PRIMARY KEY,
-  "userId" INT,
+  "userId" INT UNIQUE,
   status BOOLEAN DEFAULT false,
   subscription JSON,
   CONSTRAINT FK_NotificationStatus_Users FOREIGN KEY ("userId") REFERENCES users(id)
@@ -42,7 +42,7 @@ const dropTables = `
 DROP TABLE IF EXISTS authentication cascade;
 DROP TABLE IF EXISTS users cascade;
 DROP TABLE IF EXISTS entries cascade;
-DROP TABLE IF EXISTS notificationStatus cascade;
+DROP TABLE IF EXISTS "notificationStatus" cascade;
 `;
 export default `${authentication}${users}${entries}${notificationStatus}`;
 export { dropTables };
