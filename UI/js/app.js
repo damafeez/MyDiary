@@ -7,6 +7,40 @@ let entries = JSON.parse(localStorage.getItem('entries')) || [];
 let editMode = false;
 let showAddDiaryView = false;
 let currentDiary;
+
+const urlBase64ToUint8Array = (base64String) => {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+};
+let pushSubscription;
+const registerWorker = async () => {
+  const registration = await navigator.serviceWorker.register('/UI/js/worker.js');
+  pushSubscription = await registration.pushManager.getSubscription();
+  if (!pushSubscription) {
+    const response = await fetch(`${apiRoot}/push/publicKey`, {
+      mode: 'cors',
+    });
+    const data = await response.text();
+    const publicKey = urlBase64ToUint8Array(data);
+    pushSubscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: publicKey,
+    });
+  }
+};
+if ('serviceWorker' in navigator) {
+  registerWorker().catch(error => console.log(error));
+}
 const initInput = () => {
   const inputFields = document.querySelectorAll('.input > input, .textarea > textarea');
   if (inputFields.length === 0) return;
@@ -71,7 +105,7 @@ const initDiaries = () => {
   `;
   const ul = document.createElement('ul');
   for (const [i, diary] of entries.entries()) {
-    let created = new Date(diary.created);
+    const created = new Date(diary.created);
     const li = document.createElement('li');
     const template = `
     <span class="pointer"></span>
@@ -240,14 +274,17 @@ const login = async (event) => {
 };
 const setNotification = async (status) => {
   try {
-    const response = await fetch(`${apiRoot}/notification`, {
+    const response = await fetch(`${apiRoot}/push/subscribe`, {
       method: 'PUT',
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
         'x-auth-token': JSON.parse(localStorage.getItem('user')).token,
       },
-      body: JSON.stringify({ status }),
+      body: JSON.stringify({
+        status,
+        subscription: status && pushSubscription ? pushSubscription : {},
+      }),
     });
     const jsonResponse = await response.json();
     if (response.ok) {
@@ -262,7 +299,7 @@ const setNotification = async (status) => {
       message: error.message,
       status: 'error',
       timeout: 7000,
-    })
+    });
   }
 };
 const addEntry = async (event) => {

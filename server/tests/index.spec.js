@@ -4,7 +4,6 @@ import chaiHttp from 'chai-http';
 import client from '../helpers/connection';
 import dbSetupQuery, { dropTables } from '../migrations/dbSetupQuery';
 import app from '../index';
-import diarySpec from './diary.spec';
 import signupSpec from './signup.spec';
 import loginSpec from './login.spec';
 import addEntrySpec from './addEntry.spec';
@@ -12,7 +11,7 @@ import getEntriesSpec from './getEntries.spec';
 import getEntrySpec from './getEntry.spec';
 import modifyEntrySpec from './modifyEntry.spec';
 import deleteEntrySpec from './deleteEntry.spec';
-import notificationSpec from './notification.spec';
+import pushSpec from './push.spec';
 
 process.env.NODE_ENV = 'test';
 chai.use(chaiHttp);
@@ -29,7 +28,7 @@ describe('SERVER', () => {
     expect(res.type).to.equal('text/html');
   });
 });
-// diarySpec();
+
 signupSpec();
 loginSpec();
 addEntrySpec();
@@ -37,4 +36,4 @@ getEntriesSpec();
 getEntrySpec();
 modifyEntrySpec();
 deleteEntrySpec();
-notificationSpec();
+pushSpec();
