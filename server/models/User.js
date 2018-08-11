@@ -83,8 +83,9 @@ export default class User {
   }
 
   async login() {
-    const authQuery = `SELECT users.id, authentication.password, authentication.username, users."fullName", users.email FROM authentication INNER JOIN users 
-    ON users."authId" = authentication.id 
+    const authQuery = `SELECT users.id, authentication.password, authentication.username, users."fullName", users.email, "notificationStatus".status as "notificationStatus" FROM authentication 
+    INNER JOIN users ON users."authId" = authentication.id 
+    INNER JOIN "notificationStatus" ON "notificationStatus"."userId" = users.id
     WHERE authentication.username = '${this.username}'`;
     const getUser = await client.query(authQuery);
     const user = getUser.rows[0];
@@ -94,6 +95,7 @@ export default class User {
       this.fullName = user.fullName;
       this.email = user.email;
       this.id = user.id;
+      this.notificationStatus = user.notificationStatus;
       this.token = await this.generateToken();
       return this.strip();
     }
@@ -114,7 +116,7 @@ export default class User {
   }
 
   strip() {
-    const { password, ...noPassword } = this;
+    const { password, authId, ...noPassword } = this;
     return noPassword;
   }
 }

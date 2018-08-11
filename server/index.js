@@ -27,7 +27,8 @@ webPush.setVapidDetails(
   process.env.VAPID_PUBLIC_KEY,
   process.env.VAPID_PRIVATE_KEY,
 );
-dailyReminder();
+dailyReminder().start();
+console.log('next dates', dailyReminder().nextDates());
 app.use('/api/v1', api);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(documentation, { customCss: '.swagger-ui .topbar { display: none }' }));

@@ -24,7 +24,7 @@ const urlBase64ToUint8Array = (base64String) => {
 };
 let pushSubscription;
 const registerWorker = async () => {
-  const registration = await navigator.serviceWorker.register('/UI/js/worker.js');
+  const registration = await navigator.serviceWorker.register('/MyDiary/UI/js/worker.js');
   pushSubscription = await registration.pushManager.getSubscription();
   if (!pushSubscription) {
     const response = await fetch(`${apiRoot}/push/publicKey`, {
@@ -288,7 +288,9 @@ const setNotification = async (status) => {
     });
     const jsonResponse = await response.json();
     if (response.ok) {
-      console.log(jsonResponse);
+      const user = JSON.parse(localStorage.getItem('user'));
+      user.notificationStatus = jsonResponse.data.status;
+      localStorage.setItem('user', JSON.stringify(user));
     } else if (jsonResponse.error) {
       const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
         .join('');

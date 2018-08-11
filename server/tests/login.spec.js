@@ -30,7 +30,14 @@ export default function () {
       expect(res).to.have.status(200);
       expect(res.body.data).to.have.property('id');
       expect(res.body.data).to.have.property('token');
-      expect(res.body.data).to.include({ fullName: userDetails.fullName, email: userDetails.email, username: userDetails.username }).but.not.have.property('password');
+      expect(res.body.data).to.not.have.property('password');
+      expect(res.body.data).to.not.have.property('authId');
+      expect(res.body.data).to.include({
+        fullName: userDetails.fullName,
+        email: userDetails.email,
+        username: userDetails.username,
+        notificationStatus: false,
+      });
     });
     it('should not log user with bad credentials in', async () => {
       const res = await chai.request(app).post(rootUrl + route).send({ username: userDetails.username, password: 'incorrect' });
