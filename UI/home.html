@@ -90,8 +90,10 @@
         e.stopPropagation()
         this.classList.toggle('active')
       })
+      document.querySelector('#show-notification').checked = user.notificationStatus
       document.querySelector('#show-notification').addEventListener('change', function () {
-        setNotification(this.checked)})
+        setNotification(this.checked)
+      })
     })
     window.addEventListener('resize', (e) => {
       slideTo()
