@@ -657,10 +657,11 @@ body.settings .info-settings {
 }
 .info-settings .settings > div {
   cursor: pointer;
-  padding: 1rem;
   width: 100%;
   display: flex;
   justify-content: space-between;
+  padding: 1.2rem 0;
+  align-items: center;
 }
 .info-settings .settings > div > svg {
   margin-right: .88rem;
