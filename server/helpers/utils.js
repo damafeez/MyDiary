@@ -64,7 +64,7 @@ const sendResponse = ({
   });
 };
 
-const dailyReminder = () => new CronJob('0 0 15 * * *', async () => {
+const dailyReminder = () => new CronJob('0 0 12 * * *', async () => {
   console.log('i ran', Date());
   const subscriptions = await client.query('SELECT * FROM "notificationStatus" WHERE status=true');
   subscriptions.rows.filter(async (subscribed) => {
@@ -79,7 +79,7 @@ const dailyReminder = () => new CronJob('0 0 15 * * *', async () => {
       icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTapZwG9027EDdfaV4lweInb3Kcjlq4vAPDpyPtZ5LyJue_IS44',
     })).catch(error => error.stack);
   });
-}, null, true, 'Africa/Lagos');
+}, null, false);
 
 export {
   authenticate,

@@ -19,14 +19,26 @@
   </header>
   <main>
     <section class="info-settings">
-      <div class="info">
-      </div>
       <div class="settings">
-        <div class="check">
-          <input type="checkbox" checked name="reminder" id="show-notification">
-          <label for="show-notification">Remind me about adding an entry to my diary on a daily basis</label>
+        <div>
+          <span>EDIT PROFILE</span>
+          <svg class="icon">
+            <use xlink:href="svg/icons.svg#icon-user"></use>
+          </svg>
         </div>
-        <button onclick="logout()" class="btn round">Logout</button>
+        <div>
+          <span>CHANGE PASSWORD</span>
+          <svg class="icon">
+            <use xlink:href="svg/icons.svg#icon-unlock"></use>
+          </svg>
+        </div>
+        <div class="check">
+          <label for="show-notification">SHOW DAILY REMINDER</label>
+          <input type="checkbox" checked name="reminder" id="show-notification">
+        </div>
+        <button onclick="logout()" class="btn round logout">Logout</button>
+      </div>
+      <div class="info">
       </div>
     </section>
   </main>
@@ -35,7 +47,9 @@
     window.addEventListener('DOMContentLoaded', () => {
       document.querySelector('.info').innerHTML = `
       <span id="number">${entries.length}</span>
-      <span id="title">${entries.length > 1 ? 'ENTRIES' : 'ENTRY'} ADDED</span>`
+      <span id="title">${entries.length > 1 ? 'ENTRIES' : 'ENTRY'} ADDED</span>
+      <h2>${user.fullName}</h2>
+      <p>${user.email}</p>`
       document.querySelector('#show-notification').checked = user.notificationStatus
       document.querySelector('#show-notification').addEventListener('change', function () {
         setNotification(this.checked)})
