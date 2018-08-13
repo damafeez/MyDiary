@@ -20,7 +20,7 @@ html {
   font-family: 'Ubuntu', sans-serif;
 }
 
-/* Track */
+/* Scroller Track */
 ::-webkit-scrollbar {
   width: 7px;
   cursor: pointer;
@@ -33,7 +33,7 @@ html {
   background: var(--cute-pink);
 }
 
-/* Handle */
+/* Scroller Handle */
 ::-webkit-scrollbar-thumb {
   background: var(--primary-text-color); 
   border-radius: 10px;
@@ -78,7 +78,6 @@ input[type="checkbox"]{
 	background: #ddd;
 	border-radius: 3em;
 	position: relative;
-	cursor: pointer;
 	outline: none;
 	-webkit-transition: all .2s ease-in-out;
 	transition: all .2s ease-in-out;
@@ -110,20 +109,18 @@ input[type="checkbox"]:after{
 input[type="checkbox"]:checked:after{
   left: calc(100% - 1.8em);
 }
-	
-svg.icon {
-  width: 1.9rem;
-  height: 1.9rem;
+
+label, input, .btn, button {
+  cursor: pointer;
 }
+
 button {
   border: none;
   outline: none;
-  cursor: pointer;
 }
 .btn {
   border: none;
   outline: none;
-  cursor: pointer;
   padding: .8rem 1.5rem;
   border-radius: 3px;
   min-width: 6rem;
@@ -201,7 +198,6 @@ button {
   left: .1rem;
   transition: all .2s ease-in;
   font-size: 1.3rem;
-  cursor: pointer;
   color: grey;
 }
 .input.active > label {
@@ -263,12 +259,6 @@ button {
   opacity: 1;
   pointer-events: visible;
 }
-label, input {
-  cursor: pointer;
-}
-h1 {
-  font-size: 2.5rem;
-}
 .notification-dialog {
   position: fixed;
   top: -10rem;
@@ -304,6 +294,18 @@ h1 {
   margin-bottom: 1rem;
   padding-bottom: 1rem;
 }
+
+.open-close {
+  max-height: 0;
+  opacity: .1;
+  overflow-y: hidden;
+  transition: all .5s ease-in-out;
+}
+.open-close.active {
+  max-height: 500px;
+  opacity: 1;
+  transition-delay: .3s;
+}
 /* express styles */
 body {
   font-family: 'Roboto', sans-serif;
@@ -325,6 +327,13 @@ body.before-login main {
   grid-template-areas: "intro"
                        "login";
   grid-template-columns: 1fr;
+}
+h1 {
+  font-size: 2.5rem;
+}
+svg.icon {
+  width: 1.9rem;
+  height: 1.9rem;
 }
 section.auth {
   grid-area: login;
@@ -489,7 +498,7 @@ section.diaries ul li .body{
 section.diaries ul li .date{
   grid-area: date;
   font-size: 1.2rem;
-  color: #9dc89f;
+  color: #43a047;
   text-align: center;
   text-transform: capitalize;
 }
@@ -507,7 +516,7 @@ section.diary h2{
 section.diary p.date{
   font-weight: 300;
   font-size: 1.4rem;
-  color: #9dc89f;
+  color: #43a047;
   margin-bottom: 2rem;
   border-bottom: 3px solid;
   display: inline-block;
@@ -571,8 +580,17 @@ footer .settings .drop {
 footer .settings .drop > * {
   margin-bottom: 1rem;
 }
-footer .settings .drop > a {
-  margin: 2rem 0;
+footer .settings .drop > .check {
+  border-bottom: 1px solid #f1f1f1;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+}
+footer .settings .drop > #info {
+  color: gray;
 }
 footer .settings {
   z-index: 5;
@@ -653,24 +671,37 @@ body.settings .info-settings {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 2rem;
-  min-height: 30rem;
+  padding: 2rem 0;
+  min-height: 40rem;
 }
 .info-settings .settings > div {
-  cursor: pointer;
   width: 100%;
+}
+.info-settings .open-close.active {
+  padding: 1rem 2rem;
+  background: #f6f1e982;
+}
+.info-settings .open-close button {
+  background-color: gray;
+  float: right;
+}
+.info-settings .settings > div > .header {
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
-  padding: 1.2rem 0;
+  padding: 2rem;
   align-items: center;
 }
-.info-settings .settings > div > svg {
+.info-settings .settings > div > .header > svg {
   margin-right: .88rem;
 }
-.info-settings .settings > div:not(:last-of-type) {
+.info-settings .settings > div:not(:last-of-type) > .header {
   border-bottom: 1px solid #f1f1f1;
 }
-.info-settings .settings > div span, .info-settings .settings > div label {
+.info-settings .settings > div:last-of-type > .header {
+  margin-bottom: 3rem;
+}
+.info-settings .settings > div > .header span, .info-settings .settings > div > .header label {
   font-weight: 500;
   font-size: 1.2rem;
   color: gray;
@@ -686,10 +717,13 @@ body.settings .info-settings {
 
 @media (min-width: 550px) {
   .info-settings .info {
+    background-size: 90% auto;
+    background-attachment: fixed;
     border-radius: 0 4px 4px 0;
     flex-basis: 45%;
   }
   .info-settings .settings {
+    min-height: 45rem;
     border-radius: 0 4px 4px 0;
     flex-basis: 55%;
   }
@@ -704,6 +738,9 @@ body.settings .info-settings {
   }
   body.logged-in main .scroller {
     flex-direction: row;
+  }
+  body.settings main {
+    padding: 3rem 2rem;
   }
   section.add-diary {
     margin-bottom: 0;

@@ -21,20 +21,67 @@
     <section class="info-settings">
       <div class="settings">
         <div>
-          <span>EDIT PROFILE</span>
-          <svg class="icon">
-            <use xlink:href="svg/icons.svg#icon-user"></use>
-          </svg>
+          <div class="header">
+            <span>EDIT PROFILE</span>
+            <svg class="icon">
+              <use xlink:href="svg/icons.svg#icon-user"></use>
+            </svg>
+          </div>
+          <form class="open-close" onsubmit="editProfile(event)" name="editProfile">
+            <div class="input">
+              <svg class="icon">
+                <use xlink:href="svg/icons.svg#icon-user"></use>
+              </svg>
+              <input required name="fullName" id="edit-fullName" type="text">
+              <label for="edit-fullName">Full Name</label>
+            </div>
+            <div class="input">
+              <svg class="icon">
+                <use xlink:href="svg/icons.svg#icon-at-sign"></use>
+              </svg>
+              <input required name="email" id="edit-email" type="email">
+              <label for="edit-email">Email</label>
+            </div>
+            <button class="round btn">Update</button>
+          </form>
         </div>
         <div>
-          <span>CHANGE PASSWORD</span>
-          <svg class="icon">
-            <use xlink:href="svg/icons.svg#icon-unlock"></use>
-          </svg>
+          <div class="header">
+            <span>CHANGE PASSWORD</span>
+            <svg class="icon">
+              <use xlink:href="svg/icons.svg#icon-unlock"></use>
+            </svg>
+          </div>
+          <form class="open-close" onsubmit="changePassword(event)" name="changePassword">
+            <div class="input">
+              <svg class="icon">
+                <use xlink:href="svg/icons.svg#icon-unlock"></use>
+              </svg>
+              <input required name="current" id="password-current" type="password">
+              <label for="password-current">Current Password</label>
+            </div>
+            <div class="input">
+              <svg class="icon">
+                <use xlink:href="svg/icons.svg#icon-unlock"></use>
+              </svg>
+              <input required name="new" id="password-new" type="password">
+              <label for="password-new">New Password</label>
+            </div>
+            <div class="input">
+              <svg class="icon">
+                <use xlink:href="svg/icons.svg#icon-unlock"></use>
+              </svg>
+              <input required name="confirm" id="password-confirm" type="password">
+              <label for="password-confirm">Confirm Password</label>
+            </div>
+            <button class="round btn">Update</button>
+          </form>
         </div>
-        <div class="check">
-          <label for="show-notification">SHOW DAILY REMINDER</label>
-          <input type="checkbox" checked name="reminder" id="show-notification">
+        <div>
+          <div class="header check">
+            <label for="show-notification">SHOW DAILY REMINDER</label>
+            <input type="checkbox" checked name="reminder" id="show-notification">
+          </div>
         </div>
         <button onclick="logout()" class="btn round logout">Logout</button>
       </div>
@@ -53,7 +100,10 @@
       document.querySelector('#show-notification').checked = user.notificationStatus
       document.querySelector('#show-notification').addEventListener('change', function () {
         setNotification(this.checked)})
-    });
+      document.querySelector('#edit-fullName').value = user.fullName
+      document.querySelector('#edit-email').value = user.email
+      initOpenClose()
+    })
   </script>
 </body>
 </html>
