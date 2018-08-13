@@ -42,9 +42,9 @@ if ('serviceWorker' in navigator) {
   registerWorker().catch(error => console.log(error));
 }
 const initInput = () => {
-  const inputFields = document.querySelectorAll('.input > input, .textarea > textarea');
+  const inputFields = [...document.querySelectorAll('.input > input, .textarea > textarea')];
   if (inputFields.length === 0) return;
-  for (inputField of inputFields) {
+  inputFields.map((inputField) => {
     if (inputField.value) inputField.parentNode.classList.add('active');
     else inputField.parentNode.classList.remove('active');
     inputField.addEventListener('focus', function () {
@@ -53,7 +53,21 @@ const initInput = () => {
     inputField.addEventListener('blur', function () {
       if (!this.value) this.parentNode.classList.remove('active');
     });
-  }
+    return inputField;
+  });
+};
+const initOpenClose = () => {
+  const openCloseArray = [...document.querySelectorAll('.settings .open-close')];
+  if (openCloseArray.length === 0) return;
+  openCloseArray.map((openClose) => {
+    return openClose.previousElementSibling.addEventListener('click', () => {
+      openCloseArray.map((x) => {
+        if (x !== openClose) x.classList.remove('active');
+      });
+      initInput();
+      openClose.classList.toggle('active');
+    });
+  });
 };
 const toggleView = (view) => {
   const authContainer = document.querySelector('section.auth');
@@ -94,6 +108,25 @@ const hideAdd = () => {
 const initDropdown = () => {
   document.querySelector('.drop-container .drop').addEventListener('click', e => e.stopPropagation());
 };
+const readDiary = (i = 0) => {
+  let diary = entries[i];
+  if (!diary) {
+    diary = { title: 'You have not added any entries to your diary', body: 'Please click the green  button at bottom left to get started', created: '' };
+    currentDiary = 0;
+  } else {
+    const date = new Date(diary.created);
+    diary.created = `${months[date.getMonth()]} ${date.getDate()}`;
+  }
+  currentDiary = i;
+  document.querySelector('section.diary h2').textContent = diary.title;
+  document.querySelector('section.diary .date').textContent = diary.created;
+  document.querySelector('section.diary .body').textContent = diary.body;
+  const diaryList = [...document.querySelectorAll('section.diaries ul > li')];
+  if (diaryList.length === 0) return;
+  diaryList.map(entry => entry.classList.remove('active'));
+  diaryList[currentDiary].classList.add('active');
+  hideAdd();
+};
 const initDiaries = () => {
   const diaries = document.querySelector('section.diaries');
   const numberOfDiaries = document.querySelector('#info');
@@ -104,7 +137,7 @@ const initDiaries = () => {
   </div>
   `;
   const ul = document.createElement('ul');
-  for (const [i, diary] of entries.entries()) {
+  entries.map((diary, i) => {
     const created = new Date(diary.created);
     const li = document.createElement('li');
     const template = `
@@ -115,8 +148,8 @@ const initDiaries = () => {
     `;
     li.innerHTML = template;
     li.addEventListener('click', () => readDiary(i));
-    ul.appendChild(li);
-  }
+    return ul.appendChild(li);
+  });
   numberOfDiaries.innerHTML = `${entries.length} ${entries.length > 1 ? 'entries' : 'entry'} added`;
   diaries.appendChild(ul);
   readDiary(currentDiary);
@@ -152,27 +185,6 @@ const confirmAction = (message, callback) => {
   confirmDialog.querySelector('#cancel').addEventListener('click', () => {
     confirmDialog.classList.remove('active');
   });
-};
-let readDiary = (i = 0) => {
-  let diary = entries[i];
-  if (!diary) {
-    diary = { title: 'You have not added any entries to your diary', body: 'Please click the green  button at bottom left to get started', created: '' };
-    currentDiary = 0;
-  } else {
-    const date = new Date(diary.created);
-    diary.created = `${months[date.getMonth()]} ${date.getDate()}`;
-  }
-  currentDiary = i;
-  document.querySelector('section.diary h2').textContent = diary.title;
-  document.querySelector('section.diary .date').textContent = diary.created;
-  document.querySelector('section.diary .body').textContent = diary.body;
-  const diaryList = document.querySelectorAll('section.diaries ul > li');
-  if (diaryList.length === 0) return;
-  for (const diary of diaryList) {
-    diary.classList.remove('active');
-  }
-  diaryList[currentDiary].classList.add('active');
-  hideAdd();
 };
 const changeAddView = () => {
   const h2 = document.querySelector('section.add-diary h2');
@@ -389,7 +401,7 @@ const getEntries = async () => {
     }
     throw new Error(jsonResponse.error);
   } catch (error) {
-    showNotification({
+    return showNotification({
       message: error.message,
       status: 'error',
       timeout: 7000,
