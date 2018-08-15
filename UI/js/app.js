@@ -7,6 +7,7 @@ let entries = JSON.parse(localStorage.getItem('entries')) || [];
 let editMode = false;
 let showAddDiaryView = false;
 let currentDiary;
+let pushSubscription;
 
 const urlBase64ToUint8Array = (base64String) => {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -22,7 +23,15 @@ const urlBase64ToUint8Array = (base64String) => {
   }
   return outputArray;
 };
-let pushSubscription;
+const subscribe = async () => fetch(`${apiRoot}/push/subscribe`, {
+  method: 'PUT',
+  mode: 'cors',
+  headers: {
+    'Content-Type': 'application/json; charset=utf-8',
+    'x-auth-token': JSON.parse(localStorage.getItem('user')).token,
+  },
+  body: JSON.stringify({ subscription: pushSubscription }),
+});
 const registerWorker = async () => {
   const registration = await navigator.serviceWorker.register('/MyDiary/UI/js/worker.js');
   pushSubscription = await registration.pushManager.getSubscription();
@@ -36,11 +45,11 @@ const registerWorker = async () => {
       userVisibleOnly: true,
       applicationServerKey: publicKey,
     });
+    return subscribe();
   }
+  return pushSubscription;
 };
-if ('serviceWorker' in navigator) {
-  registerWorker().catch(error => console.log(error));
-}
+if ('serviceWorker' in navigator) registerWorker().catch(e => console.log(e));
 const initInput = () => {
   const inputFields = [...document.querySelectorAll('.input > input, .textarea > textarea')];
   if (inputFields.length === 0) return;
@@ -229,6 +238,7 @@ const signup = async (event) => {
     });
     const jsonResponse = await response.json();
     if (response.ok) {
+      toggleView('login');
       form.reset();
       initInput();
       showNotification({
@@ -286,34 +296,43 @@ const login = async (event) => {
 };
 const setNotification = async (status) => {
   try {
-    const response = await fetch(`${apiRoot}/push/subscribe`, {
+    if (status && pushSubscription) {
+      await subscribe();
+    } else if (status) {
+      showNotification({
+        message: 'Sorry, this browser can not receive push notifications.',
+        timeout: 7000,
+      });
+    }
+    const response = await fetch(`${apiRoot}/push/notification`, {
       method: 'PUT',
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
         'x-auth-token': JSON.parse(localStorage.getItem('user')).token,
       },
-      body: JSON.stringify({
-        status,
-        subscription: status && pushSubscription ? pushSubscription : {},
-      }),
+      body: JSON.stringify({ status }),
     });
     const jsonResponse = await response.json();
     if (response.ok) {
       const user = JSON.parse(localStorage.getItem('user'));
       user.notificationStatus = jsonResponse.data.status;
       localStorage.setItem('user', JSON.stringify(user));
-    } else if (jsonResponse.error) {
+      return user;
+    }
+    if (jsonResponse.error) {
       const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
         .join('');
       throw new Error(error);
     }
+    return jsonResponse;
   } catch (error) {
     showNotification({
       message: error.message,
       status: 'error',
       timeout: 7000,
     });
+    return error;
   }
 };
 const addEntry = async (event) => {

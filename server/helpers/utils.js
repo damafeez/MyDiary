@@ -63,22 +63,26 @@ const sendResponse = ({
     error,
   });
 };
-
-const dailyReminder = () => new CronJob('0 0 12 * * *', async () => {
-  console.log('i ran', Date());
-  const subscriptions = await client.query('SELECT * FROM "notificationStatus" WHERE status=true');
-  subscriptions.rows.filter(async (subscribed) => {
-    const todaysPost = await client.query(`SELECT * FROM entries WHERE "authorId" = ${subscribed.userId} AND created >= now()::date`);
-    console.log('today', todaysPost.rowCount);
-    return todaysPost.rowCount === 0;
-  }).map((sub) => {
-    console.log('sending', sub);
-    return webPush.sendNotification(sub.subscription, JSON.stringify({
-      title: 'Daily Reminder',
-      body: 'You have not added an entry to your diary today',
-      icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTapZwG9027EDdfaV4lweInb3Kcjlq4vAPDpyPtZ5LyJue_IS44',
-    })).catch(error => error.stack);
-  });
+const dailyReminder = () => new CronJob('0 0 13 * * *', async () => {
+  console.log('I ran', Date());
+  const subscriptions = await client.query('SELECT * FROM "notificationStatus" WHERE status=true AND cardinality(subscription) > 0');
+  const noPostToday = await subscriptions.rows.reduce(async (accumulator, current) => {
+    const todaysPost = await client.query(`SELECT * FROM entries WHERE "authorId" = ${current.userId} AND created >= now()::date`);
+    if (todaysPost.rowCount === 0) {
+      (await accumulator).push(current);
+    }
+    return accumulator;
+  }, Promise.resolve([]));
+  noPostToday.reduce((previous, current) => [...previous, ...current.subscription],
+    [])
+    .map((sub) => {
+      console.log('sending', sub);
+      return webPush.sendNotification(sub, JSON.stringify({
+        title: 'Daily Reminder',
+        body: 'You have not added an entry to your diary today',
+        icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTapZwG9027EDdfaV4lweInb3Kcjlq4vAPDpyPtZ5LyJue_IS44',
+      })).catch(error => error.stack);
+    });
 }, null, false);
 
 export {

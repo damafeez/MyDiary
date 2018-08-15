@@ -36,12 +36,14 @@ const loginRules = {
   ],
 };
 const subscribeRules = {
-  status: [
-    [dataType, 'boolean'],
-  ],
   subscription: [
     [required],
     [dataType, 'object'],
+  ],
+};
+const notificationRules = {
+  status: [
+    [dataType, 'boolean'],
   ],
 };
 export default class User {
@@ -109,9 +111,13 @@ export default class User {
     }, process.env.JWT_SECRET);
   }
 
-  static async setNotification({ status, userId, subscription }) {
-    const updateNotification = await client.query(`UPDATE "notificationStatus" SET status=${status}, subscription='${subscription}' WHERE "userId"=${userId} RETURNING *`);
-    if (updateNotification.rowCount === 0) throw new Error('entry not found');
+  static async subscribe({ userId, subscription }) {
+    const updateSubscription = await client.query(`update "notificationStatus" set subscription = (select array_agg(distinct e) from unnest(subscription || ARRAY['${subscription}']::jsonb[]) e) WHERE "userId"=${userId} RETURNING *;`);
+    return updateSubscription;
+  }
+
+  static async setNotification({ userId, status }) {
+    const updateNotification = await client.query(`UPDATE "notificationStatus" SET status=${status} WHERE "userId"=${userId} RETURNING status`);
     return updateNotification.rows[0];
   }
 
@@ -121,4 +127,9 @@ export default class User {
   }
 }
 
-export { signupRules, loginRules, subscribeRules };
+export {
+  signupRules,
+  loginRules,
+  subscribeRules,
+  notificationRules,
+};
