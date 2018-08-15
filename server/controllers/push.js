@@ -6,16 +6,24 @@ const publicKey = (request, response) => {
 };
 
 const subscribe = async (request, response) => {
-  const { subscription, status } = request.body;
-  const user = await User.setNotification({
-    status,
+  const { subscription } = request.body;
+  await User.subscribe({
     subscription: JSON.stringify(subscription),
     userId: request.user.id,
   });
-  sendResponse({ response, data: user });
+  sendResponse({ response, data: subscription });
+};
+
+const notification = async (request, response) => {
+  const status = await User.setNotification({
+    status: request.body.status,
+    userId: request.user.id,
+  });
+  sendResponse({ response, data: status });
 };
 
 export {
   publicKey,
   subscribe,
+  notification,
 };
