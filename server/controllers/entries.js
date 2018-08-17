@@ -27,7 +27,7 @@ const editEntry = async (request, response) => {
     const diary = await Diary.findByIdAndUpdate(request.params.id, request.user, { title, body });
     sendResponse({ response, data: diary });
   } catch (error) {
-    sendResponse({ response, error: [error.message], status: error.message === 'entry not found' ? 404 : 400 });
+    sendResponse({ response, error: [error.message], status: 404 });
   }
 };
 const deleteEntry = async (request, response) => {
@@ -35,7 +35,7 @@ const deleteEntry = async (request, response) => {
     const diary = await Diary.findByIdAndDelete(request.params.id, request.user);
     sendResponse({ response, data: diary });
   } catch (error) {
-    sendResponse({ response, error: [error.message], status: error.message === 'entry not found' ? 404 : 400 });
+    sendResponse({ response, error: [error.message], status: 404 });
   }
 };
 

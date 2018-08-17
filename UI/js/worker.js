@@ -24,7 +24,7 @@ self.addEventListener('notificationclick', (event) => {
         return client;
       });
       if (clients.openWindow) {
-          return clients.openWindow(url);
+        return clients.openWindow(url);
       }
     })
   );
