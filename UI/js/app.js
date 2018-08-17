@@ -297,7 +297,7 @@ const login = async (event) => {
 const setNotification = async (status) => {
   try {
     if (status && pushSubscription) {
-      await subscribe();
+      subscribe();
     } else if (status) {
       showNotification({
         message: 'Sorry, this browser can not receive push notifications.',
