@@ -33,7 +33,7 @@ export default function () {
     });
     it('should update user password', async () => {
       const response = await chai.request(app).put(`${rootUrl}${route}`)
-        .set('x-auth-token', user.token).send({ password: userDetails.password, newPassword });
+        .set('x-auth-token', user.token).send({ password: userDetails.password, confirmPassword: newPassword, newPassword });
       expect(response).to.have.status(200);
       expect(response.body.data).to.be.an('object');
       expect(response.body.data).to.eql({
@@ -42,9 +42,15 @@ export default function () {
     });
     it('should not update user password if current password is wrong', async () => {
       const response = await chai.request(app).put(`${rootUrl}${route}`)
-        .set('x-auth-token', user.token).send({ password: 'wrongpassword', newPassword });
+        .set('x-auth-token', user.token).send({ password: 'wrongpassword', confirmPassword: newPassword, newPassword });
       expect(response).to.have.status(401);
-      expect(response.body.error).to.include.members(['invalid credentials']);
+      expect(response.body.error).to.include.members(['incorrect password']);
+    });
+    it('should not update user password if newPassword and confirmPassword differ', async () => {
+      const response = await chai.request(app).put(`${rootUrl}${route}`)
+        .set('x-auth-token', user.token).send({ password: 'wrongpassword', confirmPassword: 'anotherPassword', newPassword });
+      expect(response).to.have.status(401);
+      expect(response.body.error).to.include.members(['passwords did not match']);
     });
     it('should return error if newDetails excludes required field(s)', async () => {
       const response = await chai.request(app).put(`${rootUrl}${route}`)
@@ -53,20 +59,19 @@ export default function () {
       expect(response.body.data).to.eql({});
       expect(response.body.error).to.include.members([
         'password is required',
-        'password should have minimum of 8 characters',
-        'password should be of type string',
+        'confirmPassword is required',
       ]);
     });
     it('should return error if token is compromised', async () => {
       const response = await chai.request(app).put(`${rootUrl}${route}`)
-        .set('x-auth-token', 'thisisacompromisedtoken22i349fuq3j990fw').send({ password: userDetails.password, newPassword });
+        .set('x-auth-token', 'thisisacompromisedtoken22i349fuq3j990fw').send({ password: userDetails.password, confirmPassword: newPassword, newPassword });
 
       expect(response).to.have.status(401);
       expect(response.body.data).to.eql({});
       expect(response.body.error).to.include.members(['jwt malformed']);
     });
     it('should return error if token is not given', async () => {
-      const response = await chai.request(app).put(`${rootUrl}${route}`).send({ password: userDetails.password, newPassword });
+      const response = await chai.request(app).put(`${rootUrl}${route}`).send({ password: userDetails.password, confirmPassword: newPassword, newPassword });
       expect(response).to.have.status(401);
       expect(response.body.data).to.eql({});
       expect(response.body.error).to.include.members(['token is required']);

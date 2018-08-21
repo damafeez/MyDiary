@@ -41,13 +41,14 @@ const editRules = {
 const passwordRules = {
   password: [
     [required],
-    [minLength, 8],
-    [dataType, 'string'],
   ],
   newPassword: [
     [required],
     [minLength, 8],
     [dataType, 'string'],
+  ],
+  confirmPassword: [
+    [required],
   ],
 };
 const loginRules = {
@@ -92,14 +93,16 @@ export default class User {
     return edited.rows[0];
   }
 
-  static async changePassword(user, { password, newPassword }) {
+  static async changePassword(user, { password, newPassword, confirmPassword }) {
+    if (newPassword !== confirmPassword) throw new Error('passwords did not match');
+    const hashedPassword = await bcrypt.hash(newPassword, 5);
     const passwordQuery = await client.query(`SELECT password FROM authentication WHERE username='${user.username}';`);
     const isCorrectPassword = await bcrypt.compare(password, passwordQuery.rows[0].password);
     if (isCorrectPassword) {
-      await client.query(`UPDATE authentication SET password='${newPassword}' WHERE username='${user.username}'`);
+      await client.query(`UPDATE authentication SET password='${hashedPassword}' WHERE username='${user.username}'`);
       return { text: 'password changed' };
     }
-    throw new Error('invalid credentials');
+    throw new Error('incorrect password');
   }
 
   async save() {

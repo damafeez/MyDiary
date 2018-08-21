@@ -27,7 +27,7 @@
               <use xlink:href="svg/icons.svg#icon-user"></use>
             </svg>
           </div>
-          <form class="open-close" onsubmit="editProfile(event)" name="editProfile">
+          <form class="open-close" onsubmit="editProfile(event)">
             <div class="input">
               <svg class="icon">
                 <use xlink:href="svg/icons.svg#icon-user"></use>
@@ -52,26 +52,26 @@
               <use xlink:href="svg/icons.svg#icon-unlock"></use>
             </svg>
           </div>
-          <form class="open-close" onsubmit="changePassword(event)" name="changePassword">
+          <form class="open-close" onsubmit="changePassword(event)">
             <div class="input">
               <svg class="icon">
                 <use xlink:href="svg/icons.svg#icon-unlock"></use>
               </svg>
-              <input required name="current" id="password-current" type="password">
+              <input required name="password" id="password-current" type="password">
               <label for="password-current">Current Password</label>
             </div>
             <div class="input">
               <svg class="icon">
                 <use xlink:href="svg/icons.svg#icon-unlock"></use>
               </svg>
-              <input required name="new" id="password-new" type="password">
+              <input required name="newPassword" id="password-new" type="password">
               <label for="password-new">New Password</label>
             </div>
             <div class="input">
               <svg class="icon">
                 <use xlink:href="svg/icons.svg#icon-unlock"></use>
               </svg>
-              <input required name="confirm" id="password-confirm" type="password">
+              <input required name="confirmPassword" id="password-confirm" type="password">
               <label for="password-confirm">Confirm Password</label>
             </div>
             <button class="round btn">Update</button>
@@ -92,11 +92,7 @@
   <script src="js/app.js"></script>
   <script>
     window.addEventListener('DOMContentLoaded', () => {
-      document.querySelector('.info').innerHTML = `
-      <span id="number">${entries.length}</span>
-      <span id="title">${entries.length > 1 ? 'ENTRIES' : 'ENTRY'} ADDED</span>
-      <h2>${user.fullName}</h2>
-      <p>${user.email}</p>`
+      initInfo(user)
       document.querySelector('#show-notification').checked = user.notificationStatus
       document.querySelector('#show-notification').addEventListener('change', function () {
         setNotification(this.checked)})
