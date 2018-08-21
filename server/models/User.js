@@ -27,6 +27,29 @@ const signupRules = {
     [dataType, 'email'],
   ],
 };
+const editRules = {
+  fullName: [
+    [required],
+    [minLength, 5],
+    [dataType, 'string'],
+  ],
+  email: [
+    [required],
+    [dataType, 'email'],
+  ],
+};
+const passwordRules = {
+  password: [
+    [required],
+    [minLength, 8],
+    [dataType, 'string'],
+  ],
+  newPassword: [
+    [required],
+    [minLength, 8],
+    [dataType, 'string'],
+  ],
+};
 const loginRules = {
   username: [
     [required],
@@ -62,6 +85,21 @@ export default class User {
   static async remove(username) {
     const removeUser = await client.query(`DELETE FROM authentication WHERE username='${username}' RETURNING id, username`);
     return removeUser;
+  }
+
+  static async editProfile(user, { fullName, email }) {
+    const edited = await client.query(`UPDATE users SET "fullName"='${fullName}', email='${email}' WHERE id=${user.id} RETURNING "fullName", email`);
+    return edited.rows[0];
+  }
+
+  static async changePassword(user, { password, newPassword }) {
+    const passwordQuery = await client.query(`SELECT password FROM authentication WHERE username='${user.username}';`);
+    const isCorrectPassword = await bcrypt.compare(password, passwordQuery.rows[0].password);
+    if (isCorrectPassword) {
+      await client.query(`UPDATE authentication SET password='${newPassword}' WHERE username='${user.username}'`);
+      return { text: 'password changed' };
+    }
+    throw new Error('invalid credentials');
   }
 
   async save() {
@@ -132,4 +170,6 @@ export {
   loginRules,
   subscribeRules,
   notificationRules,
+  editRules,
+  passwordRules,
 };
