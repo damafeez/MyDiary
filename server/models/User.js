@@ -27,6 +27,17 @@ const signupRules = {
     [dataType, 'email'],
   ],
 };
+const editRules = {
+  fullName: [
+    [required],
+    [minLength, 5],
+    [dataType, 'string'],
+  ],
+  email: [
+    [required],
+    [dataType, 'email'],
+  ],
+};
 const loginRules = {
   username: [
     [required],
@@ -84,6 +95,11 @@ export default class User {
     return this.strip();
   }
 
+  static async editProfile(user, { fullName, email }) {
+    const edited = await client.query(`UPDATE users SET "fullName"='${fullName}', email='${email}' WHERE id=${user.id} RETURNING "fullName", email`);
+    return edited.rows[0];
+  }
+
   async login() {
     const authQuery = `SELECT users.id, authentication.password, authentication.username, users."fullName", users.email, "notificationStatus".status as "notificationStatus" FROM authentication 
     INNER JOIN users ON users."authId" = authentication.id 
@@ -132,4 +148,5 @@ export {
   loginRules,
   subscribeRules,
   notificationRules,
+  editRules,
 };
