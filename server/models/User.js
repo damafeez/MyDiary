@@ -38,6 +38,18 @@ const editRules = {
     [dataType, 'email'],
   ],
 };
+const passwordRules = {
+  password: [
+    [required],
+    [minLength, 8],
+    [dataType, 'string'],
+  ],
+  newPassword: [
+    [required],
+    [minLength, 8],
+    [dataType, 'string'],
+  ],
+};
 const loginRules = {
   username: [
     [required],
@@ -75,6 +87,21 @@ export default class User {
     return removeUser;
   }
 
+  static async editProfile(user, { fullName, email }) {
+    const edited = await client.query(`UPDATE users SET "fullName"='${fullName}', email='${email}' WHERE id=${user.id} RETURNING "fullName", email`);
+    return edited.rows[0];
+  }
+
+  static async changePassword(user, { password, newPassword }) {
+    const passwordQuery = await client.query(`SELECT password FROM authentication WHERE username='${user.username}';`);
+    const isCorrectPassword = await bcrypt.compare(password, passwordQuery.rows[0].password);
+    if (isCorrectPassword) {
+      await client.query(`UPDATE authentication SET password='${newPassword}' WHERE username='${user.username}'`);
+      return { text: 'password changed' };
+    }
+    throw new Error('invalid credentials');
+  }
+
   async save() {
     this.password = await bcrypt.hash(this.password, 5);
     const authQuery = 'INSERT INTO authentication(username, password) VALUES($1, $2) RETURNING id';
@@ -93,11 +120,6 @@ export default class User {
       return error;
     }
     return this.strip();
-  }
-
-  static async editProfile(user, { fullName, email }) {
-    const edited = await client.query(`UPDATE users SET "fullName"='${fullName}', email='${email}' WHERE id=${user.id} RETURNING "fullName", email`);
-    return edited.rows[0];
   }
 
   async login() {
@@ -149,4 +171,5 @@ export {
   subscribeRules,
   notificationRules,
   editRules,
+  passwordRules,
 };

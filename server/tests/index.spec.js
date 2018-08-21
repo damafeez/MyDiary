@@ -13,6 +13,7 @@ import modifyEntrySpec from './modifyEntry.spec';
 import deleteEntrySpec from './deleteEntry.spec';
 import pushSpec from './push.spec';
 import editProfileSpec from './editProfile.spec';
+import changePasswordSpec from './changePassword.spec';
 
 process.env.NODE_ENV = 'test';
 chai.use(chaiHttp);
@@ -39,3 +40,4 @@ modifyEntrySpec();
 deleteEntrySpec();
 pushSpec();
 editProfileSpec();
+changePasswordSpec();
