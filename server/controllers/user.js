@@ -12,6 +12,20 @@ const signup = async (request, response) => {
   }
 };
 
+const edit = async (request, response) => {
+  const user = await User.editProfile(request.user, request.body);
+  sendResponse({ response, data: user });
+};
+
+const changePassword = async (request, response) => {
+  try {
+    const user = await User.changePassword(request.user, request.body);
+    sendResponse({ response, data: user });
+  } catch (error) {
+    sendResponse({ response, error: [error.message], status: 401 });
+  }
+};
+
 const login = async (request, response) => {
   try {
     const {
@@ -26,4 +40,9 @@ const login = async (request, response) => {
   }
 };
 
-export { signup, login };
+export {
+  signup,
+  login,
+  edit,
+  changePassword,
+};

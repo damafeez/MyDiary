@@ -1,6 +1,7 @@
 version: "2"
 exclude_paths:
 - "UI"
+- "server/tests"
 checks:
  return-statements:
    enabled: false

@@ -68,15 +68,22 @@ const initInput = () => {
 const initOpenClose = () => {
   const openCloseArray = [...document.querySelectorAll('.settings .open-close')];
   if (openCloseArray.length === 0) return;
-  openCloseArray.map((openClose) => {
+  openCloseArray.forEach((openClose) => {
     return openClose.previousElementSibling.addEventListener('click', () => {
-      openCloseArray.map((x) => {
+      openCloseArray.forEach((x) => {
         if (x !== openClose) x.classList.remove('active');
       });
       initInput();
       openClose.classList.toggle('active');
     });
   });
+};
+const initInfo = (user) => {
+  document.querySelector('.info').innerHTML = `
+  <span id="number">${entries.length}</span>
+  <span id="title">${entries.length > 1 ? 'ENTRIES' : 'ENTRY'} ADDED</span>
+  <h2>${user.fullName}</h2>
+  <p>${user.email}</p>`
 };
 const toggleView = (view) => {
   const authContainer = document.querySelector('section.auth');
@@ -257,6 +264,82 @@ const signup = async (event) => {
     });
   }
 };
+const editProfile = async (event) => {
+  event.preventDefault();
+  const form = event.target;
+  const body = {};
+  body.fullName = form.fullName.value;
+  body.email = form.email.value;
+  try {
+    const response = await fetch(`${apiRoot}/auth/edit`, {
+      method: 'PUT',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'x-auth-token': JSON.parse(localStorage.getItem('user')).token,
+      },
+      body: JSON.stringify(body),
+    });
+    const jsonResponse = await response.json();
+    if (response.ok) {
+      form.classList.remove('active');
+      showNotification({
+        message: 'Profile successfully updated',
+      });
+      const user = JSON.parse(localStorage.getItem('user'));
+      user.fullName = jsonResponse.data.fullName;
+      user.email = jsonResponse.data.email;
+      initInfo(user);
+      localStorage.setItem('user', JSON.stringify(user));
+    } else if (jsonResponse.error) {
+      const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
+        .join('');
+      throw new Error(error);
+    }
+  } catch (error) {
+    showNotification({
+      message: error.message,
+      status: 'error',
+      timeout: 7000,
+    });
+  }
+};
+const changePassword = async (event) => {
+  event.preventDefault();
+  const form = event.target;
+  const body = {};
+  body.password = form.password.value;
+  body.newPassword = form.newPassword.value;
+  body.confirmPassword = form.confirmPassword.value;
+  try {
+    const response = await fetch(`${apiRoot}/auth/password`, {
+      method: 'PUT',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'x-auth-token': JSON.parse(localStorage.getItem('user')).token,
+      },
+      body: JSON.stringify(body),
+    });
+    const jsonResponse = await response.json();
+    if (response.ok) {
+      form.classList.remove('active');
+      showNotification({
+        message: 'Password successfully updated',
+      });
+    } else if (jsonResponse.error) {
+      const error = jsonResponse.error.map(eachError => `<p>${eachError}</p>`)
+        .join('');
+      throw new Error(error);
+    }
+  } catch (error) {
+    showNotification({
+      message: error.message,
+      status: 'error',
+      timeout: 7000,
+    });
+  }
+};
 const login = async (event) => {
   event.preventDefault();
   const form = event.target;
@@ -301,6 +384,7 @@ const setNotification = async (status) => {
     } else if (status) {
       showNotification({
         message: 'Sorry, this browser can not receive push notifications.',
+        status: 'error',
         timeout: 7000,
       });
     }

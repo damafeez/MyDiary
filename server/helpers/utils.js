@@ -63,9 +63,9 @@ const sendResponse = ({
     error,
   });
 };
-const dailyReminder = () => new CronJob('0 0 11,16 * * *', async () => {
-  console.log('I ran', Date());
+const dailyReminder = () => new CronJob('0 0 11-18 * * *', async () => {
   const subscriptions = await client.query('SELECT * FROM "notificationStatus" WHERE status=true AND cardinality(subscription) > 0');
+  console.log('I ran', subscriptions.rows, Date());
   const noPostToday = await subscriptions.rows.reduce(async (accumulator, current) => {
     const todaysPost = await client.query(`SELECT * FROM entries WHERE "authorId" = ${current.userId} AND created >= now()::date`);
     if (todaysPost.rowCount === 0) {
@@ -75,7 +75,7 @@ const dailyReminder = () => new CronJob('0 0 11,16 * * *', async () => {
   }, Promise.resolve([]));
   noPostToday.reduce((previous, current) => [...previous, ...current.subscription],
     [])
-    .map((sub) => {
+    .forEach((sub) => {
       console.log('sending', sub);
       return webPush.sendNotification(sub, JSON.stringify({
         title: 'Daily Reminder',
