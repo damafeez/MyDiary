@@ -25,11 +25,9 @@ export default function () {
       user = login.body.data;
     });
     after('delete user after test', async () => {
-      after('remove user after test', async () => {
-        const response = await User.remove(user.username);
-        expect(response.rowCount).to.equal(1);
-        expect(response.rows[0]).to.include({ username: user.username });
-      });
+      const response = await User.remove(user.username);
+      expect(response.rowCount).to.equal(1);
+      expect(response.rows[0]).to.include({ username: user.username });
     });
     const route = '/entries';
     it('should add entry to database', async () => {

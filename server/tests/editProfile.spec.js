@@ -12,6 +12,12 @@ const userDetails = {
   password: 'mypassword',
   email: 'johndoe@gmail.com',
 };
+const userDetails2 = {
+  username: 'username2',
+  fullName: 'User Two',
+  password: 'mypassword',
+  email: 'user2@gmail.com',
+};
 const rootUrl = '/api/v1';
 
 export default function () {
@@ -19,17 +25,16 @@ export default function () {
     const route = '/auth/edit';
     const newDetails = { fullName: 'New Name', email: 'johndoe@newmail.com' };
     let user;
-    let id;
-    before('add user and log him in before test', async () => {
+    before('add users and log him in before test', async () => {
       await chai.request(app).post(`${rootUrl}/auth/signup`).send(userDetails);
+      await chai.request(app).post(`${rootUrl}/auth/signup`).send(userDetails2);
       const login = await chai.request(app).post(`${rootUrl}/auth/login`)
         .send({ username: userDetails.username, password: userDetails.password });
       user = login.body.data;
     });
-    after('delete user after test', async () => {
-      after('remove user after test', async () => {
-        await User.remove(user.username);
-      });
+    after('delete users after test', async () => {
+      await User.remove(user.username);
+      await User.remove(userDetails2.username);
     });
     it('should modify user details and return newDetails', async () => {
       const response = await chai.request(app).put(`${rootUrl}${route}`)
@@ -40,6 +45,16 @@ export default function () {
         fullName: newDetails.fullName,
         email: newDetails.email,
       });
+    });
+    it('should not modify user details if email has been chosen', async () => {
+      const response = await chai.request(app).put(`${rootUrl}${route}`)
+        .set('x-auth-token', user.token).send({
+          fullName: newDetails.fullName,
+          email: userDetails2.email,
+        });
+      expect(response).to.have.status(400);
+      expect(response.body.data).to.eql({});
+      expect(response.body.error).to.include.members(['email has been chosen, please choose another email']);
     });
     it('should return error if newDetails excludes required field(s)', async () => {
       const badData = {

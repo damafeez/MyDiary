@@ -27,10 +27,8 @@ export default function () {
       await chai.request(app).post(`${rootUrl}/entries`)
         .set('x-auth-token', user.token).send(diaryTemplate);
     });
-    after('delete user after test', async () => {
-      after('remove user after test', async () => {
-        await User.remove(user.username);
-      });
+    after('remove user after test', async () => {
+      await User.remove(user.username);
     });
     it('should return all entries', async () => {
       const response = await chai.request(app).get(rootUrl + route)

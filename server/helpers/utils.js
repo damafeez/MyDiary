@@ -58,7 +58,7 @@ const sendResponse = ({
   error = null,
   response,
 }) => {
-  response.status(status).json({
+  response.status(error && status < 400 ? 400 : status).json({
     data,
     error,
   });

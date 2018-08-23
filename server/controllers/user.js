@@ -7,14 +7,17 @@ const signup = async (request, response) => {
     const user = await newUser.save();
     sendResponse({ response, data: user, status: 201 });
   } catch (error) {
-    if (error.message === 'duplicate key value violates unique constraint "authentication_username_key"') error.message = 'username has been chosen';
-    sendResponse({ response, error: [error.message], status: 400 });
+    sendResponse({ response, error: [error.message] });
   }
 };
 
 const edit = async (request, response) => {
-  const user = await User.editProfile(request.user, request.body);
-  sendResponse({ response, data: user });
+  try {
+    const user = await User.editProfile(request.user, request.body);
+    sendResponse({ response, data: user });
+  } catch (error) {
+    sendResponse({ response, error: [error.message] });
+  }
 };
 
 const changePassword = async (request, response) => {
