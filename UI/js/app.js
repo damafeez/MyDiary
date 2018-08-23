@@ -53,7 +53,7 @@ if ('serviceWorker' in navigator) registerWorker().catch(e => console.log(e));
 const initInput = () => {
   const inputFields = [...document.querySelectorAll('.input > input, .textarea > textarea')];
   if (inputFields.length === 0) return;
-  inputFields.map((inputField) => {
+  inputFields.forEach((inputField) => {
     if (inputField.value) inputField.parentNode.classList.add('active');
     else inputField.parentNode.classList.remove('active');
     inputField.addEventListener('focus', function () {
@@ -125,11 +125,17 @@ const initDropdown = () => {
   document.querySelector('.drop-container .drop').addEventListener('click', e => e.stopPropagation());
 };
 const readDiary = (i = 0) => {
+  const editButton = document.querySelector('footer button.edit');
+  const deleteButton = document.querySelector('footer button.delete');
   let diary = entries[i];
   if (!diary) {
+    editButton.style.display = 'none';
+    deleteButton.style.display = 'none';
     diary = { title: 'You have not added any entries to your diary', body: 'Please click the green  button at bottom left to get started', created: '' };
     currentDiary = 0;
   } else {
+    editButton.style.display = 'initial';
+    deleteButton.style.display = 'initial';
     const date = new Date(diary.created);
     diary.created = `${months[date.getMonth()]} ${date.getDate()}`;
   }
@@ -139,7 +145,7 @@ const readDiary = (i = 0) => {
   document.querySelector('section.diary .body').textContent = diary.body;
   const diaryList = [...document.querySelectorAll('section.diaries ul > li')];
   if (diaryList.length === 0) return;
-  diaryList.map(entry => entry.classList.remove('active'));
+  diaryList.forEach(entry => entry.classList.remove('active'));
   diaryList[currentDiary].classList.add('active');
   hideAdd();
 };
@@ -153,7 +159,7 @@ const initDiaries = () => {
   </div>
   `;
   const ul = document.createElement('ul');
-  entries.map((diary, i) => {
+  entries.forEach((diary, i) => {
     const created = new Date(diary.created);
     const li = document.createElement('li');
     const template = `
@@ -183,6 +189,7 @@ const showNotification = ({
   status = 'success',
 }) => {
   notification.innerHTML = message;
+  notification.className = 'notification-dialog';
   notification.classList.add(status);
   notification.classList.add('active');
   setTimeout(() => notification.classList.remove('active'), timeout);
@@ -268,8 +275,10 @@ const editProfile = async (event) => {
   event.preventDefault();
   const form = event.target;
   const body = {};
+  const submitButton = form.button || {};
   body.fullName = form.fullName.value;
   body.email = form.email.value;
+  submitButton.disabled = true;
   try {
     const response = await fetch(`${apiRoot}/auth/edit`, {
       method: 'PUT',
@@ -303,14 +312,17 @@ const editProfile = async (event) => {
       timeout: 7000,
     });
   }
+  submitButton.disabled = false;
 };
 const changePassword = async (event) => {
   event.preventDefault();
   const form = event.target;
   const body = {};
+  const submitButton = form.submit || {};
   body.password = form.password.value;
   body.newPassword = form.newPassword.value;
   body.confirmPassword = form.confirmPassword.value;
+  submitButton.disabled = true;
   try {
     const response = await fetch(`${apiRoot}/auth/password`, {
       method: 'PUT',
@@ -339,13 +351,16 @@ const changePassword = async (event) => {
       timeout: 7000,
     });
   }
+  submitButton.disabled = false;
 };
 const login = async (event) => {
   event.preventDefault();
   const form = event.target;
+  const submitButton = form.submit;
   const body = {};
   body.username = form.username.value;
   body.password = form.password.value;
+  submitButton.disabled = true;
   try {
     const response = await fetch(`${apiRoot}/auth/login`, {
       method: 'POST',
@@ -376,6 +391,7 @@ const login = async (event) => {
       timeout: 7000,
     });
   }
+  submitButton.disabled = false;
 };
 const setNotification = async (status) => {
   try {
@@ -422,9 +438,11 @@ const setNotification = async (status) => {
 const addEntry = async (event) => {
   event.preventDefault();
   const form = event.target;
+  const submitButton = form.update || {};
   const diary = {};
   diary.title = form.title.value;
   diary.body = form.body.value;
+  submitButton.disabled = true;
   try {
     const response = await fetch(editMode ? `${apiRoot}/entries/${entries[currentDiary].id}` : `${apiRoot}/entries`, {
       method: editMode ? 'PUT' : 'POST',
@@ -457,6 +475,7 @@ const addEntry = async (event) => {
       timeout: 7000,
     });
   }
+  submitButton.disabled = false;
 };
 const deleteEntry = async () => {
   if (!entries[currentDiary]) return;
