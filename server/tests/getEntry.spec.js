@@ -28,10 +28,8 @@ export default function () {
         .set('x-auth-token', user.token).send(diaryTemplate);
       id = entry.body.data.id;
     });
-    after('delete user after test', async () => {
-      after('remove user after test', async () => {
-        await User.remove(user.username);
-      });
+    after('remove user after test', async () => {
+      await User.remove(user.username);
     });
     it('should return specified entry', async () => {
       const response = await chai.request(app).get(`${rootUrl}/entries/${id}`)

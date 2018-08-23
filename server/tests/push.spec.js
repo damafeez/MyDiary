@@ -28,7 +28,7 @@ export default function () {
       endpoint: 'http://fcm.googleapis.com/fcm/send/eCOyG5RIGBk:APA91bHLPAEdhmaWtcvdiNY9ORy5yGW9OVNVWpRvBQWss2l1LRwb2cg6l76eP9AX6AcLE5BfqoWjXZQvOVKLvy7cSj4DG5JRO4v_76JpUGWq5vaaILkFy-0VqMNVZoyucbJEy4dJV0RywWY0W62VWvK387GIoqjR4w',
       expirationTime: null,
       keys: {
-        p256dh: 'BIAK4CRzZakSwXoraC2MXqRutYiFeUXch6LC0uJ1qa76zpZ1bbxwshXRMXItba6xNxzhriQPVZ0TX3YyDcKtew0=', auth: '4Pnvf2B5px0N-XdcCWObvQ==' 
+        p256dh: 'BIAK4CRzZakSwXoraC2MXqRutYiFeUXch6LC0uJ1qa76zpZ1bbxwshXRMXItba6xNxzhriQPVZ0TX3YyDcKtew0=', auth: '4Pnvf2B5px0N-XdcCWObvQ==',
       },
     };
     let user;
@@ -38,10 +38,8 @@ export default function () {
         .send({ username: userDetails.username, password: userDetails.password });
       user = login.body.data;
     });
-    after('delete user after test', async () => {
-      after('remove user after test', async () => {
-        await User.remove(user.username);
-      });
+    after('remove user after test', async () => {
+      await User.remove(user.username);
     });
     it('should modify subscription and return status 200', async () => {
       const response = await chai.request(app).put(`${rootUrl}${route}`)

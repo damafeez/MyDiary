@@ -142,6 +142,10 @@ button {
 .btn.round {
   border-radius: 150px;
 }
+.btn:disabled, .btn:disabled:hover {
+  background: var(--gray);
+  box-shadow: none;
+}
 
 .input, .textarea {
   position: relative;
@@ -401,7 +405,7 @@ body.logged-in {
   justify-content: space-between;
 }
 body.logged-in main {
-  padding: 10rem 2rem;
+  padding: 6rem 2rem;
 }
 .scroller {
   display: flex;
@@ -534,13 +538,12 @@ header, footer {
   width: 100%;
   background: #f8f8f8;
   z-index: 5000;
-  padding: 2rem 5rem;
+  padding: .5rem 5rem;
   display: flex;
   align-items: center;
 }
 header {
   justify-content: space-between;
-  padding: 2rem;
   top: 0;
 }
 header h1 {

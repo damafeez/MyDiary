@@ -29,8 +29,8 @@ webPush.setVapidDetails(
 );
 dailyReminder().start();
 console.log('next dates', dailyReminder().nextDates());
-app.use('/api/v1', api);
 
+app.use('/api/v1', api);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(documentation, { customCss: '.swagger-ui .topbar { display: none }' }));
 
 app.listen(PORT, () => console.log('server status', `server is running on port ${PORT}, NODE_ENV: ${process.env.NODE_ENV}`));

@@ -78,8 +78,8 @@ export default class User {
     password,
   }) {
     this.fullName = fullName;
-    this.email = email;
-    this.username = username;
+    this.email = email ? email.toLowerCase() : email;
+    this.username = username ? username.toLowerCase() : username;
     this.password = password;
   }
 
@@ -89,8 +89,16 @@ export default class User {
   }
 
   static async editProfile(user, { fullName, email }) {
-    const edited = await client.query(`UPDATE users SET "fullName"='${fullName}', email='${email}' WHERE id=${user.id} RETURNING "fullName", email`);
-    return edited.rows[0];
+    try {
+      const edited = await client.query(`UPDATE users SET "fullName"='${fullName}', email='${email.toLowerCase()}' WHERE id=${user.id} RETURNING "fullName", email`);
+      return edited.rows[0];
+    } catch (error) {
+      if (error.message === 'duplicate key value violates unique constraint "users_email_key"') {
+        await User.remove(this.username);
+        error.message = 'email has been chosen, please choose another email';
+      }
+      throw error;
+    }
   }
 
   static async changePassword(user, { password, newPassword, confirmPassword }) {
@@ -109,18 +117,19 @@ export default class User {
     this.password = await bcrypt.hash(this.password, 5);
     const authQuery = 'INSERT INTO authentication(username, password) VALUES($1, $2) RETURNING id';
     const addUserQuery = 'INSERT INTO users("fullName", email, "authId") VALUES($1, $2, $3) RETURNING id';
-    const addAuthentication = await client.query(authQuery, [this.username, this.password]);
     try {
+      const addAuthentication = await client.query(authQuery, [this.username, this.password]);
       this.authId = addAuthentication.rows[0].id;
       const addUser = await client.query(addUserQuery, [this.fullName, this.email, this.authId]);
       this.id = addUser.rows[0].id;
       client.query('INSERT INTO "notificationStatus"("userId") VALUES($1)', [this.id]);
     } catch (error) {
+      if (error.message === 'duplicate key value violates unique constraint "authentication_username_key"') error.message = 'username has been chosen, please choose another username';
       if (error.message === 'duplicate key value violates unique constraint "users_email_key"') {
         await User.remove(this.username);
-        throw new Error('email has been chosen');
+        error.message = 'email has been chosen, please choose another email';
       }
-      return error;
+      throw error;
     }
     return this.strip();
   }

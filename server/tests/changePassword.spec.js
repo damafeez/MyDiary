@@ -27,9 +27,7 @@ export default function () {
       user = login.body.data;
     });
     after('delete user after test', async () => {
-      after('remove user after test', async () => {
-        await User.remove(user.username);
-      });
+      await User.remove(user.username);
     });
     it('should update user password', async () => {
       const response = await chai.request(app).put(`${rootUrl}${route}`)
