@@ -30,7 +30,6 @@ webPush.setVapidDetails(
 dailyReminder().start();
 console.log('next dates', dailyReminder().nextDates());
 
-app.get('/', (request, response) => response.send('server is live'));
 app.use('/api/v1', api);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(documentation, { customCss: '.swagger-ui .topbar { display: none }' }));
 

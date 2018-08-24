@@ -563,6 +563,7 @@ header img.bg {
 }
 footer {
   bottom: 0;
+  justify-content: space-between;
 }
 footer > button {
   margin: 0 2rem;
@@ -571,6 +572,10 @@ footer > button {
 }
 footer > button:hover {
   transform: translateY(-3px)
+}
+footer .settings {
+  z-index: 5;
+  display: none;
 }
 footer .settings .drop {
   width: 15rem;
@@ -594,9 +599,6 @@ footer .settings .drop > .check {
 }
 footer .settings .drop > #info {
   color: gray;
-}
-footer .settings {
-  z-index: 5;
 }
 footer .settings::after {
   border-color: transparent transparent #fcfafa #fcfafa;
@@ -624,11 +626,11 @@ footer .add .drop {
 footer .add::after {
   border-color: transparent transparent #43a047 #43a047;
 }
-footer .edit {
-  margin-left: auto;
-}
 footer .delete {
   fill: #ff5925;
+}
+footer .edit {
+  order: -1;
 }
 body.settings main {
   display: flex;
@@ -752,7 +754,7 @@ body.settings .info-settings {
   section.diaries {
     min-width: 25rem;
     margin-bottom: 0;
-    margin-right: 10rem;
+    margin-right: 5rem;
   }
   section.diary {
     flex: 1 0 30rem;
@@ -766,6 +768,16 @@ body.settings .info-settings {
     right: 3rem;
     transform: translateX(0);
   }
+  footer .edit {
+    margin-left: auto;
+    order: 0;
+  }
+}
+
+@media (min-width: 700px) {
+  section.diaries {
+    margin-right: 10rem;
+  }  
 }
 
 @media (min-width: 800px) {
