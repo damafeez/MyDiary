@@ -772,6 +772,9 @@ body.settings .info-settings {
     margin-left: auto;
     order: 0;
   }
+  footer .settings {
+    display: initial;
+  }
 }
 
 @media (min-width: 700px) {
