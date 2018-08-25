@@ -768,6 +768,9 @@ body.settings .info-settings {
     right: 3rem;
     transform: translateX(0);
   }
+  footer {
+    justify-content: flex-start;
+  }
   footer .edit {
     margin-left: auto;
     order: 0;

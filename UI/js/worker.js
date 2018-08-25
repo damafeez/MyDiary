@@ -14,18 +14,14 @@ self.addEventListener('push', (event) => {
   });
 });
 self.addEventListener('notificationclick', (event) => {
-  console.log('notification clicked');
   const url = 'https://damafeez.github.io/MyDiary/UI/home.html';
   event.notification.close();
-  event.waitUntil(
-    clients.matchAll({ type: 'window' }).then((windowClients) => {
-      windowClients.map((client) => {
-        if (client.url === url && client.focus) return client.focus();
-        return client;
-      });
-      if (clients.openWindow) {
-        return clients.openWindow(url);
-      }
-    })
-  );
+  event.waitUntil(self.clients.matchAll({ includeUncontrolled: true, type: 'window' }).then((clientList) => {
+    if (clientList.length > 0) {
+      const focused = clientList.find(client => client.focused);
+      if (focused) return focused;
+      return clientList[0].focus();
+    }
+    return self.clients.openWindow(url);
+  }));
 });
