@@ -36,7 +36,7 @@ export default function () {
         fullName: userDetails.fullName,
         email: userDetails.email,
         username: userDetails.username,
-        notificationStatus: false,
+        notificationStatus: true,
       });
     });
     it('should not log user with bad credentials in', async () => {
