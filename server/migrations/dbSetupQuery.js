@@ -31,7 +31,7 @@ const notificationStatus = `
 CREATE TABLE IF NOT EXISTS "notificationStatus"(
   id SERIAL PRIMARY KEY,
   "userId" INT UNIQUE,
-  status BOOLEAN DEFAULT false,
+  status BOOLEAN DEFAULT true,
   subscription JSONB[],
   CONSTRAINT FK_NotificationStatus_Users FOREIGN KEY ("userId") REFERENCES users(id)
   ON DELETE CASCADE
