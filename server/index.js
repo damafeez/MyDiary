@@ -2,6 +2,7 @@ import 'babel-polyfill';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import morgan from 'morgan';
 import dotenv from 'dotenv';
 import webPush from 'web-push';
 import swaggerUi from 'swagger-ui-express';
@@ -17,6 +18,7 @@ const app = express();
 
 app
   .use(cors())
+  .use(morgan('dev'))
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({ extended: true }));
 
@@ -28,7 +30,6 @@ webPush.setVapidDetails(
   process.env.VAPID_PRIVATE_KEY,
 );
 dailyReminder().start();
-console.log('next dates', dailyReminder().nextDates());
 
 app.use('/api/v1', api);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(documentation, { customCss: '.swagger-ui .topbar { display: none }' }));

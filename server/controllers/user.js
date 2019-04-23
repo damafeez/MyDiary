@@ -20,6 +20,16 @@ const edit = async (request, response) => {
   }
 };
 
+const imageUpdate = async (request, response) => {
+  try {
+    if (!request.files || !request.files.profileImage) throw new Error('Please upload valid image');
+    const url = await User.editProfileImage(request.user, request.files.profileImage);
+    sendResponse({ response, data: url });
+  } catch (error) {
+    sendResponse({ response, error: [error.message] });
+  }
+};
+
 const changePassword = async (request, response) => {
   try {
     const user = await User.changePassword(request.user, request.body);
@@ -47,5 +57,6 @@ export {
   signup,
   login,
   edit,
+  imageUpdate,
   changePassword,
 };

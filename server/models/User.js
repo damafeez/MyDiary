@@ -2,7 +2,9 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import client from '../helpers/connection';
-import { required, minLength, dataType } from '../helpers/utils';
+import {
+  required, minLength, dataType, imageUploader,
+} from '../helpers/utils';
 
 dotenv.config();
 
@@ -94,10 +96,19 @@ export default class User {
       return edited.rows[0];
     } catch (error) {
       if (error.message === 'duplicate key value violates unique constraint "users_email_key"') {
-        await User.remove(this.username);
         error.message = 'email has been chosen, please choose another email';
       }
       throw error;
+    }
+  }
+
+  static async editProfileImage(user, image) {
+    try {
+      const url = await imageUploader(image.path);
+      await client.query('UPDATE users SET "image"=$1', [url]);
+      return url;
+    } catch (error) {
+      throw new Error('Unable to upload profile image, please try again');
     }
   }
 
@@ -116,13 +127,16 @@ export default class User {
   async save() {
     this.password = await bcrypt.hash(this.password, 5);
     const authQuery = 'INSERT INTO authentication(username, password) VALUES($1, $2) RETURNING id';
-    const addUserQuery = 'INSERT INTO users("fullName", email, "authId") VALUES($1, $2, $3) RETURNING id';
+    const addUserQuery = 'INSERT INTO users("fullName", email, "authId") VALUES($1, $2, $3) RETURNING id, image';
     try {
       const addAuthentication = await client.query(authQuery, [this.username, this.password]);
       this.authId = addAuthentication.rows[0].id;
       const addUser = await client.query(addUserQuery, [this.fullName, this.email, this.authId]);
       this.id = addUser.rows[0].id;
-      client.query('INSERT INTO "notificationStatus"("userId") VALUES($1)', [this.id]);
+      this.image = addUser.rows[0].image;
+      const notificationStatus = await client.query('INSERT INTO "notificationStatus"("userId") VALUES($1) RETURNING *', [this.id]);
+      this.notificationStatus = notificationStatus.rows[0].status;
+      this.token = await this.generateToken();
     } catch (error) {
       if (error.message === 'duplicate key value violates unique constraint "authentication_username_key"') error.message = 'username has been chosen, please choose another username';
       if (error.message === 'duplicate key value violates unique constraint "users_email_key"') {
@@ -135,7 +149,7 @@ export default class User {
   }
 
   async login() {
-    const authQuery = `SELECT users.id, authentication.password, authentication.username, users."fullName", users.email, "notificationStatus".status as "notificationStatus" FROM authentication 
+    const authQuery = `SELECT users.id, authentication.password, authentication.username, users."fullName", users.email, users.image, "notificationStatus".status as "notificationStatus" FROM authentication 
     INNER JOIN users ON users."authId" = authentication.id 
     INNER JOIN "notificationStatus" ON "notificationStatus"."userId" = users.id
     WHERE authentication.username = '${this.username}'`;
@@ -147,11 +161,12 @@ export default class User {
       this.fullName = user.fullName;
       this.email = user.email;
       this.id = user.id;
+      this.image = user.image;
       this.notificationStatus = user.notificationStatus;
       this.token = await this.generateToken();
       return this.strip();
     }
-    throw new Error('invalid credentials');
+    throw new Error('Invalid credentials');
   }
 
   async generateToken() {

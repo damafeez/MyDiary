@@ -65,7 +65,7 @@ export default function () {
       expect(response).to.have.status(400);
       expect(response.body.error).to.include.members([
         'title is required',
-        'title should have minimum of 15 characters',
+        'title should have minimum of 5 characters',
         'title should be of type string',
       ]);
     });

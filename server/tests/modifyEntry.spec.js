@@ -30,7 +30,7 @@ export default function () {
       user = login.body.data;
       const entry = await chai.request(app).post(`${rootUrl}/entries`)
         .set('x-auth-token', user.token).send(diaryTemplate);
-      id = entry.body.data.id;
+      ({ id } = entry.body.data);
     });
     after('remove user after test', async () => {
       await User.remove(user.username);
@@ -58,12 +58,12 @@ export default function () {
       expect(response.body.data).to.eql({});
       expect(response.body.error).to.include.members([
         'title is required',
-        'title should have minimum of 15 characters',
+        'title should have minimum of 5 characters',
         'title should be of type string',
       ]);
     });
     it('should return error if specified id is not found', async () => {
-      const response = await chai.request(app).put(`${rootUrl}/entries/${7.3}`)
+      const response = await chai.request(app).put(`${rootUrl}/entries/${74}`)
         .set('x-auth-token', user.token).send(modification);
       expect(response).to.have.status(404);
       expect(response.body.data).to.eql({});

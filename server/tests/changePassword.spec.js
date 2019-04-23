@@ -19,7 +19,6 @@ export default function () {
     const route = '/auth/password';
     const newPassword = 'newpassword';
     let user;
-    let id;
     before('add user and log him in before test', async () => {
       await chai.request(app).post(`${rootUrl}/auth/signup`).send(userDetails);
       const login = await chai.request(app).post(`${rootUrl}/auth/login`)

@@ -18,15 +18,13 @@ const rootUrl = '/api/v1';
 export default function () {
   describe('DELETE /entries/:id', () => {
     let user;
-    let id;
     before('add user, log him in and add entry before test', async () => {
       await chai.request(app).post(`${rootUrl}/auth/signup`).send(userDetails);
       const login = await chai.request(app).post(`${rootUrl}/auth/login`)
         .send({ username: userDetails.username, password: userDetails.password });
       user = login.body.data;
-      const entry = await chai.request(app).post(`${rootUrl}/entries`)
+      chai.request(app).post(`${rootUrl}/entries`)
         .set('x-auth-token', user.token).send(diaryTemplate);
-      id = entry.body.data.id;
     });
     after('remove user after test', async () => {
       await User.remove(user.username);

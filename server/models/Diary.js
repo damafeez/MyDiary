@@ -5,12 +5,12 @@ const diaries = [];
 const postRules = {
   title: [
     [required],
-    [minLength, 15],
+    [minLength, 5],
     [dataType, 'string'],
   ],
   body: [
     [required],
-    [minLength, 35],
+    [minLength, 20],
     [dataType, 'string'],
   ],
 };
@@ -34,7 +34,8 @@ export default class Diary {
   }
 
   static async findByIdAndUpdate(id, author, update) {
-    const updateDiary = await client.query(`UPDATE entries SET title='${update.title}', body='${update.body}', edited=CURRENT_TIMESTAMP WHERE id=${id} AND "authorId" = ${author.id} RETURNING *`);
+    const updateQuery = 'UPDATE entries SET title=$1, body=$2, edited=CURRENT_TIMESTAMP WHERE id=$3 AND "authorId" = $4 RETURNING *';
+    const updateDiary = await client.query(updateQuery, [update.title, update.body, id, author.id]);
     if (updateDiary.rowCount === 0) throw new Error('entry not found');
     return updateDiary.rows[0];
   }

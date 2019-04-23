@@ -26,7 +26,7 @@ export default function () {
       user = login.body.data;
       const entry = await chai.request(app).post(`${rootUrl}/entries`)
         .set('x-auth-token', user.token).send(diaryTemplate);
-      id = entry.body.data.id;
+      ({ id } = entry.body.data);
     });
     after('remove user after test', async () => {
       await User.remove(user.username);
